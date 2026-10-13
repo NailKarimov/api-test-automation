@@ -1,0 +1,18 @@
+POST https://jsonplaceholder.typicode.com/posts
+
+Request body:
+{
+  "userId": 8,
+  "title": "Carcer asper atavus copia.",
+  "body": "Non adsidue condico coadunatio molestias bestia sordeo pauper arto acceptus. Baiulus a rem cimentarius natus maxime tener. Substantia quisquam coruscus utor ambulo vigor alter carmen utpote tunc."
+}
+
+Status: 201
+
+Response body:
+{
+  "userId": 8,
+  "title": "Carcer asper atavus copia.",
+  "body": "Non adsidue condico coadunatio molestias bestia sordeo pauper arto acceptus. Baiulus a rem cimentarius natus maxime tener. Substantia quisquam coruscus utor ambulo vigor alter carmen utpote tunc.",
+  "id": 101
+}
