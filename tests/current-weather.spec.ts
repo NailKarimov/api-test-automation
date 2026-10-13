@@ -22,7 +22,8 @@ test.describe('Current weather /data/2.5/weather', () => {
 
     expect(res.status).toBe(200);
     const body = expectSchema(currentWeatherSchema, res.body);
-    expect(body.name).toBe(riga.name);
+    // The API returns the local spelling with a diacritic: "Rīga".
+    expect(body.name).toMatch(/^R[iī]ga$/);
     expect(body.sys.country).toBe(riga.country);
   });
 

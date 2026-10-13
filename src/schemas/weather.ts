@@ -58,7 +58,12 @@ export const forecastSchema = z.object({
     .array(
       z.object({
         dt: z.number().int().positive(),
-        main: z.object({ temp: z.number(), humidity: z.number().min(0).max(100) }),
+        main: z.object({
+          temp: z.number(),
+          pressure: z.number().positive(),
+          humidity: z.number().min(0).max(100),
+        }),
+        wind: z.object({ speed: z.number().min(0), deg: z.number().min(0).max(360) }),
         weather: z.array(condition).min(1),
         dt_txt: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:00:00$/),
       }),
