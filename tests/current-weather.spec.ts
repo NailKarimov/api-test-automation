@@ -1,4 +1,12 @@
-import { test, expect, expectSchema, currentWeatherSchema, errorSchema, LOCATIONS } from '../src';
+import {
+  test,
+  expect,
+  expectSchema,
+  currentWeatherSchema,
+  forecastSchema,
+  errorSchema,
+  LOCATIONS,
+} from '../src';
 
 const { riga } = LOCATIONS;
 
@@ -36,17 +44,18 @@ test.describe('Current weather /data/2.5/weather', () => {
   });
 
   test('lang=de localises the weather description', async ({ weather }) => {
-    const en = await weather.current(riga);
-    const de = await weather.current(riga, { lang: 'de' });
+    // Forecast steps sit on a fixed time grid, so the two languages describe the same step.
+    const [en, de] = await Promise.all([
+      weather.forecast(riga, { cnt: 1 }),
+      weather.forecast(riga, { cnt: 1, lang: 'de' }),
+    ]);
 
     expect(de.status).toBe(200);
-    const enBody = expectSchema(currentWeatherSchema, en.body);
-    const deBody = expectSchema(currentWeatherSchema, de.body);
-    // Same conditions code, but the text is translated (when the snapshot is the same).
-    // eslint-disable-next-line playwright/no-skipped-test -- conditional skip: live data may change between calls
-    test.skip(enBody.dt !== deBody.dt, 'Weather snapshot changed between requests');
-    expect(deBody.weather[0].id).toBe(enBody.weather[0].id);
-    expect(deBody.weather[0].description).not.toBe(enBody.weather[0].description);
+    const [enStep] = expectSchema(forecastSchema, en.body).list;
+    const [deStep] = expectSchema(forecastSchema, de.body).list;
+    expect(deStep.dt).toBe(enStep.dt);
+    expect(deStep.weather[0].id).toBe(enStep.weather[0].id);
+    expect(deStep.weather[0].description).not.toBe(enStep.weather[0].description);
   });
 
   test('mode=xml returns XML instead of JSON', async ({ weather }) => {
