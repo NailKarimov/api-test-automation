@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/1791974185736981
+Query: {}
+Status: 200 (12 ms)
+Content-Type: application/json
+Body:
+{"id":1791974185736981,"name":"qa-pet-1791974185736981-v2","photoUrls":[],"tags":[],"status":"sold"}
