@@ -6,7 +6,7 @@ import {
   forecastSchema,
   errorSchema,
   LOCATIONS,
-} from '../src';
+} from '../../src';
 
 const { riga } = LOCATIONS;
 

@@ -1,5 +1,5 @@
-import { test, expect, expectSchema, forecastSchema, LOCATIONS } from '../src';
-import type { Forecast } from '../src';
+import { test, expect, expectSchema, forecastSchema, LOCATIONS } from '../../src';
+import type { Forecast } from '../../src';
 
 /**
  * Decision table for the `units` parameter. The same forecast step requested in

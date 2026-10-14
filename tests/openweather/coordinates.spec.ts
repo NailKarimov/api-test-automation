@@ -6,7 +6,7 @@ import {
   errorSchema,
   VALID_COORDS,
   INVALID_COORDS,
-} from '../src';
+} from '../../src';
 
 /**
  * Boundary value analysis for coordinates: latitude is valid in [-90, 90],

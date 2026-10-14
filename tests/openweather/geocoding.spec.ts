@@ -1,4 +1,4 @@
-import { test, expect, expectSchema, geocodeSchema, currentWeatherSchema, LOCATIONS } from '../src';
+import { test, expect, expectSchema, geocodeSchema, currentWeatherSchema, LOCATIONS } from '../../src';
 
 const { riga } = LOCATIONS;
 

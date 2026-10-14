@@ -1,4 +1,4 @@
-import { test, expect, expectSchema, airPollutionSchema, LOCATIONS } from '../src';
+import { test, expect, expectSchema, airPollutionSchema, LOCATIONS } from '../../src';
 
 test.describe('Air pollution /data/2.5/air_pollution', () => {
   test('returns AQI 1–5 and non-negative pollutant concentrations', async ({ weather }) => {

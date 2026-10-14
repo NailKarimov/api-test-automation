@@ -1,4 +1,4 @@
-import { test, expect, expectSchema, errorSchema, LOCATIONS } from '../src';
+import { test, expect, expectSchema, errorSchema, LOCATIONS } from '../../src';
 
 test.describe('Authentication', () => {
   test('request without appid → 401', async ({ weather }) => {

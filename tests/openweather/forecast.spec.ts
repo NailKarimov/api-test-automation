@@ -1,4 +1,4 @@
-import { test, expect, expectSchema, forecastSchema, LOCATIONS } from '../src';
+import { test, expect, expectSchema, forecastSchema, LOCATIONS } from '../../src';
 
 const THREE_HOURS = 3 * 60 * 60;
 

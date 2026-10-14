@@ -1,4 +1,4 @@
-import { ApiClient, ApiResult } from './ApiClient';
+import { ApiClient, ApiResult } from '../api/ApiClient';
 
 export type Units = 'standard' | 'metric' | 'imperial';
 export type Coords = { lat: number | string; lon: number | string };
