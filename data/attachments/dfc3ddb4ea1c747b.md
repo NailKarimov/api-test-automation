@@ -1,0 +1,172 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: security/headers.spec.ts >> Security headers: Sock Shop gateway >> X-Content-Type-Options is "nosniff"
+- Location: tests/security/headers.spec.ts:101:9
+
+# Error details
+
+```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: "nosniff"
+Received: undefined
+```
+
+# Test source
+
+```ts
+  4   | /** One system under test: an absolute URL of a cheap, valid GET endpoint. */
+  5   | type Target = {
+  6   |   name: string;
+  7   |   url: string;
+  8   |   /** Appended as `appid` to every request. */
+  9   |   apiKey?: string;
+  10  |   /** Collection endpoint used for the OPTIONS check (defaults to `url`). */
+  11  |   optionsUrl?: string;
+  12  |   /** A request the server must reject, used to inspect its error body. */
+  13  |   errorUrl: string;
+  14  |   needsStack?: boolean;
+  15  |   /** Known deviations: check id → defect id. The test is expected to fail until the server is fixed. */
+  16  |   defects: Record<string, string>;
+  17  | };
+  18  | 
+  19  | const TARGETS: Target[] = [
+  20  |   {
+  21  |     name: 'OpenWeather',
+  22  |     url: `${env.apiBaseUrl}/data/2.5/weather?q=Riga`,
+  23  |     apiKey: env.apiKey,
+  24  |     errorUrl: `${env.apiBaseUrl}/data/2.5/weather?lat=abc&lon='"<>`,
+  25  |     defects: {
+  26  |       hsts: 'SEC-1: no Strict-Transport-Security header',
+  27  |       nosniff: 'SEC-2: no X-Content-Type-Options header',
+  28  |       cors: 'SEC-3: Access-Control-Allow-Origin "*" together with Allow-Credentials "true"',
+  29  |     },
+  30  |   },
+  31  |   {
+  32  |     name: 'Petstore',
+  33  |     url: `${env.petstoreBaseUrl}pet/1`,
+  34  |     optionsUrl: `${env.petstoreBaseUrl}pet`,
+  35  |     errorUrl: `${env.petstoreBaseUrl}pet/${'x'.repeat(20)}`,
+  36  |     defects: {
+  37  |       hsts: 'SEC-4: no Strict-Transport-Security header',
+  38  |       nosniff: 'SEC-5: no X-Content-Type-Options header',
+  39  |       'server-version': 'SEC-6: Server header discloses "Jetty(9.4.53.v20231009)"',
+  40  |       'options-body': 'SEC-7: OPTIONS answers with a WADL description of the API',
+  41  |       'stack-trace': 'SEC-8: error message reveals the internal class `java.lang.Long`',
+  42  |     },
+  43  |   },
+  44  |   {
+  45  |     // The gateway is plain HTTP inside the Docker network, so transport checks do not apply to it.
+  46  |     name: 'Sock Shop gateway',
+  47  |     url: `${env.sockShop.gateway}/catalogue?size=1`,
+  48  |     errorUrl: `${env.sockShop.gateway}/customers/x%27%22%3C%3E`,
+  49  |     needsStack: true,
+  50  |     defects: {
+  51  |       nosniff: 'SEC-9: no X-Content-Type-Options header',
+  52  |       'powered-by': 'SEC-10: X-Powered-By: Express reveals the framework',
+  53  |     },
+  54  |   },
+  55  | ];
+  56  | 
+  57  | const EVIL_ORIGIN = 'https://evil.example';
+  58  | const STACK_TRACE =
+  59  |   /\bat [\w$.]+\([\w$.]+\.(java|js|ts):\d+|java\.lang\.|Traceback \(most recent|node_modules|\.java:\d+/;
+  60  | 
+  61  | for (const target of TARGETS) {
+  62  |   test.describe(`Security headers: ${target.name}`, { tag: '@security' }, () => {
+  63  |     const isHttps = target.url.startsWith('https://');
+  64  | 
+  65  |     let client: ApiClient;
+  66  | 
+  67  |     test.beforeEach(async ({ request }) => {
+  68  |       if (target.needsStack) {
+  69  |         const up = await fetch(`${env.sockShop.payment}/health`, { signal: AbortSignal.timeout(3_000) })
+  70  |           .then((r) => r.ok)
+  71  |           .catch(() => false);
+  72  |         if (!up && env.requireStack) throw new Error('Sock Shop is not running');
+  73  |         test.skip(!up, 'Sock Shop is not running: start it with `npm run stack:up`.');
+  74  |       }
+  75  |       if (target.name === 'OpenWeather' && !target.apiKey) throw new Error('OPENWEATHER_API_KEY is not set');
+  76  |       client = new ApiClient(request, target.apiKey);
+  77  |     });
+  78  | 
+  79  |     /** Marks the test as a known defect when the target lists one for this check. */
+  80  |     function knownDefect(check: string): void {
+  81  |       const defect = target.defects[check];
+  82  |       if (defect) test.fail(true, defect);
+  83  |     }
+  84  | 
+  85  |     const get = (headers: Record<string, string> = {}): Promise<ApiResult> =>
+  86  |       client.send('GET', target.url, { headers });
+  87  | 
+  88  |     test('sanity: the endpoint answers 200', async () => {
+  89  |       expect((await get()).status).toBe(200);
+  90  |     });
+  91  | 
+  92  |     test('Strict-Transport-Security is set with a max-age of at least 180 days', async () => {
+  93  |       test.skip(!isHttps, 'HSTS only applies to HTTPS');
+  94  |       knownDefect('hsts');
+  95  |       const hsts = (await get()).response.headers()['strict-transport-security'];
+  96  | 
+  97  |       expect(hsts, 'Strict-Transport-Security header').toBeDefined();
+  98  |       expect(Number(/max-age=(\d+)/.exec(hsts ?? '')?.[1])).toBeGreaterThanOrEqual(15_552_000);
+  99  |     });
+  100 | 
+  101 |     test('X-Content-Type-Options is "nosniff"', async () => {
+  102 |       knownDefect('nosniff');
+  103 | 
+> 104 |       expect((await get()).response.headers()['x-content-type-options']).toBe('nosniff');
+      |                                                                          ^ Error: expect(received).toBe(expected) // Object.is equality
+  105 |     });
+  106 | 
+  107 |     test('X-Powered-By does not reveal the framework', async () => {
+  108 |       knownDefect('powered-by');
+  109 | 
+  110 |       expect((await get()).response.headers()['x-powered-by']).toBeUndefined();
+  111 |     });
+  112 | 
+  113 |     test('Server header does not reveal a version', async () => {
+  114 |       knownDefect('server-version');
+  115 |       const server = (await get()).response.headers()['server'] ?? '';
+  116 | 
+  117 |       expect(server).not.toMatch(/\d+\.\d+/);
+  118 |     });
+  119 | 
+  120 |     test('CORS does not reflect an arbitrary origin or combine "*" with credentials', async () => {
+  121 |       knownDefect('cors');
+  122 |       const h = (await get({ Origin: EVIL_ORIGIN })).response.headers();
+  123 |       const allowOrigin = h['access-control-allow-origin'];
+  124 |       const allowCredentials = h['access-control-allow-credentials'];
+  125 | 
+  126 |       // Credentials may be allowed only for a specific, trusted origin: never for "*" or for any origin sent.
+  127 |       expect(allowCredentials === 'true' && allowOrigin === '*', '"*" combined with credentials').toBe(false);
+  128 |       expect(allowOrigin).not.toBe(EVIL_ORIGIN);
+  129 |     });
+  130 | 
+  131 |     test('OPTIONS does not return a description of the API', async () => {
+  132 |       knownDefect('options-body');
+  133 |       const res = await client.send('OPTIONS', target.optionsUrl ?? target.url, {
+  134 |         // No JSON preference: a server may describe itself (WADL) to clients that accept anything.
+  135 |         headers: { Accept: '*/*', Origin: EVIL_ORIGIN, 'Access-Control-Request-Method': 'GET' },
+  136 |       });
+  137 | 
+  138 |       expect(res.contentType).not.toMatch(/wadl|xml/);
+  139 |       expect(res.text).not.toMatch(/<application\b|<resources\b/);
+  140 |     });
+  141 | 
+  142 |     test('an error response does not leak internals (stack trace, class names)', async () => {
+  143 |       knownDefect('stack-trace');
+  144 |       const res = await client.send('GET', target.errorUrl);
+  145 | 
+  146 |       expect(res.text).not.toMatch(STACK_TRACE);
+  147 |     });
+  148 |   });
+  149 | }
+  150 | 
+```

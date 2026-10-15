@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?q=Riga%2F%00%2F..%2F..%2Fxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%3Fid%3D%27%22%3C%3E&appid=***
-Query: {"appid":"***"}
-Status: 404 (220 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"cod":"404","message":"city not found"}
