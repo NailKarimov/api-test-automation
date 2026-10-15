@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/findByTags?tags=no-such-tag-1792052983301846
+Query: {"tags":"no-such-tag-1792052983301846"}
+Status: 200 (156 ms)
+Content-Type: application/json
+Body:
+[]

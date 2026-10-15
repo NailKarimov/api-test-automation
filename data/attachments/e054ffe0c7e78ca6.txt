@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/1792052980862321
+Query: {}
+Status: 200 (33 ms)
+Content-Type: application/json
+Body:
+{"id":1792052980862321,"name":"renamed","photoUrls":[],"tags":[],"status":"pending"}
