@@ -1,0 +1,6 @@
+GET http://localhost:8081/catalogue?size=1/%00/../../xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx?id=%27%22%3C%3E
+Query: {}
+Status: 200 (18 ms)
+Content-Type: text/plain; charset=utf-8
+Body:
+[]

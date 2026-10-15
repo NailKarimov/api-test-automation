@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/findByTags?tags=qa-tag-1791974187690556
-Query: {"tags":"qa-tag-1791974187690556"}
-Status: 200 (11 ms)
-Content-Type: application/json
-Body:
-[{"id":1791974187690556,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1791974187690556","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1791974187690556"}],"status":"available"}]

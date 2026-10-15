@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=pending
+Query: {"status":"pending"}
+Status: 200 (73 ms)
+Content-Type: application/json
+Body:
+[{"id":6,"category":{"id":1,"name":"Dogs"},"name":"Dog 3","photoUrls":["url1","url2"],"tags":[{"id":1,"name":"tag3"},{"id":2,"name":"tag4"}],"status":"pending"},{"id":1792048589697916,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1792048589697916","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792048589697916"}],"status":"pending"}]
