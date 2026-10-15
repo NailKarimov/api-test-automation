@@ -1,0 +1,7 @@
+PUT https://petstore3.swagger.io/api/v3/pet
+Query: {}
+Request body: {"id":1792050850924535,"name":"qa-pet-1792050850924535-v2","photoUrls":[],"status":"sold"}
+Status: 200 (32 ms)
+Content-Type: application/json
+Body:
+{"id":1792050850924535,"name":"qa-pet-1792050850924535-v2","photoUrls":[],"tags":[],"status":"sold"}

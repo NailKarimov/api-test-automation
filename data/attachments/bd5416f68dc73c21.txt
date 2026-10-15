@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=sold
-Query: {"status":"sold"}
-Status: 200 (42 ms)
-Content-Type: application/json
-Body:
-[{"id":2,"category":{"id":1,"name":"Dogs"},"name":"doggie","photoUrls":["fill some value"],"tags":[{"id":0,"name":"fill some value"}],"status":"sold"}]

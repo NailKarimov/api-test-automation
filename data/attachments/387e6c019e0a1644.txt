@@ -1,0 +1,6 @@
+DELETE https://petstore3.swagger.io/api/v3/pet/1792050853264936
+Query: {}
+Status: 200 (33 ms)
+Content-Type: application/json
+Body:
+Pet deleted
