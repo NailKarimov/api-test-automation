@@ -1,6 +1,0 @@
-POST https://petstore3.swagger.io/api/v3/pet/1792052981971786?name=qa-pet-1792052981971786&status=sold
-Query: {"name":"qa-pet-1792052981971786","status":"sold"}
-Status: 200 (33 ms)
-Content-Type: application/json
-Body:
-{"id":1792052981971786,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1792052981971786","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792052981971786"}],"status":"sold"}

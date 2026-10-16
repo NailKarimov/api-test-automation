@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/user/logout
+Query: {}
+Status: 200 (57 ms)
+Content-Type: application/json
+Body:
+User logged out
