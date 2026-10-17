@@ -1,0 +1,7 @@
+POST https://petstore3.swagger.io/api/v3/user
+Query: {}
+Request body: {"id":1792263745575140,"username":"qa_user_1792263745575140","email":"qa@example.com"}
+Status: 500 (223 ms)
+Content-Type: application/json
+Body:
+{"code":500,"message":"There was an error processing your request. It has been logged (ID: 7fe83b016c771323)"}

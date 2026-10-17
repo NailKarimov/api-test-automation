@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=pending
+Query: {"status":"pending"}
+Status: 200 (54 ms)
+Content-Type: application/json
+Body:
+[{"id":231312617,"category":{"id":-316510,"name":"Practica Swagger Jose modificada"},"name":"s","photoUrls":["\u001B.\uDB64\uDC10×\uDA1B\uDE2D\uDAED\uDCAE","","","","\u001C","闾·","Îê2«U\uDA50\uDFBAÇ\uDB37\uDE17K"],"tags":[{"id":0,"name":""}],"status":"pending"},{"id":11,"category":{"id":2,"name":"Cats"},"name":"Whiskers","photoUrls":["https://example.com/cat1.jpg"],"tags":[{"id":1,"name":"indoor"}],"status":"pending"},{"id":606194,"category":{"id":0},"name":"Pet_606194","photoUrls":[],"tags":[],"status":"pending"},{"id":48833,"category":{"id":0},"name":"Pet_48833","photoUrls":[],"tags":[],"status":"pending"},{"id":771018,"category":{"id":1,"name":"Dogs"},"name":"Rex","photoUrls":["https://example.com/rex.jpg"],"tags":[{"id":1,"name":"friendly"}],"status":"pending"},{"id":771019,"name":"Rex","photoUrls":["https://example.com/a.jpg"],"tags":[],"status":"pending"}]

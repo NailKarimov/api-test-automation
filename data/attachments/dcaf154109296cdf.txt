@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (101 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":14.7336,"lat":41.3892},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":286.29,"feels_like":285.64,"temp_min":286.29,"temp_max":286.29,"pressure":1017,"humidity":76,"sea_level":1017,"grnd_level":941},"visibility":10000,"wind":{"speed":0.09,"deg":162,"gust":0.82},"clouds":{"all":10},"dt":1792263552,"sys":{"type":2,"id":2076958,"country":"IT","sunrise":1792214077,"sunset":1792253878},"timezone":7200,"id":3168446,"name":"Santa Croce del Sannio","cod":200}

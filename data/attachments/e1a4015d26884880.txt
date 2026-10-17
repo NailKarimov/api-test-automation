@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/findByStatus
-Query: {}
-Status: 400 (97 ms)
-Content-Type: application/json
-Body:
-{"code":400,"message":"Input error: missing required query parameter `status`"}
