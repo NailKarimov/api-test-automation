@@ -1,0 +1,7 @@
+POST https://petstore3.swagger.io/api/v3/pet
+Query: {}
+Request body: hello
+Status: 415 (219 ms)
+Content-Type: application/json
+Body:
+{"code":415,"message":"HTTP 415 Unsupported Media Type"}

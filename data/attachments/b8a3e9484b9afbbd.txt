@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/findByTags?tags=no-such-tag-1792267011570077
-Query: {"tags":"no-such-tag-1792267011570077"}
-Status: 500 (41 ms)
-Content-Type: application/json
-Body:
-{"code":500,"message":"There was an error processing your request. It has been logged (ID: 737330e0428d0886)"}

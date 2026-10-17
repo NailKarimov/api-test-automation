@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (101 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":14.1394,"lat":42.4542},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":288.8,"feels_like":288.54,"temp_min":287.6,"temp_max":289,"pressure":1017,"humidity":81,"sea_level":1017,"grnd_level":1005},"visibility":10000,"wind":{"speed":0.88,"deg":203,"gust":1.69},"clouds":{"all":5},"dt":1792267954,"sys":{"type":2,"id":2108132,"country":"IT","sunrise":1792214290,"sunset":1792253950},"timezone":7200,"id":3166235,"name":"Spoltore","cod":200}
