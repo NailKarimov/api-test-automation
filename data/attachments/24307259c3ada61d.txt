@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
-Query: {"appid":"***"}
-Status: 200 (67 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"coord":{"lon":9.4478,"lat":46.1486},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04n"}],"base":"stations","main":{"temp":292.69,"feels_like":292.61,"temp_min":292.69,"temp_max":292.69,"pressure":1016,"humidity":73,"sea_level":1016,"grnd_level":913},"visibility":10000,"wind":{"speed":0.05,"deg":79,"gust":2.4},"clouds":{"all":78},"dt":1792263183,"sys":{"type":2,"id":2109221,"country":"IT","sunrise":1792215683,"sunset":1792254809},"timezone":7200,"id":3177630,"name":"Delebio","cod":200}

@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/user/login?username=qa-user&password=qa-password
+Query: {"username":"qa-user","password":"qa-password"}
+Status: 200 (93 ms)
+Content-Type: application/json
+Body:
+Logged in user session: 4643038584220906
