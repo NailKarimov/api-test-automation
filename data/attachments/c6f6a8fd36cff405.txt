@@ -1,7 +1,0 @@
-POST https://petstore3.swagger.io/api/v3/pet
-Query: {}
-Request body: {bad json
-Status: 400 (220 ms)
-Content-Type: application/json
-Body:
-{"code":400,"message":"Input error: unable to convert input to io.swagger.petstore.model.Pet"}

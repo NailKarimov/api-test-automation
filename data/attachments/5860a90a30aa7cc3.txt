@@ -1,7 +1,0 @@
-POST https://petstore3.swagger.io/api/v3/store/order
-Query: {}
-Request body: {"id":1792263745539321,"petId":1,"quantity":1,"shipDate":"2026-10-17T19:02:25.539Z","status":"placed","complete":false}
-Status: 500 (240 ms)
-Content-Type: application/json
-Body:
-{"code":500,"message":"There was an error processing your request. It has been logged (ID: 311d4df90863c869)"}
