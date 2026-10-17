@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/1792263382535951
+Query: {}
+Status: 404 (75 ms)
+Content-Type: application/json
+Body:
+Pet not found

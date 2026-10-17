@@ -1,0 +1,105 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: petstore/pet-search.spec.ts >> Pet search >> findByTags with a tag nobody uses → empty list, not an error
+- Location: tests/petstore/pet-search.spec.ts:73:7
+
+# Error details
+
+```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 500
+```
+
+# Test source
+
+```ts
+  1  | import {
+  2  |   test,
+  3  |   expect,
+  4  |   expectSchema,
+  5  |   petListSchema,
+  6  |   petstoreErrorSchema,
+  7  |   newPet,
+  8  |   PET_STATUSES,
+  9  | } from '../../src';
+  10 | 
+  11 | test.describe('Pet search', () => {
+  12 |   // The public sandbox is shared: at any moment there may be no pets with a given status at all.
+  13 |   // Each test creates its own pet first, so the result never depends on other people's data.
+  14 |   for (const status of PET_STATUSES) {
+  15 |     test(`findByStatus=${status} returns only pets with that status`, async ({ petstore }) => {
+  16 |       const pet = newPet({ status });
+  17 |       try {
+  18 |         await petstore.addPet(pet);
+  19 |         const res = await petstore.findByStatus(status);
+  20 | 
+  21 |         expect(res.status).toBe(200);
+  22 |         const pets = expectSchema(petListSchema, res.body);
+  23 |         expect(pets.map((p) => p.id)).toContain(pet.id);
+  24 |         expect(pets.every((p) => p.status === status)).toBe(true);
+  25 |       } finally {
+  26 |         await petstore.deletePet(pet.id);
+  27 |       }
+  28 |     });
+  29 |   }
+  30 | 
+  31 |   test('a new pet shows up under its status and moves when the status changes', async ({ petstore }) => {
+  32 |     const pet = newPet({ status: 'pending' });
+  33 |     try {
+  34 |       await petstore.addPet(pet);
+  35 |       const pending = expectSchema(petListSchema, (await petstore.findByStatus('pending')).body);
+  36 |       expect(pending.map((p) => p.id)).toContain(pet.id);
+  37 | 
+  38 |       await petstore.updatePetWithForm(pet.id, { name: pet.name, status: 'sold' });
+  39 |       const afterPending = expectSchema(petListSchema, (await petstore.findByStatus('pending')).body);
+  40 |       const sold = expectSchema(petListSchema, (await petstore.findByStatus('sold')).body);
+  41 |       expect(afterPending.map((p) => p.id)).not.toContain(pet.id);
+  42 |       expect(sold.map((p) => p.id)).toContain(pet.id);
+  43 |     } finally {
+  44 |       await petstore.deletePet(pet.id);
+  45 |     }
+  46 |   });
+  47 | 
+  48 |   test('findByStatus with an unknown value → 400', async ({ petstore }) => {
+  49 |     const res = await petstore.findByStatus('bogus');
+  50 | 
+  51 |     expect(res.status).toBe(400);
+  52 |     expect(expectSchema(petstoreErrorSchema, res.body).message).toContain('status');
+  53 |   });
+  54 | 
+  55 |   test('findByStatus without the required parameter → 400', async ({ petstore }) => {
+  56 |     expect((await petstore.findByStatus()).status).toBe(400);
+  57 |   });
+  58 | 
+  59 |   test('findByTags finds a pet by its unique tag', async ({ petstore }) => {
+  60 |     const pet = newPet();
+  61 |     const tag = pet.tags![0].name!;
+  62 |     try {
+  63 |       await petstore.addPet(pet);
+  64 |       const res = await petstore.findByTags(tag);
+  65 | 
+  66 |       expect(res.status).toBe(200);
+  67 |       expect(expectSchema(petListSchema, res.body).map((p) => p.id)).toEqual([pet.id]);
+  68 |     } finally {
+  69 |       await petstore.deletePet(pet.id);
+  70 |     }
+  71 |   });
+  72 | 
+  73 |   test('findByTags with a tag nobody uses → empty list, not an error', async ({ petstore }) => {
+  74 |     const res = await petstore.findByTags(`no-such-tag-${newPet().id}`);
+  75 | 
+> 76 |     expect(res.status).toBe(200);
+     |                        ^ Error: expect(received).toBe(expected) // Object.is equality
+  77 |     expect(res.body).toEqual([]);
+  78 |   });
+  79 | });
+  80 | 
+```

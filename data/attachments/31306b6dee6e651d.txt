@@ -1,7 +1,0 @@
-POST https://petstore3.swagger.io/api/v3/pet
-Query: {}
-Request body: {"id":1792221892761183,"name":"qa-pet-1792221892761183","photoUrls":[]}
-Status: 200 (117 ms)
-Content-Type: application/json
-Body:
-{"id":1792221892761183,"name":"qa-pet-1792221892761183","photoUrls":[],"tags":[]}

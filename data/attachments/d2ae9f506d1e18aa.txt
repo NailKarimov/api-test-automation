@@ -1,6 +1,0 @@
-POST https://petstore3.swagger.io/api/v3/pet/1792221892604741?name=renamed&status=pending
-Query: {"name":"renamed","status":"pending"}
-Status: 200 (24 ms)
-Content-Type: application/json
-Body:
-{"id":1792221892604741,"name":"renamed","photoUrls":[],"tags":[],"status":"pending"}
