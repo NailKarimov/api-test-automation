@@ -24,6 +24,8 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | Schemathesis                     | Special test types   | property-based / fuzzing  | ✓                   |              |                     |
 | oasdiff                          | Special test types   | contract drift            | ✓                   |              |                     |
 | Pact                             | Special test types   | consumer-driven contracts | ✓                   |              |                     |
+| GraphQL (graphql-js)             | Special test types   | GraphQL API testing       | ✓                   |              |                     |
+| GraphQL Inspector                | Special test types   | GraphQL schema drift      | ✓                   |              |                     |
 | amqplib (RabbitMQ)               | Special test types   | event-driven              | ✓                   |              |                     |
 | Docker + Docker Compose          | Run the system       | containers                | ✓                   |              |                     |
 | Sock Shop                        | Run the system       | system under test         | ✓                   |              |                     |
@@ -205,6 +207,28 @@ The client's tests record which requests it sends and which fields it reads. The
 - **Repositories:** api-test-automation
 - **Alternatives:** Spring Cloud Contract, Specmatic, PactFlow (broker)
 - **Interview question:** How is a contract test different from an integration test?
+
+### GraphQL (graphql-js)
+
+Tests for a GraphQL API: one /graphql endpoint, the client picks the fields, errors arrive in an errors array. The graphql library parses and builds schemas.
+
+- **Why here:** 34 tests against the Rick and Morty API: queries, pagination, errors, security (depth limit, aliases), a REST-twin oracle. Found GQL-2: no query cost limit.
+- **Where:** `src/graphql/, tests/graphql, docs/graphql.md`
+- **Command:** `npm run test:graphql`
+- **Repositories:** api-test-automation
+- **Alternatives:** Apollo Client, graphql-request, Karate, Postman GraphQL
+- **Interview question:** Why is the HTTP status not enough when testing GraphQL?
+
+### GraphQL Inspector
+
+Compares two GraphQL schemas and sorts changes into breaking, dangerous and safe: oasdiff for GraphQL.
+
+- **Why here:** Live schema via introspection vs the approved one from the source: 0 breaking, 11 safe (Apollo Server's own types).
+- **Where:** `contracts/rickandmorty/, tests/graphql/schema-drift.spec.ts`
+- **Command:** `npx playwright test tests/graphql/schema-drift.spec.ts`
+- **Repositories:** api-test-automation
+- **Alternatives:** Apollo Rover (schema checks), graphql-schema-diff
+- **Interview question:** What counts as a breaking change in a GraphQL schema?
 
 ### amqplib (RabbitMQ)
 
