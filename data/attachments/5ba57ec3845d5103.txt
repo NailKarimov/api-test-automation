@@ -1,0 +1,6 @@
+GET http://localhost:8084/carts/6ad3d213ee11cb0001a1de56/items
+Query: {}
+Status: 200 (5 ms)
+Content-Type: application/json;charset=UTF-8
+Body:
+[{"id":"6ad3d213bf80e0000633d51f","itemId":"a0a4f044-b040-410d-8ead-4de0446aec7e","quantity":1,"unitPrice":7.99}]

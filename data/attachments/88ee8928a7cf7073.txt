@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/xxxxxxxxxxxxxxxxxxxx
+Query: {}
+Status: 400 (145 ms)
+Content-Type: application/json
+Body:
+{"code":400,"message":"Input error: couldn't convert `xxxxxxxxxxxxxxxxxxxx` to type `class java.lang.Long`"}
