@@ -22,6 +22,7 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | Web Vitals (PerformanceObserver) | Special test types   | front-end performance    |                     | ✓            |                     |
 | k6                               | Special test types   | load testing             | ✓                   |              |                     |
 | Schemathesis                     | Special test types   | property-based / fuzzing | ✓                   |              |                     |
+| oasdiff                          | Special test types   | contract drift           | ✓                   |              |                     |
 | amqplib (RabbitMQ)               | Special test types   | event-driven             | ✓                   |              |                     |
 | Docker + Docker Compose          | Run the system       | containers               | ✓                   |              |                     |
 | Sock Shop                        | Run the system       | system under test        | ✓                   |              |                     |
@@ -181,6 +182,17 @@ Generates thousands of requests from an OpenAPI spec and checks the server confo
 - **Repositories:** api-test-automation
 - **Alternatives:** RESTler, Dredd, EvoMaster
 - **Interview question:** How is a property-based test different from a regular one?
+
+### oasdiff
+
+Compares two versions of an OpenAPI spec and sorts every difference: error breaks clients, warning may, info is safe.
+
+- **Why here:** The approved Petstore contract is checked against what the container serves and against the public sandbox. Found CD-1: the image serves the old 1.0.17 spec, 7 operations lost their 200 response.
+- **Where:** `contracts/, contract.yml, docs/contract-drift.md`
+- **Command:** `npm run contract:check`
+- **Repositories:** api-test-automation
+- **Alternatives:** openapi-diff, Optic, Bump.sh, Spectral (linting)
+- **Interview question:** Which API changes are backward incompatible?
 
 ### amqplib (RabbitMQ)
 
