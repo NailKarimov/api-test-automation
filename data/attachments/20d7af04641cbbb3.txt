@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/findByTags?tags=qa-tag-1792269943736993
+Query: {"tags":"qa-tag-1792269943736993"}
+Status: 500 (7 ms)
+Content-Type: application/json
+Body:
+{"code":500,"message":"There was an error processing your request. It has been logged (ID: a4621ae4936693c7)"}
