@@ -1,0 +1,17 @@
+{
+  "breaking": [],
+  "dangerous": [],
+  "nonBreaking": [
+    "Directive 'cacheControl' was added",
+    "Location 'FIELD_DEFINITION' was added to directive 'cacheControl'",
+    "Location 'OBJECT' was added to directive 'cacheControl'",
+    "Location 'INTERFACE' was added to directive 'cacheControl'",
+    "Argument 'maxAge' was added to directive 'cacheControl'",
+    "Argument 'scope' was added to directive 'cacheControl'",
+    "Type 'CacheControlScope' was added",
+    "Enum value 'PUBLIC' was added to enum 'CacheControlScope'",
+    "Enum value 'PRIVATE' was added to enum 'CacheControlScope'",
+    "Type 'Upload' was added",
+    "Object type 'Upload' has description 'The `Upload` scalar type represents a file upload.'"
+  ]
+}

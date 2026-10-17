@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (67 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":14.7667,"lat":40.6783},"weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03n"}],"base":"stations","main":{"temp":288.22,"feels_like":287.79,"temp_min":288.09,"temp_max":290.04,"pressure":1017,"humidity":77,"sea_level":1017,"grnd_level":983},"visibility":10000,"wind":{"speed":3.09,"deg":70},"clouds":{"all":27},"dt":1792269267,"sys":{"type":1,"id":6786,"country":"IT","sunrise":1792214023,"sunset":1792253917},"timezone":7200,"id":3168673,"name":"Salerno","cod":200}

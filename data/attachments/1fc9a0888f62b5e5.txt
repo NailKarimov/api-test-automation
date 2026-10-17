@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=sold
-Query: {"status":"sold"}
-Status: 200 (53 ms)
-Content-Type: application/json
-Body:
-[{"id":12,"category":{"id":3,"name":"Fish"},"name":"Goldie","photoUrls":["https://example.com/fish1.jpg"],"tags":[{"id":2,"name":"freshwater"}],"status":"sold"},{"id":92343,"category":{"id":0},"name":"Pet_92343","photoUrls":[],"tags":[],"status":"sold"},{"id":18,"category":{"id":0},"name":"Shadow_updated_name","photoUrls":[],"tags":[],"status":"sold"},{"id":1792269473572542,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1792269473572542","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792269473572542"}],"status":"sold"}]
