@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (111 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":8.2514,"lat":44.195},"weather":[{"id":801,"main":"Clouds","description":"few clouds","icon":"02n"}],"base":"stations","main":{"temp":289.03,"feels_like":288.71,"temp_min":286.69,"temp_max":290.21,"pressure":1015,"humidity":78,"sea_level":1015,"grnd_level":949},"visibility":10000,"wind":{"speed":0.89,"deg":331,"gust":2.24},"clouds":{"all":13},"dt":1792269308,"sys":{"type":2,"id":2038943,"country":"IT","sunrise":1792215826,"sunset":1792255240},"timezone":7200,"id":6534373,"name":"Magliolo","cod":200}

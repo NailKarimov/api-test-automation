@@ -1,0 +1,84 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: graphql/rest-consistency.spec.ts >> GraphQL ↔ REST consistency >> episode totals match
+- Location: tests/graphql/rest-consistency.spec.ts:53:7
+
+# Error details
+
+```
+TypeError: Cannot read properties of undefined (reading 'episodes')
+```
+
+# Test source
+
+```ts
+  1  | import { test, expect } from '../../src';
+  2  | 
+  3  | /**
+  4  |  * The GraphQL API is a facade over the REST API of the same service, which gives a free test oracle:
+  5  |  * both must describe the same character, the same counts and the same episodes.
+  6  |  */
+  7  | type RestCharacter = {
+  8  |   id: number;
+  9  |   name: string;
+  10 |   status: string;
+  11 |   species: string;
+  12 |   type: string;
+  13 |   gender: string;
+  14 |   image: string;
+  15 |   created: string;
+  16 |   episode: string[];
+  17 | };
+  18 | 
+  19 | test.describe('GraphQL ↔ REST consistency', () => {
+  20 |   for (const id of [1, 2, 183]) {
+  21 |     test(`character ${id}: GraphQL and REST agree field by field`, async ({ graph }) => {
+  22 |       const rest = (await graph.api.get<RestCharacter>(`api/character/${id}`)).body;
+  23 |       const gql = (
+  24 |         await graph.query<{ character: Record<string, unknown> & { episode: { id: string }[] } }>(
+  25 |           `{ character(id: ${id}) { id name status species type gender image created episode { id } } }`,
+  26 |         )
+  27 |       ).body.data!.character;
+  28 | 
+  29 |       expect({ ...gql, episode: undefined }).toEqual({
+  30 |         id: String(rest.id),
+  31 |         name: rest.name,
+  32 |         status: rest.status,
+  33 |         species: rest.species,
+  34 |         type: rest.type,
+  35 |         gender: rest.gender,
+  36 |         image: rest.image,
+  37 |         created: rest.created,
+  38 |         episode: undefined,
+  39 |       });
+  40 |       expect(gql.episode.map((e) => e.id)).toEqual(rest.episode.map((url) => url.split('/').pop()));
+  41 |     });
+  42 |   }
+  43 | 
+  44 |   test('the number of dead characters is the same in both APIs', async ({ graph }) => {
+  45 |     const rest = (await graph.api.get<{ info: { count: number } }>('api/character', { status: 'dead' })).body;
+  46 |     const gql = await graph.query<{ characters: { info: { count: number } } }>(
+  47 |       '{ characters(filter: { status: "Dead" }) { info { count } } }',
+  48 |     );
+  49 | 
+  50 |     expect(gql.body.data!.characters.info.count).toBe(rest.info.count);
+  51 |   });
+  52 | 
+  53 |   test('episode totals match', async ({ graph }) => {
+  54 |     const rest = (await graph.api.get<{ info: { count: number } }>('api/episode')).body;
+  55 |     const gql = await graph.query<{ episodes: { info: { count: number } } }>(
+  56 |       '{ episodes { info { count } } }',
+  57 |     );
+  58 | 
+> 59 |     expect(gql.body.data!.episodes.info.count).toBe(rest.info.count);
+     |                           ^ TypeError: Cannot read properties of undefined (reading 'episodes')
+  60 |   });
+  61 | });
+  62 | 
+```

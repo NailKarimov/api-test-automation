@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/1792269473197422
+Query: {}
+Status: 200 (53 ms)
+Content-Type: application/json
+Body:
+{"id":1792269473197422,"category":{"id":1,"name":"Dogs"},"name":"Rīga ☃ \"quotes\" & <tags> 猫","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792269473197422"}],"status":"available"}
