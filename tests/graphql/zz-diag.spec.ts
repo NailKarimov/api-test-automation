@@ -1,4 +1,4 @@
-import { test, nestedQuery } from '../../src';
+import { test, expect, nestedQuery } from '../../src';
 test('diag', async ({ graph }) => {
   const qs: [string, string][] = [
     ['introspection', '{ __schema { queryType { name } types { name } } }'],
@@ -9,9 +9,11 @@ test('diag', async ({ graph }) => {
     ['episodes2', '{ episodes(page: 1) { info { count pages } } }'],
     ['syntax', '{ character(id: 1) { name '],
   ];
+  const out: string[] = [];
   for (const [n, q] of qs) {
     const r = await graph.query(q);
     const h = r.response.headers();
-    console.log(`::notice title=diag ${n}::${r.status} ${JSON.stringify({ server: h['server'], via: h['via'], cache: h['gcdn-cache'] ?? h['x-cache'] ?? h['cf-cache-status'], ct: h['content-type'] })} ${r.text.slice(0, 600).replace(/\n/g, ' ')}`);
+    out.push(`${n}: ${r.status} ${JSON.stringify({ server: h['server'], via: h['via'], cache: h['gcdn-cache'] ?? h['x-cache'] ?? h['cf-cache-status'], ct: h['content-type'] })} ${r.text.slice(0, 600).replace(/\n/g, ' ')}`);
   }
+  expect(out.join('\n')).toBe('');
 });
