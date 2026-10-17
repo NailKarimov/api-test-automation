@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en" data-default-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GraphQL на Rick and Morty API</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a query console up top (pick fields → see the query and the answer, next to REST),
+   then the request's path through four layers, error anatomy, findings, schema drift. */
+:root {
+  --bg: #eef1f5; --surface: #ffffff; --sunken: #e3e8ef; --ink: #121823; --muted: #586274; --line: #cfd6e1;
+  --accent: #c2185b; --accent-soft: #fbe3ee; --rest: #3b4b63; --rest-soft: #e4e9f0;
+  --ok: #1f7a4d; --ok-soft: #dcf1e5; --warn: #a15c00; --warn-soft: #fbecd2; --bad: #b42318; --bad-soft: #fbe2df;
+  --font-display: 'Familjen Grotesk', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d121a; --surface: #151c27; --sunken: #1b2431; --ink: #e7ecf3; --muted: #9aa6b8; --line: #2a3546;
+    --accent: #ff7eb3; --accent-soft: #3a1528; --rest: #a9b8cf; --rest-soft: #222c3a;
+    --ok: #5fd394; --ok-soft: #12321f; --warn: #f3b562; --warn-soft: #3a2a10; --bad: #ff8a7d; --bad-soft: #3d1714;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d121a; --surface: #151c27; --sunken: #1b2431; --ink: #e7ecf3; --muted: #9aa6b8; --line: #2a3546;
+  --accent: #ff7eb3; --accent-soft: #3a1528; --rest: #a9b8cf; --rest-soft: #222c3a;
+  --ok: #5fd394; --ok-soft: #12321f; --warn: #f3b562; --warn-soft: #3a2a10; --bad: #ff8a7d; --bad-soft: #3d1714;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--font-body); margin: 0; }
+body[data-lang="ru"] [lang="en"], body[data-lang="en"] [lang="ru"] { display: none !important; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(32px, 5vw, 50px); font-weight: 700; }
+h2 { font-size: clamp(23px, 3vw, 31px); font-weight: 700; }
+h3 { font-size: 18px; font-weight: 700; }
+p { margin: 0; max-width: 70ch; }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+header.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 20px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { font: 500 13px var(--font-mono); background: transparent; color: var(--muted); border: 0; padding: 6px 14px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.hero { display: grid; gap: 14px; padding-block: 8px 20px; }
+.hero .lead { font-size: 18px; color: var(--muted); }
+section.station { display: grid; gap: 16px; padding-block: 44px 0; }
+section.station > header { display: grid; gap: 8px; }
+pre { margin: 0; background: var(--sunken); border-radius: 10px; padding: 12px; font: 400 12.5px/1.55 var(--font-mono); overflow-x: auto; white-space: pre; }
+pre .k { color: var(--accent); } pre .c { color: var(--muted); } pre .r { color: var(--bad); } pre .g { color: var(--ok); }
+
+/* console */
+.console { display: grid; grid-template-columns: 210px minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 900px) { .console { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.fields { display: grid; gap: 4px; }
+.fields label { display: flex; gap: 8px; align-items: center; font: 500 13.5px var(--font-mono); padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+.fields label:hover { background: var(--sunken); }
+.fields input { accent-color: var(--accent); }
+.meter { display: grid; gap: 6px; }
+.bar { height: 12px; border-radius: 6px; background: var(--sunken); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 6px; transition: width .35s; }
+.bar.g i { background: var(--accent); } .bar.r i { background: var(--rest); }
+.meter .row { display: flex; justify-content: space-between; font-size: 13px; }
+.meter b { font-variant-numeric: tabular-nums; }
+
+/* layers */
+.layers { display: grid; gap: 8px; }
+.layer { display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; transition: border-color .3s, background .3s; }
+@media (max-width: 760px) { .layer { grid-template-columns: minmax(0, 1fr); } }
+.layer.hit { border-color: var(--accent); background: var(--accent-soft); }
+.layer.stop { border-color: var(--bad); background: var(--bad-soft); }
+.layer.pass { opacity: .75; }
+.layer h3 { font-size: 16px; }
+.layer .what { font-size: 14px; color: var(--muted); }
+.layer .ans { font: 400 12.5px var(--font-mono); overflow-wrap: anywhere; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs button { font: 500 14px var(--font-body); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* depth gauge */
+.depth { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.depth div { padding: 10px 8px; border-radius: 8px; text-align: center; font: 500 12.5px var(--font-mono); background: var(--ok-soft); color: var(--ok); }
+.depth div.no { background: var(--bad-soft); color: var(--bad); }
+.depth div b { display: block; font: 700 22px var(--font-display); }
+
+.find { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 860px) { .find { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card .tag { font: 600 11px var(--font-mono); padding: 2px 8px; border-radius: 999px; justify-self: start; }
+.tag.bad { background: var(--bad-soft); color: var(--bad); } .tag.warn { background: var(--warn-soft); color: var(--warn); } .tag.ok { background: var(--ok-soft); color: var(--ok); }
+.card pre { font-size: 11.5px; }
+.diffbox { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.diffbox div { background: var(--surface); padding: 12px 14px; display: grid; }
+.diffbox b { font: 700 28px var(--font-display); }
+.diffbox span { font-size: 13px; color: var(--muted); }
+.cmd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; background: var(--sunken); border-radius: 8px; padding: 6px 6px 6px 12px; }
+.cmd code { overflow-x: auto; white-space: nowrap; }
+.cmd button { font: 500 12px var(--font-body); border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+dl.terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; }
+@media (max-width: 760px) { dl.terms { grid-template-columns: minmax(0, 1fr); } }
+dl.terms div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+dl.terms dt { font: 700 15px var(--font-display); }
+dl.terms dd { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.compare { overflow-x: auto; }
+table.cmp { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px; background: var(--surface); }
+table.cmp th, table.cmp td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp thead th { background: var(--sunken); font-weight: 600; font-size: 13px; }
+footer { padding-top: 40px; color: var(--muted); font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body data-lang="en">
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">api-test-automation · tests/graphql</span>
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" id="lang-ru" data-l="ru" aria-pressed="true">RU</button>
+      <button type="button" id="lang-en" data-l="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 lang="ru">GraphQL: один адрес, клиент сам выбирает поля</h1>
+    <h1 lang="en">GraphQL: one endpoint, the client picks the fields</h1>
+    <p class="lead" lang="ru">В REST у каждого ресурса свой адрес, и сервер решает, что вернуть. В GraphQL есть один <code>/graphql</code>, клиент присылает запрос-документ и получает ровно те поля, которые попросил. Для тестировщика это меняет почти всё: коды ответа, ошибки, безопасность. Тесты гоняются против публичного Rick and Morty API — у него есть REST-двойник с теми же данными.</p>
+    <p class="lead" lang="en">In REST every resource has its own URL and the server decides what to return. GraphQL has one <code>/graphql</code>: the client sends a query document and gets exactly the fields it asked for. For a tester that changes almost everything: status codes, errors, security. The tests run against the public Rick and Morty API, which has a REST twin with the same data.</p>
+  </section>
+
+  <section class="station" style="padding-top:4px">
+    <header>
+      <span class="eyebrow" lang="ru">Попробуйте</span><span class="eyebrow" lang="en">Try it</span>
+      <h2 lang="ru">Отметьте поля — и сравните с REST</h2><h2 lang="en">Tick fields and compare with REST</h2>
+    </header>
+    <div class="console">
+      <div class="panel"><span class="eyebrow">Character(id: 1)</span><div class="fields" id="fields"></div></div>
+      <div class="panel"><span class="eyebrow" lang="ru">запрос и ответ GraphQL</span><span class="eyebrow" lang="en">GraphQL query and answer</span><pre id="q"></pre><pre id="a"></pre></div>
+      <div class="panel"><span class="eyebrow" lang="ru">REST: GET /api/character/1</span><span class="eyebrow" lang="en">REST: GET /api/character/1</span><pre id="rest" style="max-height:330px"></pre>
+        <div class="meter" id="meter"></div></div>
+    </div>
+    <p class="muted" lang="ru">REST всегда отдаёт персонажа целиком, включая 51 ссылку на эпизоды. GraphQL — только отмеченное. Тест <code>returns exactly the fields that were asked for</code> проверяет именно это: в ответе нет ни одного лишнего ключа.</p>
+    <p class="muted" lang="en">REST always returns the whole character, 51 episode links included. GraphQL returns only what is ticked. The test <code>returns exactly the fields that were asked for</code> checks exactly that: no extra key in the answer.</p>
+  </section>
+
+  <section class="station">
+    <header>
+      <span class="eyebrow" lang="ru">Главная находка про устройство</span><span class="eyebrow" lang="en">The main finding about the setup</span>
+      <h2 lang="ru">Запрос проходит четыре слоя, и отвечать может любой</h2><h2 lang="en">A request passes four layers, and any of them can answer</h2>
+      <p class="muted" lang="ru">По исходникам 2022 года ждали один Apollo Server. Тесты показали, что перед ним стоят Cloudflare и Stellate — GraphQL-кэш. Выберите запрос и посмотрите, какой слой его остановил.</p>
+      <p class="muted" lang="en">The 2022 source suggested a single Apollo Server. The tests showed Cloudflare and Stellate (a GraphQL cache) in front of it. Pick a request and see which layer stopped it.</p>
+    </header>
+    <div class="tabs" id="req-tabs"></div>
+    <div class="layers" id="layers"></div>
+  </section>
+
+  <section class="station">
+    <header>
+      <span class="eyebrow" lang="ru">Граничные значения</span><span class="eyebrow" lang="en">Boundary values</span>
+      <h2 lang="ru">Лимит глубины: 4 можно, 5 нельзя</h2><h2 lang="en">Depth limit: 4 is allowed, 5 is not</h2>
+      <p class="muted" lang="ru">Глубокий запрос <code>character → episode → characters → episode → …</code> размножает нагрузку на каждом уровне. Тест строит запрос нужной глубины и проверяет обе стороны границы.</p>
+      <p class="muted" lang="en">A deep query <code>character → episode → characters → episode → …</code> multiplies the load at every level. The test builds a query of a given depth and checks both sides of the boundary.</p>
+    </header>
+    <div class="depth" id="depth"></div>
+    <pre id="depthq"></pre>
+  </section>
+
+  <section class="station">
+    <header>
+      <span class="eyebrow" lang="ru">Находки</span><span class="eyebrow" lang="en">Findings</span>
+      <h2 lang="ru">Что нашли тесты (17.10.2026)</h2><h2 lang="en">What the tests found (17.10.2026)</h2>
+    </header>
+    <div class="find" id="find"></div>
+  </section>
+
+  <section class="station">
+    <header>
+      <span class="eyebrow" lang="ru">Дрейф схемы — как oasdiff, только для GraphQL</span><span class="eyebrow" lang="en">Schema drift: oasdiff for GraphQL</span>
+      <h2 lang="ru">GraphQL Inspector: живая схема против утверждённой</h2><h2 lang="en">GraphQL Inspector: live schema vs approved</h2>
+      <p class="muted" lang="ru">Тест получает схему через introspection и сравнивает её с <code>contracts/rickandmorty/schema.graphql</code> из исходников. Ломающих изменений нет. 11 безопасных — это служебные вещи, которые Apollo Server 2 добавляет сам: директива <code>@cacheControl</code> и скаляр <code>Upload</code>.</p>
+      <p class="muted" lang="en">The test fetches the schema through introspection and compares it with <code>contracts/rickandmorty/schema.graphql</code> from the source. No breaking changes. The 11 safe ones are what Apollo Server 2 adds by itself: the <code>@cacheControl</code> directive and the <code>Upload</code> scalar.</p>
+    </header>
+    <div class="diffbox"><div><b style="color:var(--bad)">0</b><span lang="ru">ломающих</span><span lang="en">breaking</span></div><div><b style="color:var(--warn)">0</b><span lang="ru">опасных</span><span lang="en">dangerous</span></div><div><b style="color:var(--ok)">11</b><span lang="ru">безопасных</span><span lang="en">non-breaking</span></div></div>
+  </section>
+
+  <section class="station">
+    <header>
+      <span class="eyebrow" lang="ru">Что меняется для тестировщика</span><span class="eyebrow" lang="en">What changes for a tester</span>
+      <h2 lang="ru">REST и GraphQL: шпаргалка</h2><h2 lang="en">REST vs GraphQL: a cheat sheet</h2>
+    </header>
+    <div class="compare"><table class="cmp" id="cheat"></table></div>
+  </section>
+
+  <section class="station">
+    <header><span class="eyebrow" lang="ru">Запуск</span><span class="eyebrow" lang="en">Run it</span><h2 lang="ru">Команды</h2><h2 lang="en">Commands</h2></header>
+    <div class="panel" id="cmds"></div>
+  </section>
+
+  <section class="station">
+    <header><span class="eyebrow" lang="ru">Словарь</span><span class="eyebrow" lang="en">Glossary</span><h2 lang="ru">Термины</h2><h2 lang="en">Terms</h2></header>
+    <dl class="terms" id="glossary"></dl>
+  </section>
+
+  <footer>
+    <a href="https://github.com/NailKarimov/api-test-automation/blob/main/docs/graphql.md">docs/graphql.md</a>
+    <a href="https://rickandmortyapi.com/documentation">rickandmortyapi.com</a>
+    <a href="https://the-guild.dev/graphql/inspector">GraphQL Inspector</a>
+    <span>34 tests · 17.10.2026</span>
+  </footer>
+</div>
+
+<script>
+const S = { lang: 'ru', req: 'ok', picked: new Set(['name', 'status']) };
+const L = (ru, en) => (S.lang === 'ru' ? ru : en);
+
+/* Rick Sanchez as the API describes him (character 1). */
+const RICK = {
+  id: '1', name: 'Rick Sanchez', status: 'Alive', species: 'Human', type: '', gender: 'Male',
+  origin: { name: 'Earth (C-137)' }, location: { name: 'Citadel of Ricks' },
+  image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg', created: '2017-11-04T18:48:46.250Z',
+};
+const FIELDS = ['id', 'name', 'status', 'species', 'type', 'gender', 'origin', 'location', 'image', 'created', 'episode'];
+const REST = {
+  id: 1, name: RICK.name, status: RICK.status, species: RICK.species, type: '', gender: RICK.gender,
+  origin: { name: 'Earth (C-137)', url: 'https://rickandmortyapi.com/api/location/1' },
+  location: { name: 'Citadel of Ricks', url: 'https://rickandmortyapi.com/api/location/3' },
+  image: RICK.image,
+  episode: Array.from({ length: 51 }, (_, i) => `https://rickandmortyapi.com/api/episode/${i + 1}`),
+  url: 'https://rickandmortyapi.com/api/character/1', created: RICK.created,
+};
+function renderConsole() {
+  const f = document.getElementById('fields');
+  f.innerHTML = FIELDS.map((k) => `<label for="f-${k}"><input type="checkbox" id="f-${k}" ${S.picked.has(k) ? 'checked' : ''}> ${k}${['origin', 'location', 'episode'].includes(k) ? ' { … }' : ''}</label>`).join('');
+  f.querySelectorAll('input').forEach((i) => i.addEventListener('change', () => { const k = i.id.slice(2); i.checked ? S.picked.add(k) : S.picked.delete(k); if (!S.picked.size) S.picked.add('name'); renderConsole(); }));
+  const sel = FIELDS.filter((k) => S.picked.has(k)).map((k) => k === 'origin' || k === 'location' ? `${k} { name }` : k === 'episode' ? 'episode { episode }' : k);
+  document.getElementById('q').innerHTML = `<span class="k">query</span> {\n  character(id: 1) {\n${sel.map((s) => '    ' + s).join('\n')}\n  }\n}`;
+  const ans = {};
+  FIELDS.filter((k) => S.picked.has(k)).forEach((k) => { ans[k] = k === 'episode' ? [{ episode: 'S01E01' }, { episode: 'S01E02' }, '… 49 more'] : RICK[k]; });
+  const gqlText = JSON.stringify({ data: { character: ans } }, null, 2);
+  document.getElementById('a').textContent = gqlText;
+  const restText = JSON.stringify(REST, null, 2);
+  document.getElementById('rest').textContent = restText.replace(/("episode": \[\n)([\s\S]*?)(\n  \])/, (m, a, b, c) => a + b.split('\n').slice(0, 3).join('\n') + `\n    … ${L('ещё 48 ссылок', '48 more links')}` + c);
+  const fullAns = {}; FIELDS.filter((k) => S.picked.has(k)).forEach((k) => { fullAns[k] = k === 'episode' ? Array.from({ length: 51 }, (_, i) => ({ episode: `S0${i < 11 ? 1 : 2}E${String(i % 11 + 1).padStart(2, '0')}` })) : RICK[k]; });
+  const g = JSON.stringify({ data: { character: fullAns } }).length, r = JSON.stringify(REST).length;
+  document.getElementById('meter').innerHTML = `<span class="eyebrow">${L('размер ответа (байт, без пробелов)', 'response size (bytes, minified)')}</span>
+    <div class="row"><span>GraphQL</span><b>${g}</b></div><div class="bar g"><i style="width:${Math.max(3, (g / r) * 100)}%"></i></div>
+    <div class="row"><span>REST</span><b>${r}</b></div><div class="bar r"><i style="width:100%"></i></div>`;
+}
+
+/* Which layer answered: from the CI run's recorded responses. */
+const LAYERS = [
+  { id: 'cf', name: 'Cloudflare', what: ['лимит частоты запросов', 'rate limiting'] },
+  { id: 'st', name: 'Stellate', what: ['GraphQL-кэш на краю сети: разбирает запрос, ограничивает, кэширует', 'GraphQL edge cache: parses, limits, caches'] },
+  { id: 'ap', name: 'Apollo Server', what: ['проверка по схеме и выполнение', 'schema validation and execution'] },
+  { id: 'rs', name: 'REST API → MongoDB', what: ['настоящие данные: GraphQL — фасад над REST', 'the real data: GraphQL is a facade over REST'] },
+];
+const REQS = {
+  ok: { t: ['Обычный запрос', 'Normal query'], stop: null, q: '{ character(id: 1) { name } }',
+    ans: { rs: '{"data":{"character":{"name":"Rick Sanchez"}}}' }, s: 200 },
+  rate: { t: ['Слишком часто', 'Too often'], stop: 'cf', q: ['… десятки запросов подряд', '… dozens of requests in a row'],
+    ans: { cf: '429 · Error 1015: You are being rate limited · retry_after 30' }, s: 429 },
+  batch: { t: ['Пакет из 2 запросов', 'A batch of 2'], stop: 'st', q: '[{ "query": "…" }, { "query": "…" }]',
+    ans: { st: '400 · "Batch queries and APQ request are not currently supported" · stellate INVALID_QUERY' }, s: 400 },
+  syntax: { t: ['Синтаксическая ошибка', 'Syntax error'], stop: 'st', q: '{ character(id: 1) { name ',
+    ans: { st: '400 · "The request did not contain a valid GraphQL request." · no line/column (GQL-5)' }, s: 400 },
+  field: { t: ['Неизвестное поле', 'Unknown field'], stop: 'ap', q: '{ character(id: 1) { name salary } }',
+    ans: { ap: '400 · Cannot query field "salary" on type "Character". · GRAPHQL_VALIDATION_FAILED' }, s: 400 },
+  depth: { t: ['Глубина 5', 'Depth 5'], stop: 'st', q: 'character { episode { characters { episode { characters { name } } } } }',
+    ans: { st: '"Query depth limit exceeded." · not the graphql-depth-limit wording, so most likely the edge layer · no data' }, s: 400 },
+  missing: { t: ['Несуществующий id', 'Missing id'], stop: null, q: '{ character(id: 999999) { name } }',
+    ans: { rs: '200 · {"data":{"character":null}} · the resolver turns REST\'s 404 into null (graphql/resolvers.js)' }, s: 200 },
+};
+function renderLayers() {
+  const tabs = document.getElementById('req-tabs');
+  tabs.innerHTML = Object.entries(REQS).map(([k, r]) => `<button type="button" id="rq-${k}" aria-selected="${k === S.req}">${L(...r.t)}</button>`).join('');
+  tabs.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { S.req = b.id.slice(3); renderLayers(); }));
+  const r = REQS[S.req];
+  const stopAt = r.stop ? LAYERS.findIndex((l) => l.id === r.stop) : LAYERS.length - 1;
+  const q = Array.isArray(r.q) ? L(...r.q) : r.q;
+  document.getElementById('layers').innerHTML = `<pre>${q.replace(/</g, '&lt;')}</pre>` + LAYERS.map((l, i) => {
+    const cls = i < stopAt ? 'pass' : i === stopAt ? (r.stop ? 'stop' : 'hit') : '';
+    const ans = i < stopAt ? L('пропускает дальше', 'passes it on') : i === stopAt ? (r.ans[l.id] ?? '') : L('не доходит', 'never reached');
+    return `<div class="layer ${cls}"><h3>${i + 1}. ${l.name}</h3><span class="what">${L(...l.what)}</span><span class="ans">${ans}</span></div>`;
+  }).join('');
+}
+
+function nested(d) { const chain = ['episode', 'characters']; let inner = 'name'; for (let x = d - 1; x >= 1; x--) inner = `${chain[(x - 1) % 2]} { ${inner} }`; return `character(id: 183) { ${inner} }`; }
+function renderDepth() {
+  document.getElementById('depth').innerHTML = [0, 1, 2, 3, 4, 5].map((d) => `<div class="${d > 4 ? 'no' : ''}"><b>${d}</b>${d > 4 ? L('отклонён', 'rejected') : d === 4 ? L('граница ✓', 'boundary ✓') : L('можно', 'allowed')}</div>`).join('');
+  document.getElementById('depthq').innerHTML = `<span class="c"># depth 4 → ${L('выполняется', 'runs')}</span>\n{ ${nested(4)} }\n\n<span class="c"># depth 5 → </span><span class="r">"Query depth limit exceeded."</span>\n{ ${nested(5)} }`;
+}
+
+const FIND = [
+  ['bad', 'GQL-2', ['Нет лимита стоимости', 'No cost limit'], ['200 алиасов одного поля в одном запросе выполняются с ответом 200. Лимит есть только на глубину, а размах запроса не ограничен (OWASP API4).', '200 aliases of one field in one query run with 200. Only depth is limited; breadth is not (OWASP API4).'], '{ a0: character(id: 1) { name }\n  a1: character(id: 1) { name }\n  … a199 }  → 200 OK'],
+  ['warn', 'GQL-3', ['Подсказки имён полей', 'Field name suggestions'], ['Ошибка валидации подсказывает настоящее имя поля. Даже без introspection по таким подсказкам можно восстановить схему.', 'A validation error suggests the real field name. Even with introspection off, a schema can be mapped from such hints.'], '{ character(id: 1) { nam } }\n→ Did you mean "name"?'],
+  ['warn', 'GQL-5', ['Синтаксическая ошибка без места', 'Syntax error without a location'], ['На неразборчивый запрос отвечает Stellate общим сообщением без строки и столбца. Отладка клиента сложнее, чем с ответом самого graphql-js.', 'Stellate answers an unparsable document with a generic message, no line or column. Harder for clients to debug than graphql-js itself.'], '400 "The request did not contain\na valid GraphQL request."'],
+  ['ok', 'GQL-1', ['Introspection включён', 'Introspection is on'], ['Схему может скачать любой. Для публичного демо так и задумано; для закрытого API это была бы находка.', 'Anyone can download the schema. Intended for a public demo; a finding for a private API.'], '{ __schema { types { name } } }\n→ data.__schema'],
+  ['ok', ['защита', 'protection'], ['Пакеты запрещены, глубина ограничена', 'No batching, depth limited'], ['Stellate отклоняет пакеты запросов, глубина больше 4 тоже отклоняется. Обе защиты подтверждены тестами.', 'Stellate rejects batches, and depth above 4 is rejected too. Both protections confirmed by tests.'], '[{…},{…}] → 400\ndepth 5 → rejected'],
+  ['ok', ['оракул', 'oracle'], ['GraphQL и REST совпадают', 'GraphQL and REST agree'], ['Персонажи 1, 2, 183 поле в поле, число мёртвых персонажей и эпизодов одинаковы в обоих API.', 'Characters 1, 2, 183 field by field, the dead count and the episode count match in both APIs.'], 'character(id: 1).name ==\nGET /api/character/1 .name'],
+];
+function renderFind() {
+  const lab = { bad: L('дефект', 'defect'), warn: L('замечание', 'observation'), ok: L('в порядке', 'fine') };
+  document.getElementById('find').innerHTML = FIND.map((f) => `<div class="card"><span class="tag ${f[0]}">${Array.isArray(f[1]) ? L(...f[1]) : f[1]} · ${lab[f[0]]}</span><h3>${L(...f[2])}</h3><p style="font-size:14px">${L(...f[3])}</p><pre>${f[4]}</pre></div>`).join('');
+}
+const CHEAT = [
+  [['Адрес', 'URL'], ['свой для каждого ресурса', 'one per resource'], ['один /graphql', 'a single /graphql']],
+  [['Метод', 'Method'], ['GET/POST/PUT/DELETE по смыслу', 'GET/POST/PUT/DELETE by meaning'], ['почти всегда POST (GET для кэша)', 'almost always POST (GET for caching)']],
+  [['«Не найдено»', '"Not found"'], ['404', '404'], ['200 и data: null', '200 with data: null']],
+  [['Ошибка в запросе', 'A bad request'], ['400 с телом ошибки', '400 with an error body'], ['массив errors; статус 400 или 200 — зависит от сервера', 'an errors array; status 400 or 200 depending on the server']],
+  [['Что проверять в ответе', 'What to assert'], ['статус + тело', 'status + body'], ['всегда data и errors, статус вторичен', 'always data and errors; status is secondary']],
+  [['Контракт', 'Contract'], ['OpenAPI → oasdiff', 'OpenAPI → oasdiff'], ['SDL-схема → GraphQL Inspector', 'SDL schema → GraphQL Inspector']],
+  [['Нагрузка от одного запроса', 'Load per request'], ['предсказуема', 'predictable'], ['зависит от глубины и алиасов → лимиты', 'depends on depth and aliases → limits']],
+];
+function renderCheat() {
+  document.getElementById('cheat').innerHTML = `<thead><tr><th></th><th>REST</th><th>GraphQL</th></tr></thead><tbody>` + CHEAT.map((r) => `<tr><td class="muted">${L(...r[0])}</td><td>${L(...r[1])}</td><td>${L(...r[2])}</td></tr>`).join('') + '</tbody>';
+}
+const CMDS = [
+  ['npm run test:graphql', '34 теста против rickandmortyapi.com', '34 tests against rickandmortyapi.com'],
+  ['GRAPHQL_MIN_INTERVAL_MS=1500 npm run test:graphql', 'ещё вежливее, если ловите 429', 'even politer if you hit 429'],
+];
+function renderCmds() {
+  document.getElementById('cmds').innerHTML = CMDS.map((c, i) => `<div style="display:grid;gap:4px"><span class="eyebrow">${L(c[1], c[2])}</span><div class="cmd"><code>${c[0]}</code><button type="button" id="cp-${i}" data-c="${c[0]}">${L('Копировать', 'Copy')}</button></div></div>`).join('') +
+    `<p class="muted" style="font-size:14px">${L('Сервис за лимитом Cloudflare, поэтому клиент делает паузу между запросами и один раз ждёт retry_after после 429, а не долбит сервис.', 'The service is behind a Cloudflare limit, so the client spaces requests and waits retry_after once after a 429 instead of hammering it.')}</p>`;
+  document.querySelectorAll('.cmd button').forEach((b) => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.c); b.textContent = L('Скопировано', 'Copied'); }
+    catch (e) { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  }));
+}
+const TERMS = [
+  ['Query / Mutation', 'Чтение данных / изменение данных. У Rick and Morty API есть только query.', 'Reading data / changing data. The Rick and Morty API has queries only.'],
+  ['Schema / SDL', 'Описание всех типов и полей API на языке схем GraphQL. Контракт GraphQL.', 'The description of every type and field in GraphQL\'s schema language. The GraphQL contract.'],
+  ['Variables', 'Параметры запроса отдельно от текста: $id вместо значения в строке.', 'Query parameters sent apart from the text: $id instead of a literal.'],
+  ['Alias', 'Своё имя для поля в ответе; позволяет запросить одно поле несколько раз.', 'A custom name for a field in the answer; lets you ask for one field many times.'],
+  ['Fragment', 'Именованный набор полей, который можно вставить в разные места запроса.', 'A named set of fields reusable in several places of a query.'],
+  ['Introspection', 'Запрос __schema, который возвращает саму схему API.', 'The __schema query that returns the API\'s own schema.'],
+  ['Depth / cost limit', 'Ограничения на вложенность и «стоимость» запроса, защита от перегрузки одним запросом.', 'Limits on nesting and on a query\'s "cost", protecting against overload by one request.'],
+  ['Batching / APQ', 'Несколько операций в одном HTTP-запросе / запрос по хэшу заранее известного документа.', 'Several operations in one HTTP request / sending a hash of a known document instead of its text.'],
+  ['Over-fetching', 'Получение лишних данных, которые клиенту не нужны. Типичная проблема REST, которую решает GraphQL.', 'Receiving data the client does not need. A typical REST problem GraphQL solves.'],
+  ['Edge cache (Stellate)', 'Кэш на краю сети, который понимает GraphQL и отвечает до основного сервера.', 'A cache at the network edge that understands GraphQL and answers before the origin server.'],
+];
+function renderTerms() { document.getElementById('glossary').innerHTML = TERMS.map((x) => `<div><dt>${x[0]}</dt><dd>${L(x[1], x[2])}</dd></div>`).join(''); }
+
+function renderAll() { renderConsole(); renderLayers(); renderDepth(); renderFind(); renderCheat(); renderCmds(); renderTerms(); }
+function setLang(l) {
+  S.lang = l; document.body.dataset.lang = l; document.documentElement.lang = l;
+  document.querySelectorAll('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.l === l)));
+  try { localStorage.setItem('gql-lang', l); } catch (e) {}
+  renderAll();
+}
+document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.l)));
+let start = 'ru';
+try { start = localStorage.getItem('gql-lang') || document.documentElement.dataset.defaultLang || 'ru'; } catch (e) {}
+setLang(start);
+</script>
+
+</body>
+</html>

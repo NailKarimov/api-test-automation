@@ -1,6 +1,0 @@
-DELETE https://petstore3.swagger.io/api/v3/pet/abc
-Query: {}
-Status: 400 (39 ms)
-Content-Type: application/json
-Body:
-{"code":400,"message":"Input error: couldn't convert `abc` to type `class java.lang.Long`"}
