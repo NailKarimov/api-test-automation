@@ -9,14 +9,22 @@ import {
 } from '../../src';
 
 test.describe('Pet search', () => {
+  // The public sandbox is shared: at any moment there may be no pets with a given status at all.
+  // Each test creates its own pet first, so the result never depends on other people's data.
   for (const status of PET_STATUSES) {
     test(`findByStatus=${status} returns only pets with that status`, async ({ petstore }) => {
-      const res = await petstore.findByStatus(status);
+      const pet = newPet({ status });
+      try {
+        await petstore.addPet(pet);
+        const res = await petstore.findByStatus(status);
 
-      expect(res.status).toBe(200);
-      const pets = expectSchema(petListSchema, res.body);
-      expect(pets.length).toBeGreaterThan(0);
-      expect(pets.every((p) => p.status === status)).toBe(true);
+        expect(res.status).toBe(200);
+        const pets = expectSchema(petListSchema, res.body);
+        expect(pets.map((p) => p.id)).toContain(pet.id);
+        expect(pets.every((p) => p.status === status)).toBe(true);
+      } finally {
+        await petstore.deletePet(pet.id);
+      }
     });
   }
 
