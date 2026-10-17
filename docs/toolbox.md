@@ -7,32 +7,33 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 
 ## Overview
 
-| Tool                             | Stage                | Kind                     | api-test-automation | 3sMoneyTests | qa-project-template |
-| -------------------------------- | -------------------- | ------------------------ | ------------------- | ------------ | ------------------- |
-| TypeScript                       | Write tests          | language                 | ✓                   | ✓            | ✓                   |
-| Node.js 22 + npm                 | Write tests          | runtime                  | ✓                   | ✓            | ✓                   |
-| Playwright Test                  | Write tests          | framework                | ✓                   | ✓            | ✓                   |
-| zod                              | Write tests          | library                  | ✓                   |              |                     |
-| Faker                            | Write tests          | library                  |                     |              | ✓                   |
-| dotenv + GitHub Secrets          | Write tests          | config                   | ✓                   |              | ✓                   |
-| ESLint                           | Keep code clean      | linter                   | ✓                   |              | ✓                   |
-| Prettier                         | Keep code clean      | formatter                | ✓                   |              | ✓                   |
-| Husky + lint-staged              | Keep code clean      | git hooks                | ✓                   |              | ✓                   |
-| axe-core                         | Special test types   | accessibility            |                     | ✓            |                     |
-| Web Vitals (PerformanceObserver) | Special test types   | front-end performance    |                     | ✓            |                     |
-| k6                               | Special test types   | load testing             | ✓                   |              |                     |
-| Schemathesis                     | Special test types   | property-based / fuzzing | ✓                   |              |                     |
-| oasdiff                          | Special test types   | contract drift           | ✓                   |              |                     |
-| amqplib (RabbitMQ)               | Special test types   | event-driven             | ✓                   |              |                     |
-| Docker + Docker Compose          | Run the system       | containers               | ✓                   |              |                     |
-| Sock Shop                        | Run the system       | system under test        | ✓                   |              |                     |
-| xvfb                             | Run the system       | virtual display          |                     | ✓            |                     |
-| Allure Report                    | Read the results     | reporting                | ✓                   | ✓            | ✓                   |
-| Playwright HTML report + trace   | Read the results     | debugging                | ✓                   | ✓            | ✓                   |
-| GitHub Actions                   | Automate and publish | CI/CD                    | ✓                   | ✓            | ✓                   |
-| GitHub Pages                     | Automate and publish | hosting                  | ✓                   | ✓            | ✓                   |
-| Git + GitHub                     | Automate and publish | version control          | ✓                   | ✓            | ✓                   |
-| VS Code                          | Automate and publish | editor                   | ✓                   | ✓            | ✓                   |
+| Tool                             | Stage                | Kind                      | api-test-automation | 3sMoneyTests | qa-project-template |
+| -------------------------------- | -------------------- | ------------------------- | ------------------- | ------------ | ------------------- |
+| TypeScript                       | Write tests          | language                  | ✓                   | ✓            | ✓                   |
+| Node.js 22 + npm                 | Write tests          | runtime                   | ✓                   | ✓            | ✓                   |
+| Playwright Test                  | Write tests          | framework                 | ✓                   | ✓            | ✓                   |
+| zod                              | Write tests          | library                   | ✓                   |              |                     |
+| Faker                            | Write tests          | library                   |                     |              | ✓                   |
+| dotenv + GitHub Secrets          | Write tests          | config                    | ✓                   |              | ✓                   |
+| ESLint                           | Keep code clean      | linter                    | ✓                   |              | ✓                   |
+| Prettier                         | Keep code clean      | formatter                 | ✓                   |              | ✓                   |
+| Husky + lint-staged              | Keep code clean      | git hooks                 | ✓                   |              | ✓                   |
+| axe-core                         | Special test types   | accessibility             |                     | ✓            |                     |
+| Web Vitals (PerformanceObserver) | Special test types   | front-end performance     |                     | ✓            |                     |
+| k6                               | Special test types   | load testing              | ✓                   |              |                     |
+| Schemathesis                     | Special test types   | property-based / fuzzing  | ✓                   |              |                     |
+| oasdiff                          | Special test types   | contract drift            | ✓                   |              |                     |
+| Pact                             | Special test types   | consumer-driven contracts | ✓                   |              |                     |
+| amqplib (RabbitMQ)               | Special test types   | event-driven              | ✓                   |              |                     |
+| Docker + Docker Compose          | Run the system       | containers                | ✓                   |              |                     |
+| Sock Shop                        | Run the system       | system under test         | ✓                   |              |                     |
+| xvfb                             | Run the system       | virtual display           |                     | ✓            |                     |
+| Allure Report                    | Read the results     | reporting                 | ✓                   | ✓            | ✓                   |
+| Playwright HTML report + trace   | Read the results     | debugging                 | ✓                   | ✓            | ✓                   |
+| GitHub Actions                   | Automate and publish | CI/CD                     | ✓                   | ✓            | ✓                   |
+| GitHub Pages                     | Automate and publish | hosting                   | ✓                   | ✓            | ✓                   |
+| Git + GitHub                     | Automate and publish | version control           | ✓                   | ✓            | ✓                   |
+| VS Code                          | Automate and publish | editor                    | ✓                   | ✓            | ✓                   |
 
 ## Write tests
 
@@ -193,6 +194,17 @@ Compares two versions of an OpenAPI spec and sorts every difference: error break
 - **Repositories:** api-test-automation
 - **Alternatives:** openapi-diff, Optic, Bump.sh, Spectral (linting)
 - **Interview question:** Which API changes are backward incompatible?
+
+### Pact
+
+The client's tests record which requests it sends and which fields it reads. The resulting pact file is replayed against the real provider.
+
+- **Why here:** Pet Adoption Web → Petstore: 5 interactions, provider verification 5/5 against the container. A self-test proves an impossible contract is rejected.
+- **Where:** `src/consumers/, tests/contract-*, docs/pact.md`
+- **Command:** `npm run test:contract`
+- **Repositories:** api-test-automation
+- **Alternatives:** Spring Cloud Contract, Specmatic, PactFlow (broker)
+- **Interview question:** How is a contract test different from an integration test?
 
 ### amqplib (RabbitMQ)
 
