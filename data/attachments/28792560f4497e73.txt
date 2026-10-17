@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (137 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":16.1011,"lat":38.6753},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04n"}],"base":"stations","main":{"temp":285.1,"feels_like":284.31,"temp_min":285.1,"temp_max":285.1,"pressure":1017,"humidity":75,"sea_level":1017,"grnd_level":1010},"visibility":10000,"wind":{"speed":3.02,"deg":101,"gust":5.44},"clouds":{"all":52},"dt":1792268563,"sys":{"type":1,"id":6701,"country":"IT","sunrise":1792213577,"sunset":1792253721},"timezone":7200,"id":2522776,"name":"Vibo Valentia","cod":200}

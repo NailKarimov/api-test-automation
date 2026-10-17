@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
-Query: {"appid":"***"}
-Status: 200 (66 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"coord":{"lon":14.2325,"lat":41.5878},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":286.05,"feels_like":285.51,"temp_min":286.05,"temp_max":286.05,"pressure":1017,"humidity":81,"sea_level":1017,"grnd_level":929},"visibility":10000,"wind":{"speed":0.4,"deg":327,"gust":1.27},"clouds":{"all":4},"dt":1792267888,"sys":{"type":2,"id":2006941,"country":"IT","sunrise":1792214210,"sunset":1792253986},"timezone":7200,"id":3175445,"name":"Isernia","cod":200}

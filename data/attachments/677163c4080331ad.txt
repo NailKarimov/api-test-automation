@@ -1,6 +1,0 @@
-POST https://petstore3.swagger.io/api/v3/pet/1792268370661156?status=sold
-Query: {"status":"sold"}
-Status: 400 (69 ms)
-Content-Type: application/json
-Body:
-No Name provided. Try again?
