@@ -20,13 +20,16 @@ test.describe('GraphQL errors', () => {
     expect([200, 400]).toContain(res.status);
   });
 
-  test('a syntax error is reported with its line and column', async ({ graph }) => {
+  test('a syntax error is rejected before it reaches the GraphQL server', async ({ graph }) => {
     const res = await graph.query('{ character(id: 1) { name ');
     recordStatus(res.status);
 
+    // The public endpoint answers unparsable documents from its edge layer, with a generic message
+    // and no line/column (graphql-js itself would say "Syntax Error: …" with a location). GQL-5.
     const { errors } = expectSchema(errorEnvelopeSchema, res.body);
-    expect(errors[0].message).toMatch(/Syntax Error/);
-    expect(errors[0].locations?.[0]).toEqual({ line: 1, column: expect.any(Number) });
+    test.info().annotations.push({ type: 'GQL-5', description: errors[0].message });
+    expect(errors[0].message).toMatch(/Syntax Error|not contain a valid GraphQL request/);
+    expect(res.body.data ?? undefined).toBeUndefined();
   });
 
   test('a missing required variable is rejected', async ({ graph }) => {

@@ -8,11 +8,11 @@ test.describe('GraphQL security', () => {
   test('query depth is limited: depth 4 runs, depth 5 is rejected before execution (boundary)', async ({
     graph,
   }) => {
-    // Character 1 → its episodes → their characters → their episodes → name: depth 4.
-    const allowed = await graph.query(nestedQuery(4, 1));
+    // Character 183 (one episode) → episode → its characters → their episodes → name: depth 4.
+    const allowed = await graph.query(nestedQuery(4, 183));
     expect(allowed.body.errors, 'depth 4 must run').toBeUndefined();
 
-    const rejected = await graph.query(nestedQuery(5, 1));
+    const rejected = await graph.query(nestedQuery(5, 183));
     const { errors } = expectSchema(errorEnvelopeSchema, rejected.body);
     expect(errors[0].message).toMatch(/exceeds maximum operation depth of 4/);
     expect(rejected.body.data).toBeUndefined();

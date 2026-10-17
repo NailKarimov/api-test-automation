@@ -19,7 +19,7 @@ type RestCharacter = {
 test.describe('GraphQL ↔ REST consistency', () => {
   for (const id of [1, 2, 183]) {
     test(`character ${id}: GraphQL and REST agree field by field`, async ({ graph }) => {
-      const rest = (await graph.api.get<RestCharacter>(`api/character/${id}`)).body;
+      const rest = (await graph.rest<RestCharacter>(`api/character/${id}`)).body;
       const gql = (
         await graph.query<{ character: Record<string, unknown> & { episode: { id: string }[] } }>(
           `{ character(id: ${id}) { id name status species type gender image created episode { id } } }`,
@@ -42,7 +42,7 @@ test.describe('GraphQL ↔ REST consistency', () => {
   }
 
   test('the number of dead characters is the same in both APIs', async ({ graph }) => {
-    const rest = (await graph.api.get<{ info: { count: number } }>('api/character', { status: 'dead' })).body;
+    const rest = (await graph.rest<{ info: { count: number } }>('api/character', { status: 'dead' })).body;
     const gql = await graph.query<{ characters: { info: { count: number } } }>(
       '{ characters(filter: { status: "Dead" }) { info { count } } }',
     );
@@ -51,7 +51,7 @@ test.describe('GraphQL ↔ REST consistency', () => {
   });
 
   test('episode totals match', async ({ graph }) => {
-    const rest = (await graph.api.get<{ info: { count: number } }>('api/episode')).body;
+    const rest = (await graph.rest<{ info: { count: number } }>('api/episode')).body;
     const gql = await graph.query<{ episodes: { info: { count: number } } }>(
       '{ episodes { info { count } } }',
     );

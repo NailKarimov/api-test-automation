@@ -1,4 +1,24 @@
-import type { ApiClient, ApiResult } from '../api/ApiClient';
+import type { ApiClient, ApiResult, Query } from '../api/ApiClient';
+
+/**
+ * rickandmortyapi.com sits behind Cloudflare rate limiting (HTTP 429, error 1015, retry_after 30 s).
+ * A public demo deserves polite clients: requests from one worker are spaced out, and a 429 is waited
+ * out once (using retry_after) instead of hammering the service or failing the test.
+ */
+const MIN_INTERVAL_MS = Number(process.env.GRAPHQL_MIN_INTERVAL_MS ?? 700);
+let nextSlot = 0;
+async function politely<T>(send: () => Promise<ApiResult<T>>): Promise<ApiResult<T>> {
+  for (let attempt = 0; ; attempt++) {
+    const wait = nextSlot - Date.now();
+    nextSlot = Math.max(Date.now(), nextSlot) + MIN_INTERVAL_MS;
+    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+    const res = await send();
+    if (res.status !== 429 || attempt >= 2) return res;
+    const json = res.json as { retry_after?: number } | undefined;
+    const seconds = Math.min(Number(res.response.headers()['retry-after'] ?? json?.retry_after ?? 30), 35);
+    await new Promise((r) => setTimeout(r, seconds * 1000));
+  }
+}
 
 export type GraphQLError = {
   message: string;
@@ -26,7 +46,9 @@ export class GraphQLClient {
     variables?: Record<string, unknown>,
     operationName?: string,
   ): Promise<ApiResult<GraphQLResponse<T>>> {
-    return this.api.post<GraphQLResponse<T>>(this.path, { body: { query, variables, operationName } });
+    return politely(() =>
+      this.api.post<GraphQLResponse<T>>(this.path, { body: { query, variables, operationName } }),
+    );
   }
 
   /** GET ?query=…&variables=… (cacheable by CDNs; only queries, never mutations). */
@@ -34,20 +56,27 @@ export class GraphQLClient {
     query: string,
     variables?: Record<string, unknown>,
   ): Promise<ApiResult<GraphQLResponse<T>>> {
-    return this.api.get<GraphQLResponse<T>>(this.path, {
-      query,
-      variables: variables ? JSON.stringify(variables) : undefined,
-    });
+    return politely(() =>
+      this.api.get<GraphQLResponse<T>>(this.path, {
+        query,
+        variables: variables ? JSON.stringify(variables) : undefined,
+      }),
+    );
   }
 
   /** Several operations in one HTTP request (Apollo-style batching): the body is an array. */
   batch(ops: Operation[]): Promise<ApiResult<GraphQLResponse<Record<string, unknown>>[]>> {
-    return this.api.post(this.path, { body: ops });
+    return politely(() => this.api.post(this.path, { body: ops }));
   }
 
   /** Raw body, for malformed requests. */
   raw(data: string, contentType = 'application/json'): Promise<ApiResult<GraphQLResponse<unknown>>> {
-    return this.api.post(this.path, { raw: { data, contentType } });
+    return politely(() => this.api.post(this.path, { raw: { data, contentType } }));
+  }
+
+  /** The REST twin of the same service (/api/...), with the same politeness. */
+  rest<T = unknown>(path: string, query: Query = {}): Promise<ApiResult<T>> {
+    return politely(() => this.api.get<T>(path, query));
   }
 }
 
