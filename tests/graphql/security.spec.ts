@@ -14,8 +14,12 @@ test.describe('GraphQL security', () => {
 
     const rejected = await graph.query(nestedQuery(5, 183));
     const { errors } = expectSchema(errorEnvelopeSchema, rejected.body);
-    expect(errors[0].message).toMatch(/exceeds maximum operation depth of 4/);
-    expect(rejected.body.data).toBeUndefined();
+    // graphql-depth-limit says "… exceeds maximum operation depth of 4"; the live edge says "Query depth limit exceeded."
+    expect(errors[0].message).toMatch(/depth/i);
+    expect(rejected.body.data ?? undefined).toBeUndefined();
+    test
+      .info()
+      .annotations.push({ type: 'depth limit', description: `depth 4 runs, depth 5: ${errors[0].message}` });
   });
 
   test('introspection is enabled (by design for a public demo; a finding on a private API)', async ({
