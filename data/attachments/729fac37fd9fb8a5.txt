@@ -1,0 +1,15 @@
+GET http://localhost:8085/orders/search/customerId?custId=6ad3d857ee11cb0001476a22
+Query: {"custId":"6ad3d857ee11cb0001476a22"}
+Status: 200 (20 ms)
+Content-Type: application/json;charset=UTF-8
+Body:
+{
+  "_embedded" : {
+    "customerOrders" : [ ]
+  },
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8085/orders/search/customerId?custId=6ad3d857ee11cb0001476a22"
+    }
+  }
+}
