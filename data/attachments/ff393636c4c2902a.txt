@@ -1,0 +1,6 @@
+GET http://localhost:8090/api/v3/pet/findByStatus?status=sold
+Query: {"status":"sold"}
+Status: 200 (2 ms)
+Content-Type: application/json
+Body:
+[{"id":5,"category":{"id":1,"name":"Dogs"},"name":"Dog 2","photoUrls":["url1","url2"],"tags":[{"id":1,"name":"tag2"},{"id":2,"name":"tag3"}],"status":"sold"},{"id":1792349603063667,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1792349603063667","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792349603063667"}],"status":"sold"}]
