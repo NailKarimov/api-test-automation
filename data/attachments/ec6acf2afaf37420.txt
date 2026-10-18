@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?lat=56.95&appid=***
-Query: {"lat":"56.95","appid":"***"}
-Status: 400 (84 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"cod":"400","message":"Nothing to geocode"}

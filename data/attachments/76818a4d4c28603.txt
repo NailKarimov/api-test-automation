@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (155 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":9.7661,"lat":45.6853},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"stations","main":{"temp":288.5,"feels_like":288.39,"temp_min":287.94,"temp_max":290.28,"pressure":1022,"humidity":88,"sea_level":1022,"grnd_level":981},"visibility":10000,"wind":{"speed":1.54,"deg":40},"clouds":{"all":99},"dt":1792349796,"sys":{"type":1,"id":6735,"country":"IT","sunrise":1792302052,"sunset":1792341063},"timezone":7200,"id":3183355,"name":"Albano Sant'Alessandro","cod":200}
