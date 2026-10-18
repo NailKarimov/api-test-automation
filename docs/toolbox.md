@@ -32,6 +32,7 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | Testcontainers                   | Run the system       | throw-away dependencies   |                     |                      |                       | ✓                  |              |                     |
 | PostgreSQL + pg                  | Run the system       | database                  |                     |                      |                       | ✓                  |              |                     |
 | Ledger API (Fastify)             | Run the system       | own system under test     |                     |                      |                       | ✓                  |              |                     |
+| OAuth 2.0 + JWT (jose)           | Special test types   | authorization testing     |                     |                      |                       | ✓                  |              |                     |
 | xvfb                             | Run the system       | virtual display           |                     |                      |                       |                    | ✓            |                     |
 | Allure Report                    | Read the results     | reporting                 | ✓                   | ✓                    | ✓                     | ✓                  | ✓            | ✓                   |
 | Playwright HTML report + trace   | Read the results     | debugging                 | ✓                   | ✓                    | ✓                     | ✓                  | ✓            | ✓                   |
@@ -244,6 +245,17 @@ A client for the RabbitMQ message broker. Tests read the shipping-task queue dir
 - **Alternatives:** Kafka clients, Testcontainers modules
 - **Interview question:** How do you test asynchronous behaviour without sleep?
 
+### OAuth 2.0 + JWT (jose)
+
+OAuth 2.0 is the protocol for granting access with a token; a JWT is a signed token the API verifies on its own. The jose library signs and verifies tokens and reads the public keys (JWKS).
+
+- **Why here:** Our own authorization server issues tokens for the Ledger API, and the tests forge them (alg: none, a foreign key, expired, wrong aud), check PKCE, refresh-token theft and access to other people's accounts (BOLA). 13 planted bugs caught.
+- **Where:** `services/auth-server, tests/auth`
+- **Command:** `npm run test:auth`
+- **Repositories:** ledger-api-testing
+- **Alternatives:** Keycloak or Auth0 in a container, mock-oauth2-server, jsonwebtoken
+- **Interview question:** What is the difference between 401 and 403, and what is BOLA?
+
 ## Run the system
 
 ### Docker + Docker Compose
@@ -389,3 +401,4 @@ The editor, with the ESLint, Prettier and Playwright Test extensions.
 - ISO/IEC/IEEE 29119-3 — api-test-automation
 - OpenAPI 3 — contract-testing-lab
 - RFC 9110 (HTTP) — contract-testing-lab
+- OAuth 2.0 / RFC 6749, 7636, 9068 — ledger-api-testing
