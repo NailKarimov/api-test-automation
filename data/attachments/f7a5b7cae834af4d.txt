@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44007/transfers
+Query: {}
+Request body: {"from":"ac123f05-98f3-445d-b4ea-3d1044362663","to":"540c551f-08f2-49ed-9b30-c7984d32f3d7","amount":"99"}
+Status: 422 (2 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"status":422,"error":"idempotency_key_reused","message":"Idempotency-Key was already used with a different request"}

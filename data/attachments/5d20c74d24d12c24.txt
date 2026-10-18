@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44007/accounts/ab64c74c-7ec2-45bd-940b-cced270b0a6d/deposits
+Query: {}
+Request body: {"amount":"1"}
+Status: 201 (7 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"id":"cf1b017f-c8c5-4241-882d-b1fd039b8a21","kind":"deposit","from":null,"to":"ab64c74c-7ec2-45bd-940b-cced270b0a6d","amount":"1.00","currency":"EUR","createdAt":"2026-10-18T19:38:26.437Z"}

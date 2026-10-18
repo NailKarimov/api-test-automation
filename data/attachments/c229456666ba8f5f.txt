@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44909/transfers
+Query: {}
+Request body: {"from":"53572f04-66cb-4de9-9afd-7d67b439cf46","to":"64b83a30-fa94-4c85-ab64-688728e4a48e","amount":"25.01"}
+Status: 422 (3 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"status":422,"error":"insufficient_funds","message":"not enough money on the source account"}

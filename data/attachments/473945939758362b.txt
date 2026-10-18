@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44007/accounts/cf952b66-b47f-4958-812f-c3c7b7d2c47c/deposits
+Query: {}
+Request body: {"amount":"50"}
+Status: 201 (13 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"id":"5cfe1607-f2fb-47f2-8cdf-4e08f63013c5","kind":"deposit","from":null,"to":"cf952b66-b47f-4958-812f-c3c7b7d2c47c","amount":"50.00","currency":"EUR","createdAt":"2026-10-18T19:38:27.026Z"}

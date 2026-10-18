@@ -1,7 +1,0 @@
-POST http://127.0.0.1:36715/accounts/4a598842-f09a-44af-90eb-a59c1a5b86a0/deposits
-Query: {}
-Request body: {"amount":"100.00"}
-Status: 201 (5 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"d8e98d2f-af7b-4011-8aed-5e9d747e5058","kind":"deposit","from":null,"to":"4a598842-f09a-44af-90eb-a59c1a5b86a0","amount":"100.00","currency":"EUR","createdAt":"2026-10-18T19:31:30.672Z"}

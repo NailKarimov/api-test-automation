@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/v3/user
+Query: {}
+Request body: {"id":1792352289431021,"username":"qa_user_1792352289431021","email":"qa@example.com"}
+Status: 200 (9 ms)
+Content-Type: application/json
+Body:
+{"id":1792352289431021,"username":"qa_user_1792352289431021","email":"qa@example.com","userStatus":0}

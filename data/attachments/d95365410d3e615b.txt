@@ -1,7 +1,0 @@
-POST http://127.0.0.1:44303/transfers
-Query: {}
-Request body: {"from":"198f378f-7707-4a68-9928-9e894c8851ee","to":"aca7d9c0-abb1-455a-aafd-3850966e5d37","amount":"12.34"}
-Status: 201 (5 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"0fab9874-bbc2-414b-a643-f47efc644ad7","kind":"transfer","from":"198f378f-7707-4a68-9928-9e894c8851ee","to":"aca7d9c0-abb1-455a-aafd-3850966e5d37","amount":"12.34","currency":"EUR","createdAt":"2026-10-18T19:31:30.202Z"}

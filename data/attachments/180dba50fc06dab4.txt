@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=-90&lon=0&appid=***
+Query: {"lat":"-90","lon":"0","appid":"***"}
+Status: 200 (67 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":0,"lat":-90},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"stations","main":{"temp":241.71,"feels_like":234.71,"temp_min":241.71,"temp_max":241.71,"pressure":1011,"humidity":98,"sea_level":1011,"grnd_level":693},"visibility":726,"wind":{"speed":4.63,"deg":295,"gust":7.82},"clouds":{"all":100},"dt":1792352101,"sys":{"sunrise":0,"sunset":0},"timezone":46800,"id":0,"name":"","cod":200}

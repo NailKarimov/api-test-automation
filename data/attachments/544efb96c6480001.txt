@@ -1,6 +1,0 @@
-POST http://localhost:8090/api/v3/pet/1792351870847416?status=sold
-Query: {"status":"sold"}
-Status: 400 (3 ms)
-Content-Type: application/json
-Body:
-No Name provided. Try again?

@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44909/accounts/9d468890-d13e-4d34-8447-e233430571fa/deposits
+Query: {}
+Request body: {"amount":"10"}
+Status: 201 (5 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"id":"24c66896-e937-4f0d-8870-1633c7141123","kind":"deposit","from":null,"to":"9d468890-d13e-4d34-8447-e233430571fa","amount":"10.00","currency":"EUR","createdAt":"2026-10-18T19:38:26.741Z"}

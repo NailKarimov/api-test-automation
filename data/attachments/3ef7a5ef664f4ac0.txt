@@ -1,7 +1,0 @@
-POST http://127.0.0.1:36715/transfers
-Query: {}
-Request body: {"from":"9e5b482e-c8be-4e20-9ed1-377019c81769","to":"f6482370-7c31-45e2-b5ca-ba4ef7505130","amount":"0.01"}
-Status: 201 (18 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"42693894-36fb-4848-be92-73616dc5d129","kind":"transfer","from":"9e5b482e-c8be-4e20-9ed1-377019c81769","to":"f6482370-7c31-45e2-b5ca-ba4ef7505130","amount":"0.01","currency":"EUR","createdAt":"2026-10-18T19:31:30.164Z"}

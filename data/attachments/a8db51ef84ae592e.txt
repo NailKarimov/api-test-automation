@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44007/accounts
+Query: {}
+Request body: {"owner":"Inv B","currency":"EUR"}
+Status: 201 (4 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"id":"668c913c-2b10-4093-9c9a-6fef30da027c","owner":"Inv B","currency":"EUR","balance":"0.00","createdAt":"2026-10-18T19:38:26.104Z"}

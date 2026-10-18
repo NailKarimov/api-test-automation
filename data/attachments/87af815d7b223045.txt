@@ -1,0 +1,6 @@
+GET http://127.0.0.1:44909/accounts/c9afb074-299b-48c9-95f0-a72b98bfded9
+Query: {}
+Status: 200 (10 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"id":"c9afb074-299b-48c9-95f0-a72b98bfded9","owner":"Bob","currency":"USD","balance":"0.00","createdAt":"2026-10-18T19:38:25.258Z"}

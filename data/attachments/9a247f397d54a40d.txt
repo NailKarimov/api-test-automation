@@ -1,7 +1,0 @@
-POST http://127.0.0.1:36715/transfers
-Query: {}
-Request body: {"from":"428af3f3-96cb-46ac-9454-ad64e64ee3f7","to":"cb2007a9-398a-4e5c-9652-0af29f45eedf","amount":"1"}
-Status: 404 (3 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"status":404,"error":"not_found","message":"account not found"}

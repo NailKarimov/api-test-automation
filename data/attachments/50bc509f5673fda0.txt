@@ -1,7 +1,0 @@
-POST http://127.0.0.1:36715/transfers
-Query: {}
-Request body: {"from":"428af3f3-96cb-46ac-9454-ad64e64ee3f7","to":"428af3f3-96cb-46ac-9454-ad64e64ee3f7","amount":"1"}
-Status: 400 (2 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"status":400,"error":"same_account","message":"from and to must differ"}

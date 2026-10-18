@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44007/accounts/d0630218-af97-480f-a130-aed227de13d2/deposits
+Query: {}
+Request body: {"amount":"1000000"}
+Status: 201 (7 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"id":"7babf7e5-cb5b-47fb-9949-99af0db694a7","kind":"deposit","from":null,"to":"d0630218-af97-480f-a130-aed227de13d2","amount":"1000000.00","currency":"EUR","createdAt":"2026-10-18T19:38:26.495Z"}

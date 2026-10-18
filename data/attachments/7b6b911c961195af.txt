@@ -1,0 +1,7 @@
+POST http://127.0.0.1:44007/transfers
+Query: {}
+Request body: {"from":"af3522d2-018c-4d24-a046-f2c6bb1a2098","to":"60ac8cd8-602d-4ac7-b398-b2af669d1c66","amount":"1"}
+Status: 404 (4 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"status":404,"error":"not_found","message":"account not found"}
