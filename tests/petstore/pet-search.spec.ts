@@ -10,10 +10,9 @@ import {
 } from '../../src';
 
 test.describe('Pet search', () => {
-  // The public sandbox is shared: at any moment there may be no pets with a given status at all,
-  // and other people's records may be invalid (DEF-1 lets a pet without `name` in). Each test
-  // creates its own pet, validates that record strictly, and checks only `status` on the rest;
-  // invalid foreign records are reported as DEF-7 instead of failing the run.
+  // Each test creates its own pet, validates that record strictly and checks only `status` on the rest:
+  // the DEF-1 test (running in parallel) may store a pet without `name`, which the search then returns.
+  // Such records are reported as DEF-7 instead of failing the run.
   for (const status of PET_STATUSES) {
     test(`findByStatus=${status} returns only pets with that status`, async ({ petstore }) => {
       const pet = newPet({ status });
@@ -78,7 +77,7 @@ test.describe('Pet search', () => {
       const res = await petstore.findByTags(tag);
       test.skip(
         res.status === 500,
-        'DEF-7: findByTags answers 500 while the shared sandbox holds a pet with invalid tags (also FZ-1)',
+        'DEF-7: findByTags answers 500 while the store holds a pet with invalid tags (DEF-1 lets one in; also FZ-1)',
       );
 
       expect(res.status).toBe(200);
@@ -92,7 +91,7 @@ test.describe('Pet search', () => {
     const res = await petstore.findByTags(`no-such-tag-${newPet().id}`);
     test.skip(
       res.status === 500,
-      'DEF-7: findByTags answers 500 while the shared sandbox holds a pet with invalid tags (also FZ-1)',
+      'DEF-7: findByTags answers 500 while the store holds a pet with invalid tags (DEF-1 lets one in; also FZ-1)',
     );
 
     expect(res.status).toBe(200);
