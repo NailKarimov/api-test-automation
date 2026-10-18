@@ -1,6 +1,0 @@
-GET http://localhost:8084/carts/6ad4779bee11cb0001507683/items
-Query: {}
-Status: 200 (16 ms)
-Content-Type: application/json;charset=UTF-8
-Body:
-[{"id":"6ad4779b3866f50006067596","itemId":"03fef6ac-1896-4ce8-bd69-b798f85c6e0b","quantity":1,"unitPrice":99.99},{"id":"6ad4779b3866f50006067597","itemId":"3395a43e-2d88-40de-b95f-e00e1502085b","quantity":1,"unitPrice":18.0}]

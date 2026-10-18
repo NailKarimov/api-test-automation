@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=sold
-Query: {"status":"sold"}
-Status: 200 (7 ms)
-Content-Type: application/json
-Body:
-[{"id":5,"category":{"id":1,"name":"Dogs"},"name":"Dog 2","photoUrls":["url1","url2"],"tags":[{"id":1,"name":"tag2"},{"id":2,"name":"tag3"}],"status":"sold"},{"id":2,"category":{"id":1,"name":"Dogs"},"name":"doggie","photoUrls":["fill some value"],"tags":[{"id":0,"name":"fill some value"}],"status":"sold"},{"id":1792309144850680,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1792309144850680","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792309144850680"}],"status":"sold"}]

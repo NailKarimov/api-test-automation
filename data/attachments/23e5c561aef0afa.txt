@@ -1,0 +1,6 @@
+GET http://localhost:8083/health
+Query: {}
+Status: 200 (9 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"health":[{"service":"catalogue","status":"OK","time":"2026-10-18 18:43:57.576397189 +0000 UTC"},{"service":"catalogue-db","status":"OK","time":"2026-10-18 18:43:57.576432084 +0000 UTC"}]}
