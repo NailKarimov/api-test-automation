@@ -2,8 +2,6 @@
 
 [![Tests](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml/badge.svg)](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml)
 [![Allure report](https://img.shields.io/badge/report-Allure-orange)](https://nailkarimov.github.io/api-test-automation/)
-[![Fuzz](https://github.com/NailKarimov/api-test-automation/actions/workflows/fuzz.yml/badge.svg)](https://github.com/NailKarimov/api-test-automation/actions/workflows/fuzz.yml)
-[![Contract](https://github.com/NailKarimov/api-test-automation/actions/workflows/contract.yml/badge.svg)](https://github.com/NailKarimov/api-test-automation/actions/workflows/contract.yml)
 
 API test automation for public REST and GraphQL APIs. One framework, three systems under test:
 
@@ -13,13 +11,20 @@ API test automation for public REST and GraphQL APIs. One framework, three syste
   lifecycle, search, input validation, negative tests, and checks of the server against its own contract. Runs
   against a **private Petstore container** (`infra/petstore`), not the shared public sandbox — see
   [`docs/test-environments.md`](docs/test-environments.md).
-
-- **[Sock Shop](https://github.com/microservices-demo/microservices-demo)** — a payment-centred microservices demo
-  (catalogue, carts, user, orders, payment, shipping behind a gateway) that runs in **Docker**: service-level
-  tests, an end-to-end order flow across services, payment limits, and fault injection (a container is stopped
-  and the system must degrade cleanly).
+- **[Rick and Morty API](https://rickandmortyapi.com/documentation)** — GraphQL: field selection, pagination,
+  errors, security limits, a REST-twin oracle and schema drift.
 
 **Playwright (API testing) + TypeScript + zod + Allure + Docker**, run daily in **GitHub Actions**.
+
+## Moved to their own repositories (18.10.2026)
+
+This repository used to hold the whole portfolio. Each larger topic now lives on its own, with its history:
+
+| Repository                                                                    | What moved there                                                                                              |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [contract-testing-lab](https://github.com/NailKarimov/contract-testing-lab)   | Schemathesis (property-based fuzzing), oasdiff (contract drift), Pact (consumer-driven contracts) on Petstore |
+| [microservices-testing](https://github.com/NailKarimov/microservices-testing) | Sock Shop: service and end-to-end tests, chaos, RabbitMQ events, OWASP API Top 10, k6 load tests              |
+| [ledger-api-testing](https://github.com/NailKarimov/ledger-api-testing)       | our own Ledger API on PostgreSQL with Testcontainers: atomicity, idempotency, concurrency                     |
 
 ## Toolbox
 
@@ -56,58 +61,6 @@ server are marked with `test.fail()` and a `DEF-n` id. They stay green while the
 turn red the moment the server is fixed, so the marker can be removed. See
 [`docs/test-report.md`](docs/test-report.md).
 
-### Property-based fuzzing with Schemathesis (`fuzz/`)
-
-[Schemathesis](https://schemathesis.io) generates the tests from Petstore's OpenAPI document: examples,
-boundary values, random and deliberately invalid data, undeclared HTTP methods and stateful chains
-(`POST /pet` → `GET /pet/{id}` → `DELETE`). Every response is checked against the spec: no 5xx, documented
-status codes, schema, headers, auth. It runs against a **private Petstore container**
-([`infra/petstore`](infra/petstore/docker-compose.yml)), never the public sandbox.
-
-First run: 19/19 operations, 3 628 generated cases in 42 s, **83 spec violations grouped into 8 defects
-(FZ-1 … FZ-8)**, mostly contract drift. They are accepted in [`fuzz/baseline.json`](fuzz/baseline.json); only a
-_new_ failure fails the nightly [`fuzz.yml`](.github/workflows/fuzz.yml) job. Generation is deterministic, so a
-red run means the API changed.
-
-Read more: [`docs/schemathesis.md`](docs/schemathesis.md) · visual guide
-[`docs/schemathesis.html`](https://nailkarimov.github.io/api-test-automation/schemathesis.html) · latest
-[HTML report](https://nailkarimov.github.io/api-test-automation/fuzz/). Run locally:
-`pip install -r fuzz/requirements.txt && npm run fuzz:up && npm run fuzz`.
-
-### Contract drift with oasdiff (`contracts/`)
-
-[oasdiff](https://www.oasdiff.com) compares OpenAPI documents and fails on changes that break existing clients.
-The approved Petstore contract (`contracts/petstore/openapi.yaml`) is checked nightly against the spec the private
-container serves and, report only, against the public sandbox; a pull request that edits the contract is compared
-with the base branch. A self-test proves oasdiff rejects a breaking fixture and accepts a compatible one.
-First run found **CD-1**: the `swaggerapi/petstore3:unstable` image serves the old 1.0.17 spec, where 7 operations
-have no `200` response (accepted in `known-drift.txt`; Schemathesis found the same as FZ-2).
-Read more: [`docs/contract-drift.md`](docs/contract-drift.md) · visual guide
-[`docs/contract-drift.html`](https://nailkarimov.github.io/api-test-automation/contract-drift.html).
-
-### Consumer-driven contracts with Pact (`tests/contract-consumer/`, `tests/contract-provider/`)
-
-A small consumer, **Pet Adoption Web** (`src/consumers/AdoptionClient.ts`), records the five Petstore interactions
-it relies on with [Pact](https://docs.pact.io); the resulting `pacts/PetAdoptionWeb-Petstore.json` is then replayed
-against the private Petstore container with provider states ("a pet exists"). Verification: **5/5**. A self-test
-proves that a contract the provider cannot satisfy is rejected. The pact file is published to
-[`/pact/`](https://nailkarimov.github.io/api-test-automation/pact/PetAdoptionWeb-Petstore.json).
-Read more: [`docs/pact.md`](docs/pact.md) · visual guide
-[`docs/pact.html`](https://nailkarimov.github.io/api-test-automation/pact.html). Run: `npm run fuzz:up && npm run test:contract`.
-
-### Ledger API on PostgreSQL with Testcontainers (`services/ledger-api/`, `tests/ledger/`)
-
-Our own small money service (Fastify + PostgreSQL): accounts, deposits, idempotent transfers, a double-entry ledger
-and schema constraints. **Testcontainers** starts a fresh `postgres:16-alpine` for every Playwright worker, runs the
-migrations and the API in-process, so 47 tests can check every answer **against the database**: boundaries of the
-amount rule, atomicity (one cent too much → 422 and nothing changed), idempotency (10 simultaneous retries → one
-charge), concurrency (25 parallel transfers of 10 from 100 → exactly 10 succeed; crossing transfers never
-deadlock), ledger invariants, and constraints that refuse bad data even without the API. Five bugs planted by
-hand (no row lock, `<=` instead of `<`, lost credit entry, …) were all caught. Read more:
-[`docs/ledger-api.md`](docs/ledger-api.md) · visual guide
-[`docs/ledger-api.html`](https://nailkarimov.github.io/api-test-automation/ledger-api.html). Run: `npm run test:ledger`
-(needs Docker).
-
 ### GraphQL (`tests/graphql/`)
 
 34 tests against the public [Rick and Morty API](https://rickandmortyapi.com/documentation): field selection,
@@ -121,72 +74,11 @@ rate-limited service (spacing, waits out a 429). Read more: [`docs/graphql.md`](
 
 ### Security headers (`tests/security/`)
 
-One spec runs the same checks against all three systems: HSTS, `X-Content-Type-Options`, `X-Powered-By`,
+One spec runs the same checks against the public OpenWeather and Petstore deployments: HSTS, `X-Content-Type-Options`, `X-Powered-By`,
 version in the `Server` header, CORS (no `*` with credentials, no reflected origin), `OPTIONS` that does not
 describe the API, and error bodies without stack traces or class names. Findings the servers currently have
 are marked `test.fail()` with a `SEC-n` id (for example Petstore: no HSTS, `Server: Jetty(9.4.53…)`, WADL on
 `OPTIONS`; OpenWeather: `Allow-Origin: *` with `Allow-Credentials: true`). Run: `npm run test:security`.
-
-### Sock Shop microservices (`tests/sockshop/`, `tests/sockshop-chaos/`)
-
-Needs Docker: `npm run stack:up` starts 13 containers from [`infra/sock-shop`](infra/sock-shop/docker-compose.yml).
-
-| Area           | Spec              | Technique                              | Examples                                                                                                                      |
-| -------------- | ----------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Payment        | `payment.spec`    | Boundary value analysis, negative      | 100.00 authorised, 100.01 declined; a decline is HTTP 200; invalid input answered with 500 (SS-1)                             |
-| Orders         | `orders.spec`     | End-to-end across services, boundaries | cart → order → payment → shipping; total = goods + 4.99; 95.01 + 4.99 passes, 95.02 + 4.99 gets 406; no order after a decline |
-| Cart           | `cart.spec`       | State, isolation                       | same sock twice → quantity 2; two customers' carts do not mix; remove by catalogue id; price tampering (SS-6)                 |
-| User and cards | `user.spec`       | Security, negative                     | register / login; wrong password answered with 500 (SS-2); full card number and CCV returned in clear text (SS-4)             |
-| Catalogue      | `catalogue.spec`  | Contract, pagination, filtering        | size and page; tags filter; `/catalogue/size` equals the list; unknown id answered with 500 (SS-5)                            |
-| Gateway        | `gateway.spec`    | Consistency                            | catalogue and tags through the gateway equal the services; register starts an HttpOnly session                                |
-| Resilience     | `resilience.spec` | Fault injection                        | payment container stopped → order fails within 30 s, nothing stored, other services up; recovery without repair               |
-
-A step-by-step animated walkthrough, from preparing the machine to removing the images, is in
-[`docs/microservices.html`](docs/microservices.html) (open it in a browser).
-
-Defects found in the demo (SS-1 … SS-18) are written as normal tests with `test.fail()`, like the Petstore ones.
-If the stack is not running the Sock Shop tests are skipped locally and fail in CI (`REQUIRE_STACK=1`).
-
-#### OWASP API Security Top 10 (`security-owasp.spec.ts`)
-
-Checks mapped to the categories that apply to a service with no real authentication: BOLA — a card or address
-is readable by customer id alone, with no session for that customer (SS-13); brute-force protection on login
-(SS-14); a maximum page size on the catalogue (SS-15); and the Spring Boot actuator of carts, orders and
-shipping, reachable with no authentication (SS-16). SSRF (OWASP API7) is not automated: the orders service
-builds internal requests from client-supplied URLs, and probing that safely needs a one-off, scoped check
-rather than a repeatable test — see [`docs/test-report.md`](docs/test-report.md) for the details found so far.
-
-#### Events: the `shipping-task` queue (`tests/sockshop-events/`)
-
-The orders service does not call shipping directly: it publishes a task to a RabbitMQ queue, and (in
-production) `queue-master` consumes it. That consumer is not started in this compose file, so the queue holds
-exactly what the orders service put there — a thin `amqplib` client (`src/sockshop/queue.ts`) checks it
-directly. A successful order publishes one message matching its `shipment.id` and `customerId`; a declined
-payment publishes nothing; and, as fault injection on the broker itself, an order still succeeds when
-RabbitMQ is stopped and its shipping task is silently lost, because the queue is also declared non-durable
-(SS-17, SS-18). These tests run serially, after `sockshop` and `sockshop-chaos`, each purging the queue first.
-
-### Load testing (`loadtests/`)
-
-[k6](https://k6.io) scripts run from `grafana/k6:1.8.2` on the Sock Shop's own Docker network
-(`scripts/run-k6.mjs`), so they reach services by their compose hostname — no port mapping needed.
-`catalogue-browse.js` is read-only (safe at high concurrency); `checkout.js` runs the full
-register → address → card → add-to-cart → order flow (writes real data, so it runs at lower concurrency).
-Each has three profiles — smoke, load, stress — defined once in [`loadtests/lib/profiles.js`](loadtests/lib/profiles.js).
-
-```bash
-npm run stack:up
-npm run loadtest:smoke      # catalogue-browse, smoke profile
-npm run loadtest:load       # catalogue-browse, load profile
-npm run loadtest:stress     # catalogue-browse, stress profile
-npm run loadtest:checkout   # checkout, load profile
-node scripts/run-k6.mjs checkout stress   # any script × any profile
-```
-
-Results (latency and the error rate at each profile, read against this machine's hardware, not as a
-capacity number): [`docs/test-report.md`](docs/test-report.md). A manual GitHub Actions workflow
-(`.github/workflows/loadtest.yml`, `workflow_dispatch` only — a stress run is not meant to gate every push)
-re-runs any script × profile and uploads the k6 summary as an artifact.
 
 ### Helpers
 
@@ -209,13 +101,10 @@ Test design, scope, risks and exit criteria: [`docs/test-plan.md`](docs/test-pla
   every CI run; every test still creates its own pet with a unique id and removes it afterwards. On the shared
   public sandbox three "defects" (DEF-3…5) turned out to be environment problems
   ([`docs/test-environments.md`](docs/test-environments.md)).
-- **Microservices as they run in production.** The Sock Shop is started with Docker Compose and every service
-  is published on its own port, so a test can talk to one service, to the gateway, or follow a request through
-  several services. Fault-injection tests stop real containers and always put them back.
 - **The key never leaves the secret store.** `OPENWEATHER_API_KEY` comes from `.env` locally and from a
   repository secret in CI. Every request is attached to the Allure report with `appid=***`.
 - **Gentle on third-party APIs.** About 100 requests per run, two workers, one daily scheduled run.
-  No load testing against production services — the k6 load tests only ever target the local Sock Shop.
+  No load testing against production services. The GraphQL client spaces its requests and waits out a 429.
 
 ## Project structure
 
@@ -224,35 +113,33 @@ config/env.ts              base URLs and secrets from the environment
 src/api/ApiClient.ts       generic HTTP client: GET/POST/PUT/DELETE, redacted request/response in the report
 src/openweather/           WeatherClient, zod contracts, reference locations
 src/petstore/              PetstoreClient, zod contracts, test data builders
-src/sockshop/              SockShopClient, zod contracts for the microservices
-src/fixtures.ts            `weather` and `petstore` fixtures injected into tests
+src/graphql/               GraphQLClient (polite to the rate limit), zod contracts
+src/fixtures.ts            `weather`, `petstore` and `graph` fixtures injected into tests
 tests/openweather/         OpenWeather specs
-tests/petstore/            Petstore specs
-tests/sockshop/            Sock Shop service and end-to-end specs
-tests/sockshop-chaos/      fault-injection specs (stop and restart containers)
-infra/sock-shop/           Docker Compose file of the microservices
-loadtests/                 k6 load test scripts (catalogue-browse, checkout) and shared profiles
-scripts/                   wait-for-stack.mjs, allure-prepare.mjs, run-k6.mjs
+tests/petstore/            Petstore specs (private container)
+tests/graphql/             GraphQL specs, schema drift with GraphQL Inspector
+tests/security/            security headers of the public deployments
 tests/unit/                unit tests of helpers
-docs/                      test plan, test summary report, static sample of the Allure report
+infra/petstore/            Docker Compose file of the private Petstore
+contracts/rickandmorty/    approved GraphQL schema
+docs/                      test plan, test summary report, guides, toolbox, static sample of the Allure report
 ```
 
 ## Running locally
 
-Requirements: Node.js 22+, Java 17+ (for the Allure CLI), Docker for the Sock Shop (about 4 GB of free memory;
-on Windows, turn virtualization on in the BIOS). OpenWeather tests also need a free API key; the Petstore needs nothing.
+Requirements: Node.js 22+, Java 17+ (for the Allure CLI), Docker for the private Petstore. OpenWeather tests also
+need a free API key; Petstore and GraphQL need nothing.
 
 ```bash
 npm ci
 cp .env.example .env       # then put your key into OPENWEATHER_API_KEY
+npm run petstore:up        # private Petstore on http://localhost:8090
 npm test                   # everything
 npm run test:openweather   # OpenWeather only
-npm run test:petstore      # Petstore only (no key needed)
-npm run stack:up           # start the Sock Shop microservices in Docker and wait until ready
-npm run test:sockshop      # Sock Shop service tests + fault injection (needs the stack)
-npm run stack:down         # stop and remove the containers (images stay, next start takes ~32 s)
-npm run stack:purge        # same, and delete all 12 images (frees ~3 GB of disk)
+npm run test:petstore      # Petstore only (needs the container, no key)
+npm run test:graphql       # GraphQL only
 npm run test:smoke         # @smoke tests only
+npm run petstore:down
 npm run lint && npm run typecheck
 npm run allure:generate && npm run allure:open
 ```
@@ -262,7 +149,7 @@ In CI the key is the repository secret `OPENWEATHER_API_KEY`
 
 ## Tech stack
 
-Playwright Test (APIRequestContext) · TypeScript · zod · Docker Compose · RabbitMQ (amqplib) · k6 · Allure Report · ESLint · Prettier · husky · GitHub Actions
+Playwright Test (APIRequestContext) · TypeScript · zod · graphql-js · GraphQL Inspector · Docker Compose · Allure Report · ESLint · Prettier · husky · GitHub Actions
 
 ## Allure report
 

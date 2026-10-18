@@ -11,7 +11,6 @@ type Target = {
   optionsUrl?: string;
   /** A request the server must reject, used to inspect its error body. */
   errorUrl: string;
-  needsStack?: boolean;
   /** Known deviations: check id → defect id. The test is expected to fail until the server is fixed. */
   defects: Record<string, string>;
 };
@@ -41,17 +40,6 @@ const TARGETS: Target[] = [
       'stack-trace': 'SEC-8: error message reveals the internal class `java.lang.Long`',
     },
   },
-  {
-    // The gateway is plain HTTP inside the Docker network, so transport checks do not apply to it.
-    name: 'Sock Shop gateway',
-    url: `${env.sockShop.gateway}/catalogue?size=1`,
-    errorUrl: `${env.sockShop.gateway}/customers/x%27%22%3C%3E`,
-    needsStack: true,
-    defects: {
-      nosniff: 'SEC-9: no X-Content-Type-Options header',
-      'powered-by': 'SEC-10: X-Powered-By: Express reveals the framework',
-    },
-  },
 ];
 
 const EVIL_ORIGIN = 'https://evil.example';
@@ -65,13 +53,6 @@ for (const target of TARGETS) {
     let client: ApiClient;
 
     test.beforeEach(async ({ request }) => {
-      if (target.needsStack) {
-        const up = await fetch(`${env.sockShop.payment}/health`, { signal: AbortSignal.timeout(3_000) })
-          .then((r) => r.ok)
-          .catch(() => false);
-        if (!up && env.requireStack) throw new Error('Sock Shop is not running');
-        test.skip(!up, 'Sock Shop is not running: start it with `npm run stack:up`.');
-      }
       if (target.name === 'OpenWeather' && !target.apiKey) throw new Error('OPENWEATHER_API_KEY is not set');
       client = new ApiClient(request, target.apiKey);
     });

@@ -49,12 +49,12 @@ three runs listed above.
 | Check                                                      | Why the public deployment                                                                                           |
 | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Security headers (`tests/security`, `PETSTORE_PUBLIC_URL`) | TLS, HSTS and the `Server` header are properties of the deployment, not of the code; the local container has no TLS |
-| Contract watch (`contract.yml`, report only)               | to see when the public spec changes (it serves 1.0.27, the container 1.0.17)                                        |
+| Contract watch (contract-testing-lab, `contract.yml`)      | to see when the public spec changes (it serves 1.0.27, the container 1.0.17)                                        |
 
 ## The price of a private copy
 
 - **We test the image's version, not the live one.** The `unstable` image serves spec 1.0.17 while the public
-  sandbox runs 1.0.27 (found by oasdiff, see `docs/contract-drift.md`). The contract watch keeps that gap visible.
+  sandbox runs 1.0.27 (found by oasdiff, see [contract-testing-lab](https://github.com/NailKarimov/contract-testing-lab/blob/main/docs/contract-drift.md)). The contract watch keeps that gap visible.
 - **One more container in CI** (about 10 seconds to start).
 - **Nothing to share.** A container proves the code works; the sandbox showed how a real shared deployment
   behaves. That is why the deployment-level checks above stay on the sandbox.

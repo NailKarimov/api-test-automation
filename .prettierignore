@@ -6,14 +6,9 @@ allure-results
 allure-report
 docs/sample-report
 docs/overview.html
-docs/microservices.html
-docs/schemathesis.html
 docs/toolbox.html
 contracts/petstore/openapi.yaml
 contracts/petstore/fixtures/
-docs/contract-drift.html
-docs/pact.html
 contracts/rickandmorty/schema.graphql
 docs/graphql.html
 docs/test-environments.html
-docs/ledger-api.html

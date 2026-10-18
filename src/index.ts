@@ -15,8 +15,3 @@ export { newPet, uniqueId } from './petstore/data';
 export * from './graphql/schemas';
 export { nestedQuery } from './graphql/GraphQLClient';
 export type { GraphQLResponse, GraphQLError } from './graphql/GraphQLClient';
-
-// Sock Shop microservices
-export * from './sockshop/schemas';
-export type { Checkout } from './sockshop/SockShopClient';
-export type { ShippingTask } from './sockshop/queue';
