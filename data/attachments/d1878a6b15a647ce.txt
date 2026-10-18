@@ -1,7 +1,0 @@
-POST http://127.0.0.1:44909/accounts/04dd2708-f7b2-45fa-a0bf-4c680e3d1add/deposits
-Query: {}
-Request body: {"amount":"30"}
-Status: 201 (4 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"9183294a-25e5-4843-86e3-174a6cfdc62c","kind":"deposit","from":null,"to":"04dd2708-f7b2-45fa-a0bf-4c680e3d1add","amount":"30.00","currency":"EUR","createdAt":"2026-10-18T19:38:26.274Z"}

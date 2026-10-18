@@ -1,6 +1,0 @@
-GET http://127.0.0.1:44909/accounts/10f7488a-2553-47d2-a9a2-acdc882a2cda
-Query: {}
-Status: 404 (3 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"status":404,"error":"not_found","message":"account not found"}

@@ -1,7 +1,0 @@
-POST http://127.0.0.1:44909/accounts/af25a01f-f3d9-4284-8971-3932ec98fe7a/deposits
-Query: {}
-Request body: {"amount":"100"}
-Status: 201 (7 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"6730c482-73e1-45c3-8a3d-7011a6fb1cdf","kind":"deposit","from":null,"to":"af25a01f-f3d9-4284-8971-3932ec98fe7a","amount":"100.00","currency":"EUR","createdAt":"2026-10-18T19:38:25.788Z"}

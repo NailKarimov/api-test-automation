@@ -175,7 +175,7 @@ footer { padding-top: 40px; color: var(--muted); font-size: 13px; display: flex;
     </header>
     <div class="cards">
       <div class="card"><span class="eyebrow">tests/security</span><h3 lang="ru">Заголовки безопасности</h3><h3 lang="en">Security headers</h3><p style="font-size:14.5px" lang="ru">TLS, HSTS и заголовок <code>Server</code> — свойства развёртывания, а не кода. У локальной копии нет TLS, проверять там нечего.</p><p style="font-size:14.5px" lang="en">TLS, HSTS and the <code>Server</code> header belong to the deployment, not the code. The local copy has no TLS to check.</p></div>
-      <div class="card"><span class="eyebrow">contract.yml</span><h3 lang="ru">Наблюдение за контрактом</h3><h3 lang="en">Contract watch</h3><p style="font-size:14.5px" lang="ru">Только отчёт: чтобы видеть, когда публичная спецификация меняется. Сейчас песочница на 1.0.27, а копия на 1.0.17.</p><p style="font-size:14.5px" lang="en">Report only: to see when the public spec changes. The sandbox runs 1.0.27, the copy 1.0.17.</p></div>
+      <div class="card"><span class="eyebrow">contract-testing-lab · contract.yml</span><h3 lang="ru">Наблюдение за контрактом</h3><h3 lang="en">Contract watch</h3><p style="font-size:14.5px" lang="ru">Только отчёт: чтобы видеть, когда публичная спецификация меняется. Сейчас песочница на 1.0.27, а копия на 1.0.17.</p><p style="font-size:14.5px" lang="en">Report only: to see when the public spec changes. The sandbox runs 1.0.27, the copy 1.0.17.</p></div>
       <div class="card"><span class="eyebrow" lang="ru">цена</span><span class="eyebrow" lang="en">the price</span><h3 lang="ru">Чем платим</h3><h3 lang="en">What it costs</h3><p style="font-size:14.5px" lang="ru">Тестируем версию из образа, а не живую — разрыв виден благодаря oasdiff. Плюс один контейнер в CI, около 10 секунд на старт.</p><p style="font-size:14.5px" lang="en">We test the image's version, not the live one; oasdiff keeps the gap visible. Plus one container in CI, about 10 seconds to start.</p></div>
     </div>
     <div class="rule" lang="ru">Код тестируй в окружении, которое контролируешь и сбрасываешь. Развёртывание — заголовки, TLS, лимиты, доступность — проверяй на самом развёртывании. И держи эти проверки отдельно, чтобы одни не прятали другие.</div>
@@ -265,7 +265,7 @@ function renderLists() {
   document.getElementById('t-run').textContent = L('прогон CI · docker compose up → down -v', 'CI run · docker compose up → down -v');
 }
 const CMDS = [
-  ['npm run fuzz:up', 'поднять свою копию Petstore на :8090', 'start the private Petstore on :8090'],
+  ['npm run petstore:up', 'поднять свою копию Petstore на :8090', 'start the private Petstore on :8090'],
   ['npm run test:petstore', '33 теста против копии', '33 tests against the copy'],
   ['PETSTORE_BASE_URL=https://petstore3.swagger.io/api/v3/ npm run test:petstore', 'для сравнения — против песочницы', 'for comparison: against the sandbox'],
 ];

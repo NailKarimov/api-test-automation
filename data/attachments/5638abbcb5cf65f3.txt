@@ -1,7 +1,0 @@
-POST http://127.0.0.1:44007/accounts
-Query: {}
-Request body: {"owner":"Bob","currency":"EUR"}
-Status: 201 (4 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"4f4aa344-fa67-4bb6-9174-1ddd5f43719e","owner":"Bob","currency":"EUR","balance":"0.00","createdAt":"2026-10-18T19:38:26.835Z"}

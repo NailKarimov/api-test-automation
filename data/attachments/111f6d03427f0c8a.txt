@@ -1,6 +1,0 @@
-POST http://localhost:8090/api/v3/pet/1792352289022565?name=qa-pet-1792352289022565&status=sold
-Query: {"name":"qa-pet-1792352289022565","status":"sold"}
-Status: 200 (5 ms)
-Content-Type: application/json
-Body:
-{"id":1792352289022565,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1792352289022565","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792352289022565"}],"status":"sold"}

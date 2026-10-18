@@ -1,7 +1,0 @@
-POST http://127.0.0.1:44007/accounts/668c913c-2b10-4093-9c9a-6fef30da027c/deposits
-Query: {}
-Request body: {"amount":"30"}
-Status: 201 (8 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"b1d419ba-c7cd-47c6-9711-01b0c3c63a73","kind":"deposit","from":null,"to":"668c913c-2b10-4093-9c9a-6fef30da027c","amount":"30.00","currency":"EUR","createdAt":"2026-10-18T19:38:26.109Z"}

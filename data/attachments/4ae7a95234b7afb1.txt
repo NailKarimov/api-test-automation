@@ -1,7 +1,0 @@
-POST http://127.0.0.1:44909/accounts/4ab8ab55-5850-4b84-a698-9fa810c50ea3/deposits
-Query: {}
-Request body: {"amount":"1000000.00"}
-Status: 201 (7 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"id":"05df100d-1667-4a59-8a03-494d01438b87","kind":"deposit","from":null,"to":"4ab8ab55-5850-4b84-a698-9fa810c50ea3","amount":"1000000.00","currency":"EUR","createdAt":"2026-10-18T19:38:26.498Z"}
