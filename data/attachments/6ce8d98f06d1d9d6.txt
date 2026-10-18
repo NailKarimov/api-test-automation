@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?q=Qwertyuiopville-404&appid=***
-Query: {"q":"Qwertyuiopville-404","appid":"***"}
-Status: 404 (214 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"cod":"404","message":"city not found"}

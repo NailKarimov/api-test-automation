@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/1
-Query: {}
-Status: 200 (166 ms)
-Content-Type: application/json
-Body:
-{"id":1,"name":"Pet1","photoUrls":["test1","test2"],"tags":[],"status":"available"}
