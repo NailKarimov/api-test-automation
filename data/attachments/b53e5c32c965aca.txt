@@ -1,0 +1,7 @@
+POST http://127.0.0.1:36715/accounts/6aeebbc8-1566-4220-8966-600e734e1b28/deposits
+Query: {}
+Request body: {"amount":"0.00"}
+Status: 400 (1 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"status":400,"error":"invalid_amount","message":"amount must be between 0.01 and 1000000"}

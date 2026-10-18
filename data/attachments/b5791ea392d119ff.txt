@@ -1,0 +1,7 @@
+POST http://127.0.0.1:36715/transfers
+Query: {}
+Request body: {"from":"012c7527-2ff6-4717-bb80-60987693206e","to":"af1f970f-301e-42e0-9406-f3ca1be7b863","amount":"1"}
+Status: 400 (2 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"status":400,"error":"idempotency_key_required","message":"Idempotency-Key header (8–100 characters) is required"}

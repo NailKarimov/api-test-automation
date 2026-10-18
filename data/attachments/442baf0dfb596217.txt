@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (102 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":14.3854,"lat":37.1461},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":290.93,"feels_like":290.93,"temp_min":290.93,"temp_max":292.46,"pressure":1020,"humidity":83,"sea_level":1020,"grnd_level":974},"visibility":10000,"wind":{"speed":1.83,"deg":39,"gust":3.55},"clouds":{"all":3},"dt":1792351741,"sys":{"type":2,"id":2003033,"country":"IT","sunrise":1792300355,"sunset":1792340543},"timezone":7200,"id":2524006,"name":"Niscemi","cod":200}

@@ -1,0 +1,7 @@
+POST http://127.0.0.1:36715/accounts/2ca3bb5d-426c-4aef-bc60-1a050812cb81/deposits
+Query: {}
+Request body: {"amount":"0.001"}
+Status: 400 (2 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"status":400,"error":"invalid_amount","message":"amount must be a decimal string with at most 2 places, e.g. \"10.50\""}

@@ -1,0 +1,6 @@
+GET http://127.0.0.1:36715/accounts/32be1e5d-45f1-4bd6-99de-813836939808/transactions
+Query: {}
+Status: 200 (17 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+[{"id":"e18da684-296e-4847-bac2-4342942e1c8e","kind":"deposit","from":null,"to":"32be1e5d-45f1-4bd6-99de-813836939808","amount":"50.00","currency":"EUR","createdAt":"2026-10-18T19:31:30.803Z","entry":"50.00"},{"id":"e0de0384-e4ce-4a3f-a65a-f1f1df92294c","kind":"transfer","from":"32be1e5d-45f1-4bd6-99de-813836939808","to":"50201cc4-711a-47d7-ba15-ba79f5a1cc1a","amount":"20.00","currency":"EUR","createdAt":"2026-10-18T19:31:30.810Z","entry":"-20.00"}]
