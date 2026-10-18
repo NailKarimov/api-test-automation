@@ -1,0 +1,7 @@
+POST https://petstore3.swagger.io/api/v3/store/order
+Query: {}
+Request body: {"id":1792309145412780,"petId":1,"quantity":1,"shipDate":"2026-10-18T07:39:05.412Z","status":"placed","complete":false}
+Status: 200 (39 ms)
+Content-Type: application/json
+Body:
+{"id":1792309145412780,"petId":1,"quantity":1,"shipDate":"2026-10-18T07:39:05.412+00:00","status":"placed","complete":false}

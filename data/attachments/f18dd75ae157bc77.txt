@@ -1,7 +1,0 @@
-POST https://petstore3.swagger.io/api/v3/pet
-Query: {}
-Request body: {"id":1792270376681059,"name":"second","category":{"id":1,"name":"Dogs"},"photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792270376681059"}],"status":"available"}
-Status: 200 (35 ms)
-Content-Type: application/json
-Body:
-{"id":1792270376681059,"category":{"id":1,"name":"Dogs"},"name":"second","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792270376681059"}],"status":"available"}

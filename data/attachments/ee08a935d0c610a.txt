@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/1.5
-Query: {}
-Status: 400 (152 ms)
-Content-Type: application/json
-Body:
-{"code":400,"message":"Input error: couldn't convert `1.5` to type `class java.lang.Long`"}
