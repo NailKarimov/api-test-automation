@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"query Page($page: Int, $filter: FilterCharacter) { characters(page: $page, filter: $filter) { info { count pages next prev } results { id name status } } }","variables":{"filter":{"status":"unknown"}}}
-Status: 200 (249 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"data":{"characters":{"info":{"count":100,"pages":5,"next":2,"prev":null},"results":[{"id":"7","name":"Abradolf Lincler","status":"unknown"},{"id":"13","name":"Alien Googah","status":"unknown"},{"id":"14","name":"Alien Morty","status":"unknown"},{"id":"15","name":"Alien Rick","status":"unknown"},{"id":"19","name":"Antenna Rick","status":"unknown"},{"id":"20","name":"Ants in my Eyes Johnson","status":"unknown"},{"id":"21","name":"Aqua Morty","status":"unknown"},{"id":"22","name":"Aqua Rick","status":"unknown"},{"id":"23","name":"Arcade Alien","status":"unknown"},{"id":"42","name":"Big Head Morty","status":"unknown"},{"id":"46","name":"Bill","status":"unknown"},{"id":"53","name":"Blue Shirt Morty","status":"unknown"},{"id":"82","name":"Cronenberg Rick","status":"unknown"},{"id":"83","name":"Cronenberg Morty","status":"unknown"},{"id":"95","name":"Dipper and Mabel Mortys","status":"unknown"},{"id":"103","name":"Doofus Rick","status":"unknown"},{"id":"106","name":"Dr. Schmidt","status":"unknown"},{"id":"113","name":"Eric Stoltz Mask Morty","status":"unknown"},{"id":"114","name":"Ethan","status":"unknown"},{"id":"126","name":"Fleeb","status":"unknown"}]}}}
