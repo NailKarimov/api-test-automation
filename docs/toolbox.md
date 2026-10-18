@@ -29,6 +29,9 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | amqplib (RabbitMQ)               | Special test types   | event-driven              | ✓                   |              |                     |
 | Docker + Docker Compose          | Run the system       | containers                | ✓                   |              |                     |
 | Sock Shop                        | Run the system       | system under test         | ✓                   |              |                     |
+| Testcontainers                   | Run the system       | throw-away dependencies   | ✓                   |              |                     |
+| PostgreSQL + pg                  | Run the system       | database                  | ✓                   |              |                     |
+| Ledger API (Fastify)             | Run the system       | own system under test     | ✓                   |              |                     |
 | xvfb                             | Run the system       | virtual display           |                     | ✓            |                     |
 | Allure Report                    | Read the results     | reporting                 | ✓                   | ✓            | ✓                   |
 | Playwright HTML report + trace   | Read the results     | debugging                 | ✓                   | ✓            | ✓                   |
@@ -264,6 +267,39 @@ Weaveworks' microservices demo shop: catalogue, cart, users, orders, payment, sh
 - **Repositories:** api-test-automation
 - **Alternatives:** Online Boutique, eShopOnContainers
 - **Interview question:** What changes in testing when moving from a monolith to microservices?
+
+### Testcontainers
+
+A library that starts a real dependency (PostgreSQL here) in a throw-away Docker container from test code and removes it afterwards.
+
+- **Why here:** Every Playwright worker gets its own clean, freshly migrated database, so the Ledger API tests can assert exact row counts and balances.
+- **Where:** `src/ledger/fixtures.ts`
+- **Command:** `npm run test:ledger`
+- **Repositories:** api-test-automation
+- **Alternatives:** docker compose, embedded databases, H2 (Java), shared test DB
+- **Interview question:** Why not mock the database in integration tests?
+
+### PostgreSQL + pg
+
+The relational database and the pg Node.js client the tests use to read tables directly.
+
+- **Why here:** Checks the API cannot offer: balance = sum of entries, every movement = two entries summing to zero, the schema refuses bad data (CHECK, FK).
+- **Where:** `services/ledger-api/migrations, src/ledger/Db.ts`
+- **Command:** `SELECT … FROM ledger_entries`
+- **Repositories:** api-test-automation
+- **Alternatives:** MySQL, SQL Server, Oracle; Knex, Prisma
+- **Interview question:** How do you verify that an operation is atomic?
+
+### Ledger API (Fastify)
+
+Our own small wallets-and-transfers service on Fastify: idempotent transfers, double-entry ledger, row locks.
+
+- **Why here:** Public APIs never open their database. Here 47 tests compare answers with the tables; all five planted bugs were caught.
+- **Where:** `services/ledger-api, tests/ledger, docs/ledger-api.md`
+- **Command:** `npm run ledger:dev`
+- **Repositories:** api-test-automation
+- **Alternatives:** Express, NestJS, Spring Boot
+- **Interview question:** How do you test protection against double charging?
 
 ### xvfb
 
