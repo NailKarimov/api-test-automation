@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"{ character(id: 1) { name salary } }"}
-Status: 400 (548 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"errors":[{"message":"Cannot query field \"salary\" on type \"Character\".","locations":[{"line":4,"column":5}],"extensions":{"code":"GRAPHQL_VALIDATION_FAILED"}}]}

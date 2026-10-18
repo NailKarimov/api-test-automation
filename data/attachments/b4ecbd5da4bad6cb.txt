@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=0&lon=-180&appid=***
+Query: {"lat":"0","lon":"-180","appid":"***"}
+Status: 200 (121 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":-180,"lat":0},"weather":[{"id":500,"main":"Rain","description":"light rain","icon":"10d"}],"base":"stations","main":{"temp":301.54,"feels_like":306.43,"temp_min":301.54,"temp_max":301.54,"pressure":1010,"humidity":81,"sea_level":1010,"grnd_level":1010},"visibility":10000,"wind":{"speed":10.32,"deg":240,"gust":12.61},"rain":{"1h":0.56},"clouds":{"all":100},"dt":1792349600,"sys":{"sunrise":1792345293,"sunset":1792388898},"timezone":-43200,"id":0,"name":"","cod":200}
