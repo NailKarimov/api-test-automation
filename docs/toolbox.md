@@ -247,8 +247,8 @@ A client for the RabbitMQ message broker. Tests read the shipping-task queue dir
 
 Containers: the system under test starts with one command and behaves the same everywhere. Compose describes several services at once.
 
-- **Why here:** Sock Shop is 13 containers with MongoDB, MySQL and RabbitMQ; a private Petstore for fuzzing. Chaos tests stop containers mid-test.
-- **Where:** `infra/sock-shop, infra/petstore`
+- **Why here:** Sock Shop is 13 containers with MongoDB, MySQL and RabbitMQ; a private Petstore for the functional tests, Pact and fuzzing, so results never depend on the shared sandbox. Chaos tests stop containers mid-test.
+- **Where:** `infra/sock-shop, infra/petstore, docs/test-environments.md`
 - **Command:** `npm run stack:up`
 - **Repositories:** api-test-automation
 - **Alternatives:** Podman, Kubernetes (kind), Testcontainers
