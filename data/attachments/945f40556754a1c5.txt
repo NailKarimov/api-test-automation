@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?lat=64.145981&lon=-21.9422367&appid=***
-Query: {"lat":"64.145981","lon":"-21.9422367","appid":"***"}
-Status: 200 (48 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"coord":{"lon":-21.9422,"lat":64.146},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"stations","main":{"temp":282.07,"feels_like":277.1,"temp_min":282.07,"temp_max":282.07,"pressure":986,"humidity":71,"sea_level":986,"grnd_level":990},"visibility":10000,"wind":{"speed":14.4,"deg":220},"clouds":{"all":93},"dt":1792356223,"sys":{"type":1,"id":91,"country":"IS","sunrise":1792311982,"sunset":1792346352},"timezone":0,"id":3416900,"name":"Grímsstaðaholt","cod":200}

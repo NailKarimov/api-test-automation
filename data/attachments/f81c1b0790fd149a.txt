@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/geo/1.0/direct?q=Riga&appid=***
+Query: {"q":"Riga","appid":"***"}
+Status: 401 (50 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"cod":401, "message": "Invalid API key. Please see https://openweathermap.org/faq#error401 for more info."}

@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?q=Riga&appid=***
+Query: {"appid":"***"}
+Status: 200 (47 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":24.0833,"lat":57},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01d"}],"base":"stations","main":{"temp":278.19,"feels_like":275.64,"temp_min":278.19,"temp_max":278.19,"pressure":1037,"humidity":81,"sea_level":1037,"grnd_level":1037},"visibility":10000,"wind":{"speed":3.09,"deg":50},"clouds":{"all":0},"dt":1792397776,"sys":{"type":1,"id":1876,"country":"LV","sunrise":1792386277,"sunset":1792422744},"timezone":10800,"id":456173,"name":"Rīga","cod":200}
