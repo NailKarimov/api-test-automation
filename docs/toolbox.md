@@ -34,6 +34,7 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | Ledger API (Fastify)             | Run the system       | own system under test           |                     |                      |                       | ✓                  |                       |              |                     |
 | OAuth 2.0 + JWT (jose)           | Special test types   | authorization testing           |                     |                      |                       | ✓                  |                       |              |                     |
 | gRPC (grpc-js)                   | Special test types   | RPC over HTTP/2                 |                     |                      |                       |                    | ✓                     |              |                     |
+| WebSocket + SSE (ws)             | Special test types   | live data push                  |                     |                      |                       |                    | ✓                     |              |                     |
 | buf                              | Keep code clean      | proto lint and breaking changes |                     |                      |                       |                    | ✓                     |              |                     |
 | xvfb                             | Run the system       | virtual display                 |                     |                      |                       |                    |                       | ✓            |                     |
 | Allure Report                    | Read the results     | reporting                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓            | ✓                   |
@@ -279,6 +280,17 @@ A way to call another service's functions over HTTP/2. The API is a .proto file,
 - **Repositories:** api-protocols-testing
 - **Alternatives:** grpcurl, Postman gRPC, ghz or k6 for load, Connect
 - **Interview question:** How is a gRPC deadline different from an HTTP client timeout?
+
+### WebSocket + SSE (ws)
+
+Two ways a server pushes data itself: WebSocket, a lasting two-way connection, and SSE, an endless HTTP response of events. The ws library for the server and the test client.
+
+- **Why here:** The same quote feed as gRPC. The tests cut the connection and check resume without gaps (since, Last-Event-ID), the heartbeat that finds dead clients, close codes 1001/1002/1008/1009, leaked subscriptions. 14 planted bugs caught.
+- **Where:** `services/quotes/src/realtime.ts, src/realtime, tests/realtime`
+- **Command:** `npm run test:realtime`
+- **Repositories:** api-protocols-testing
+- **Alternatives:** Socket.IO, k6 WebSocket module, Playwright page.routeWebSocket, EventSource
+- **Interview question:** How does a client know it missed a message, and what does the server do with a half-open connection?
 
 ## Run the system
 
