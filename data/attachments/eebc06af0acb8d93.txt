@@ -1,0 +1,6 @@
+DELETE http://localhost:8090/api/v3/pet/1792429240960092
+Query: {}
+Status: 200 (6 ms)
+Content-Type: application/json
+Body:
+Pet deleted

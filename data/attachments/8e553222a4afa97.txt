@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (106 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":12.25,"lat":42.4828},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":291.14,"feels_like":290.87,"temp_min":291.08,"temp_max":292.71,"pressure":1020,"humidity":72,"sea_level":1020,"grnd_level":987},"visibility":10000,"wind":{"speed":1.57,"deg":241,"gust":2.98},"clouds":{"all":0},"dt":1792428782,"sys":{"type":2,"id":2009060,"country":"IT","sunrise":1792387688,"sunset":1792427013},"timezone":7200,"id":3181909,"name":"Bomarzo","cod":200}
