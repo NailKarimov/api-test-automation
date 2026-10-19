@@ -26,6 +26,7 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | Pact                             | Special test types   | consumer-driven contracts       |                     | ✓                    |                       |                    |                       |                |              |                     |
 | GraphQL (graphql-js)             | Special test types   | GraphQL API testing             | ✓                   |                      |                       |                    |                       |                |              |                     |
 | GraphQL Inspector                | Special test types   | GraphQL schema drift            | ✓                   |                      |                       |                    |                       |                |              |                     |
+| Claude API + evals               | Special test types   | LLM endpoint testing            |                     |                      |                       |                    |                       | ✓              |              |                     |
 | amqplib (RabbitMQ)               | Special test types   | event-driven                    |                     |                      | ✓                     |                    |                       |                |              |                     |
 | Docker + Docker Compose          | Run the system       | containers                      | ✓                   | ✓                    | ✓                     | ✓                  |                       |                |              |                     |
 | Sock Shop                        | Run the system       | system under test               |                     |                      | ✓                     |                    |                       |                |              |                     |
@@ -250,6 +251,17 @@ Compares two GraphQL schemas and sorts changes into breaking, dangerous and safe
 - **Alternatives:** Apollo Rover (schema checks), graphql-schema-diff
 - **Interview question:** What counts as a breaking change in a GraphQL schema?
 
+### Claude API + evals
+
+The Claude API (Messages, tool use, structured outputs) through the official TypeScript SDK; evals check the model's behaviour on a set of examples as a share of passing runs.
+
+- **Why here:** fx-assistant on claude-haiku-5-5. The code around the model is tested against a fake Messages API (free, deterministic, 10/10 planted bugs caught); the model with 13 evals × 3 runs: correctness, no invention, prompt injection with a canary, latency and cost budgets.
+- **Where:** `services/fx-assistant, src/llm, tests/llm, evals, tests/evals`
+- **Command:** `npm run test:llm`
+- **Repositories:** ai-api-testing
+- **Alternatives:** promptfoo, DeepEval, OpenAI Evals, LangSmith
+- **Interview question:** How do you test a system that gives a different answer to the same question?
+
 ### amqplib (RabbitMQ)
 
 A client for the RabbitMQ message broker. Tests read the shipping-task queue directly.
@@ -464,3 +476,4 @@ The editor, with the ESLint, Prettier and Playwright Test extensions.
 - OAuth 2.0 / RFC 6749, 7636, 9068 — ledger-api-testing
 - gRPC status codes, gRPC Health Checking Protocol — api-protocols-testing
 - Model Context Protocol 2025-11-25, RFC 9728 — ai-api-testing
+- OWASP Top 10 for LLM Applications (prompt injection) — ai-api-testing
