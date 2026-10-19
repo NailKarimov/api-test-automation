@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/v3/pet
+Query: {}
+Request body: {bad json
+Status: 400 (14 ms)
+Content-Type: application/json
+Body:
+{"code":400,"message":"Input error: unable to convert input to io.swagger.petstore.model.Pet"}
