@@ -3,49 +3,50 @@
 Every tool used across the portfolio repositories, grouped by stage of work.
 Visual, interactive version (map, one CI run step by step, repo matrix, RU/EN): [`docs/toolbox.html`](https://nailkarimov.github.io/api-test-automation/toolbox.html).
 
-Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-automation), [contract-testing-lab](https://github.com/NailKarimov/contract-testing-lab), [microservices-testing](https://github.com/NailKarimov/microservices-testing), [ledger-api-testing](https://github.com/NailKarimov/ledger-api-testing), [api-protocols-testing](https://github.com/NailKarimov/api-protocols-testing), [ai-api-testing](https://github.com/NailKarimov/ai-api-testing), [3sMoneyTests](https://github.com/NailKarimov/3sMoneyTests), [qa-project-template](https://github.com/NailKarimov/qa-project-template).
+Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-automation), [contract-testing-lab](https://github.com/NailKarimov/contract-testing-lab), [microservices-testing](https://github.com/NailKarimov/microservices-testing), [ledger-api-testing](https://github.com/NailKarimov/ledger-api-testing), [api-protocols-testing](https://github.com/NailKarimov/api-protocols-testing), [ai-api-testing](https://github.com/NailKarimov/ai-api-testing), [ui-e2e-testing](https://github.com/NailKarimov/ui-e2e-testing), [3sMoneyTests](https://github.com/NailKarimov/3sMoneyTests), [qa-project-template](https://github.com/NailKarimov/qa-project-template).
 
 ## Overview
 
-| Tool                             | Stage                | Kind                            | api-test-automation | contract-testing-lab | microservices-testing | ledger-api-testing | api-protocols-testing | ai-api-testing | 3sMoneyTests | qa-project-template |
-| -------------------------------- | -------------------- | ------------------------------- | ------------------- | -------------------- | --------------------- | ------------------ | --------------------- | -------------- | ------------ | ------------------- |
-| TypeScript                       | Write tests          | language                        | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| Node.js 22 + npm                 | Write tests          | runtime                         | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| Playwright Test                  | Write tests          | framework                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| zod                              | Write tests          | library                         | ✓                   |                      | ✓                     |                    | ✓                     | ✓              |              |                     |
-| Faker                            | Write tests          | library                         |                     |                      |                       |                    |                       |                |              | ✓                   |
-| dotenv + GitHub Secrets          | Write tests          | config                          | ✓                   |                      |                       |                    |                       |                |              | ✓                   |
-| ESLint                           | Keep code clean      | linter                          | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              |              | ✓                   |
-| Prettier                         | Keep code clean      | formatter                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              |              | ✓                   |
-| Husky + lint-staged              | Keep code clean      | git hooks                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              |              | ✓                   |
-| axe-core                         | Special test types   | accessibility                   |                     |                      |                       |                    |                       |                | ✓            |                     |
-| Web Vitals (PerformanceObserver) | Special test types   | front-end performance           |                     |                      |                       |                    |                       |                | ✓            |                     |
-| k6                               | Special test types   | load testing                    |                     |                      | ✓                     |                    |                       |                |              |                     |
-| Schemathesis                     | Special test types   | property-based / fuzzing        |                     | ✓                    |                       |                    |                       |                |              |                     |
-| oasdiff                          | Special test types   | contract drift                  |                     | ✓                    |                       |                    |                       |                |              |                     |
-| Pact                             | Special test types   | consumer-driven contracts       |                     | ✓                    |                       |                    |                       |                |              |                     |
-| GraphQL (graphql-js)             | Special test types   | GraphQL API testing             | ✓                   |                      |                       |                    |                       |                |              |                     |
-| GraphQL Inspector                | Special test types   | GraphQL schema drift            | ✓                   |                      |                       |                    |                       |                |              |                     |
-| Claude API + evals               | Special test types   | LLM endpoint testing            |                     |                      |                       |                    |                       | ✓              |              |                     |
-| amqplib (RabbitMQ)               | Special test types   | event-driven                    |                     |                      | ✓                     |                    |                       |                |              |                     |
-| Docker + Docker Compose          | Run the system       | containers                      | ✓                   | ✓                    | ✓                     | ✓                  |                       |                |              |                     |
-| Sock Shop                        | Run the system       | system under test               |                     |                      | ✓                     |                    |                       |                |              |                     |
-| Testcontainers                   | Run the system       | throw-away dependencies         |                     |                      |                       | ✓                  |                       |                |              |                     |
-| PostgreSQL + pg                  | Run the system       | database                        |                     |                      |                       | ✓                  |                       |                |              |                     |
-| Ledger API (Fastify)             | Run the system       | own system under test           |                     |                      |                       | ✓                  |                       |                |              |                     |
-| OAuth 2.0 + JWT (jose)           | Special test types   | authorization testing           |                     |                      |                       | ✓                  |                       |                |              |                     |
-| gRPC (grpc-js)                   | Special test types   | RPC over HTTP/2                 |                     |                      |                       |                    | ✓                     |                |              |                     |
-| WebSocket + SSE (ws)             | Special test types   | live data push                  |                     |                      |                       |                    | ✓                     |                |              |                     |
-| Model Context Protocol (SDK)     | Special test types   | AI tool server                  |                     |                      |                       |                    |                       | ✓              |              |                     |
-| MCP Inspector                    | Special test types   | MCP client and debugger         |                     |                      |                       |                    |                       | ✓              |              |                     |
-| buf                              | Keep code clean      | proto lint and breaking changes |                     |                      |                       |                    | ✓                     |                |              |                     |
-| xvfb                             | Run the system       | virtual display                 |                     |                      |                       |                    |                       |                | ✓            |                     |
-| Allure Report                    | Read the results     | reporting                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| Playwright HTML report + trace   | Read the results     | debugging                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| GitHub Actions                   | Automate and publish | CI/CD                           | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| GitHub Pages                     | Automate and publish | hosting                         | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| Git + GitHub                     | Automate and publish | version control                 | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
-| VS Code                          | Automate and publish | editor                          | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓            | ✓                   |
+| Tool                             | Stage                | Kind                            | api-test-automation | contract-testing-lab | microservices-testing | ledger-api-testing | api-protocols-testing | ai-api-testing | ui-e2e-testing | 3sMoneyTests | qa-project-template |
+| -------------------------------- | -------------------- | ------------------------------- | ------------------- | -------------------- | --------------------- | ------------------ | --------------------- | -------------- | -------------- | ------------ | ------------------- |
+| TypeScript                       | Write tests          | language                        | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| Node.js 22 + npm                 | Write tests          | runtime                         | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| Playwright Test                  | Write tests          | framework                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| zod                              | Write tests          | library                         | ✓                   |                      | ✓                     |                    | ✓                     | ✓              |                |              |                     |
+| Faker                            | Write tests          | library                         |                     |                      |                       |                    |                       |                |                |              | ✓                   |
+| dotenv + GitHub Secrets          | Write tests          | config                          | ✓                   |                      |                       |                    |                       |                | ✓              |              | ✓                   |
+| ESLint                           | Keep code clean      | linter                          | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              |              | ✓                   |
+| Prettier                         | Keep code clean      | formatter                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              |              | ✓                   |
+| Husky + lint-staged              | Keep code clean      | git hooks                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              |              | ✓                   |
+| axe-core                         | Special test types   | accessibility                   |                     |                      |                       |                    |                       |                |                | ✓            |                     |
+| Web Vitals (PerformanceObserver) | Special test types   | front-end performance           |                     |                      |                       |                    |                       |                |                | ✓            |                     |
+| k6                               | Special test types   | load testing                    |                     |                      | ✓                     |                    |                       |                |                |              |                     |
+| Schemathesis                     | Special test types   | property-based / fuzzing        |                     | ✓                    |                       |                    |                       |                |                |              |                     |
+| oasdiff                          | Special test types   | contract drift                  |                     | ✓                    |                       |                    |                       |                |                |              |                     |
+| Pact                             | Special test types   | consumer-driven contracts       |                     | ✓                    |                       |                    |                       |                |                |              |                     |
+| GraphQL (graphql-js)             | Special test types   | GraphQL API testing             | ✓                   |                      |                       |                    |                       |                |                |              |                     |
+| GraphQL Inspector                | Special test types   | GraphQL schema drift            | ✓                   |                      |                       |                    |                       |                |                |              |                     |
+| Claude API + evals               | Special test types   | LLM endpoint testing            |                     |                      |                       |                    |                       | ✓              |                |              |                     |
+| amqplib (RabbitMQ)               | Special test types   | event-driven                    |                     |                      | ✓                     |                    |                       |                |                |              |                     |
+| Docker + Docker Compose          | Run the system       | containers                      | ✓                   | ✓                    | ✓                     | ✓                  |                       |                | ✓              |              |                     |
+| Sock Shop                        | Run the system       | system under test               |                     |                      | ✓                     |                    |                       |                |                |              |                     |
+| OWASP Juice Shop                 | Run the system       | system under test               |                     |                      |                       |                    |                       |                | ✓              |              |                     |
+| Testcontainers                   | Run the system       | throw-away dependencies         |                     |                      |                       | ✓                  |                       |                |                |              |                     |
+| PostgreSQL + pg                  | Run the system       | database                        |                     |                      |                       | ✓                  |                       |                |                |              |                     |
+| Ledger API (Fastify)             | Run the system       | own system under test           |                     |                      |                       | ✓                  |                       |                |                |              |                     |
+| OAuth 2.0 + JWT (jose)           | Special test types   | authorization testing           |                     |                      |                       | ✓                  |                       |                |                |              |                     |
+| gRPC (grpc-js)                   | Special test types   | RPC over HTTP/2                 |                     |                      |                       |                    | ✓                     |                |                |              |                     |
+| WebSocket + SSE (ws)             | Special test types   | live data push                  |                     |                      |                       |                    | ✓                     |                |                |              |                     |
+| Model Context Protocol (SDK)     | Special test types   | AI tool server                  |                     |                      |                       |                    |                       | ✓              |                |              |                     |
+| MCP Inspector                    | Special test types   | MCP client and debugger         |                     |                      |                       |                    |                       | ✓              |                |              |                     |
+| buf                              | Keep code clean      | proto lint and breaking changes |                     |                      |                       |                    | ✓                     |                |                |              |                     |
+| xvfb                             | Run the system       | virtual display                 |                     |                      |                       |                    |                       |                |                | ✓            |                     |
+| Allure Report                    | Read the results     | reporting                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| Playwright HTML report + trace   | Read the results     | debugging                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| GitHub Actions                   | Automate and publish | CI/CD                           | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| GitHub Pages                     | Automate and publish | hosting                         | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| Git + GitHub                     | Automate and publish | version control                 | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
+| VS Code                          | Automate and publish | editor                          | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              | ✓            | ✓                   |
 
 ## Write tests
 
@@ -56,7 +57,7 @@ JavaScript with types. The language all tests and helpers are written in.
 - **Why here:** A misspelt field or a wrong argument shows up in the editor, before anything runs. Playwright and most modern frameworks are written in it.
 - **Where:** `tsconfig.json, src/, tests/`
 - **Command:** `npm run typecheck`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** JavaScript, Python, Java, C#
 - **Interview question:** Why types in tests if a test fails at runtime anyway?
 
@@ -67,7 +68,7 @@ The runtime that executes TypeScript/JavaScript outside the browser, plus the np
 - **Why here:** npm installs every library from package-lock.json in one command, so your machine, CI and an interviewer get the same versions.
 - **Where:** `package.json, package-lock.json`
 - **Command:** `npm ci`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** pnpm, Yarn, Bun
 - **Interview question:** How is npm ci different from npm install?
 
@@ -78,7 +79,7 @@ Microsoft's test framework: browser UI tests and API calls (APIRequestContext) i
 - **Why here:** Auto-waiting, parallel runs, retries, projects, fixtures, trace viewer. One framework for UI and API.
 - **Where:** `playwright.config.ts, tests/`
 - **Command:** `npx playwright test --project=petstore`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** Cypress, Selenium/WebDriver, REST Assured, pytest + requests
 - **Interview question:** How do you log in once and reuse it across Playwright tests?
 
@@ -111,7 +112,7 @@ Secrets and settings come from a local .env file and from GitHub Secrets in CI, 
 - **Why here:** The OpenWeather key never reaches the repository and is masked in reports.
 - **Where:** `.env.example, config/env.ts`
 - **Command:** `OPENWEATHER_API_KEY=… npm test`
-- **Repositories:** api-test-automation, qa-project-template
+- **Repositories:** api-test-automation, qa-project-template, ui-e2e-testing
 - **Alternatives:** Vault, 1Password CLI, Doppler
 - **Interview question:** How do you store tokens and keys for automated tests?
 
@@ -124,7 +125,7 @@ A static code analyser. With eslint-plugin-playwright it knows the usual mistake
 - **Why here:** Catches a forgotten await, test.only, skipped tests and suspicious code before review.
 - **Where:** `eslint.config.mjs`
 - **Command:** `npm run lint`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** Biome, oxlint
 - **Interview question:** Why is a forgotten await in a test dangerous?
 
@@ -135,7 +136,7 @@ Automatic formatting of code, Markdown, YAML and JSON by one set of rules.
 - **Why here:** No whitespace arguments in review; a diff shows only real changes.
 - **Where:** `.prettierrc.json`
 - **Command:** `npm run format:check`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** Biome, dprint
 - **Interview question:** What is the difference between a linter and a formatter?
 
@@ -146,7 +147,7 @@ A pre-commit git hook that runs ESLint and Prettier on the changed files only.
 - **Why here:** Unformatted code never gets committed, so CI does not fail on trivia.
 - **Where:** `.husky/pre-commit, package.json → lint-staged`
 - **Command:** `git commit (runs automatically)`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** pre-commit (Python), lefthook
 - **Interview question:** What belongs in pre-commit and what in CI?
 
@@ -337,7 +338,7 @@ Containers: the system under test starts with one command and behaves the same e
 - **Why here:** A private Petstore for the functional tests, Pact and fuzzing; 13 Sock Shop containers with MongoDB, MySQL and RabbitMQ; PostgreSQL from Testcontainers. Chaos tests stop containers mid-test.
 - **Where:** `infra/petstore, infra/sock-shop, src/ledger/fixtures.ts`
 - **Command:** `npm run stack:up`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, ui-e2e-testing
 - **Alternatives:** Podman, Kubernetes (kind), Testcontainers
 - **Interview question:** Why does a tester need Docker?
 
@@ -351,6 +352,17 @@ Weaveworks' microservices demo shop: catalogue, cart, users, orders, payment, sh
 - **Repositories:** microservices-testing
 - **Alternatives:** Online Boutique, eShopOnContainers
 - **Interview question:** What changes in testing when moving from a monolith to microservices?
+
+### OWASP Juice Shop
+
+OWASP's training web shop on Angular + Material, deliberately insecure; runs from one Docker image.
+
+- **Why here:** A real SPA with registration, basket, checkout and a mobile layout: a full customer journey for UI e2e. 8 UI defects found, including a DOM XSS and nameless buttons.
+- **Where:** `.github/workflows/tests.yml (service container), npm run shop:up`
+- **Command:** `npm run shop:up && npm test`
+- **Repositories:** ui-e2e-testing
+- **Alternatives:** Sauce Demo, Conduit (RealWorld), your own app in Docker
+- **Interview question:** How do you keep UI tests independent when they share one database?
 
 ### Testcontainers
 
@@ -405,7 +417,7 @@ A run report: test tree, steps, request/response attachments, failure categories
 - **Why here:** Managers and developers can read it. History across runs exposes flaky tests and the pass-rate trend.
 - **Where:** `allure/categories.json, scripts/allure-prepare.mjs`
 - **Command:** `npm run allure:generate && npm run allure:open`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** ReportPortal, Playwright HTML report, TestRail
 - **Interview question:** Which report metrics do you show the team?
 
@@ -416,7 +428,7 @@ Playwright's built-in report; for UI, a trace: a step-by-step recording of actio
 - **Why here:** A failed test can be debugged without re-running it: open the trace and see the page at every step.
 - **Where:** `playwright-report/ (CI artifact)`
 - **Command:** `npx playwright show-report`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** videos and screenshots, Cypress Cloud
 - **Interview question:** How do you debug a test that fails only in CI?
 
@@ -429,7 +441,7 @@ CI built into GitHub: workflow files say when and how tests run.
 - **Why here:** Runs on every push and PR, nightly on a schedule, and manually with a chosen suite. Annotations and a summary show on the run page.
 - **Where:** `.github/workflows/*.yml`
 - **Command:** `push → Actions`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** GitLab CI, Jenkins, TeamCity, Azure DevOps
 - **Interview question:** Which tests run on a PR and which nightly?
 
@@ -440,7 +452,7 @@ Free static hosting from the gh-pages branch; peaceiris/actions-gh-pages publish
 - **Why here:** The Allure report, the Schemathesis report and the visual guides open from a link, no download needed. Handy in an interview.
 - **Where:** `gh-pages branch`
 - **Command:** `nailkarimov.github.io/api-test-automation`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** Netlify, S3, ReportPortal
 - **Interview question:** How do you keep Allure history between CI runs?
 
@@ -451,7 +463,7 @@ Version control and repository hosting. SSH key login, 2FA.
 - **Why here:** Change history, review, a public portfolio. Every commit triggers CI.
 - **Where:** `github.com/NailKarimov`
 - **Command:** `git push`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** GitLab, Bitbucket
 - **Interview question:** Why is force-pushing a shared branch dangerous?
 
@@ -462,7 +474,7 @@ The editor, with the ESLint, Prettier and Playwright Test extensions.
 - **Why here:** Run and debug a single test with a click, record locators, see lint errors as you type.
 - **Where:** `local machine`
 - **Command:** `Testing → ▶`
-- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing
+- **Repositories:** api-test-automation, contract-testing-lab, microservices-testing, ledger-api-testing, 3sMoneyTests, qa-project-template, api-protocols-testing, ai-api-testing, ui-e2e-testing
 - **Alternatives:** WebStorm, Cursor
 - **Interview question:** How do you find a stable locator?
 
