@@ -1,0 +1,7 @@
+POST https://rickandmortyapi.com/graphql
+Query: {}
+Request body: {"query":"{ character(id: 1) { name status } }"}
+Status: 200 (639 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"data":{"character":{"name":"Rick Sanchez","status":"Alive"}}}
