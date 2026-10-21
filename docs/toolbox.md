@@ -18,7 +18,9 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | ESLint                           | Keep code clean      | linter                          | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              |              | ✓                   |
 | Prettier                         | Keep code clean      | formatter                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              |              | ✓                   |
 | Husky + lint-staged              | Keep code clean      | git hooks                       | ✓                   | ✓                    | ✓                     | ✓                  | ✓                     | ✓              | ✓              |              | ✓                   |
-| axe-core                         | Special test types   | accessibility                   |                     |                      |                       |                    |                       |                |                | ✓            |                     |
+| axe-core                         | Special test types   | accessibility                   |                     |                      |                       |                    |                       |                | ✓              | ✓            |                     |
+| Pa11y CI                         | Special test types   | accessibility                   |                     |                      |                       |                    |                       |                | ✓              |              |                     |
+| Playwright toHaveScreenshot      | Special test types   | visual regression               |                     |                      |                       |                    |                       |                | ✓              |              |                     |
 | Web Vitals (PerformanceObserver) | Special test types   | front-end performance           |                     |                      |                       |                    |                       |                |                | ✓            |                     |
 | k6                               | Special test types   | load testing                    |                     |                      | ✓                     |                    |                       |                |                |              |                     |
 | Schemathesis                     | Special test types   | property-based / fuzzing        |                     | ✓                    |                       |                    |                       |                |                |              |                     |
@@ -171,9 +173,31 @@ Deque's automated accessibility engine, used through @axe-core/playwright.
 - **Why here:** Checks a page against WCAG 2.2 AA rules: contrast, labels, roles, structure. Finds roughly a third of issues; the rest needs manual and keyboard testing.
 - **Where:** `3sMoneyTests/tests/a11y`
 - **Command:** `npm run test:a11y`
-- **Repositories:** 3sMoneyTests
+- **Repositories:** 3sMoneyTests, ui-e2e-testing
 - **Alternatives:** Pa11y, Lighthouse, WAVE
 - **Interview question:** Can accessibility testing be fully automated?
+
+### Pa11y CI
+
+Command-line accessibility checks for a list of pages; HTML_CodeSniffer by default, independent of axe.
+
+- **Why here:** A second opinion next to axe: where engines agree a finding is solid; each difference is reviewed once and recorded as a known defect or a false positive.
+- **Where:** `.pa11yci.js, scripts/pa11y-summary.mjs`
+- **Command:** `npm run a11y:pa11y`
+- **Repositories:** ui-e2e-testing
+- **Alternatives:** axe CLI, Lighthouse accessibility, WAVE
+- **Interview question:** Why do two accessibility tools report different things, and which do you trust?
+
+### Playwright toHaveScreenshot
+
+Compares a page or element screenshot with an approved baseline pixel by pixel, with masks and a tolerance.
+
+- **Why here:** Catches what functional tests can't see: a shifted button, a changed colour, a missing icon. Baselines are made in Playwright's Docker image so fonts match.
+- **Where:** `tests/visual, tests/__screenshots__, playwright.config.ts`
+- **Command:** `npm run test:visual`
+- **Repositories:** ui-e2e-testing
+- **Alternatives:** Percy, Chromatic, Applitools, BackstopJS
+- **Interview question:** How do you keep screenshot tests stable without missing small changes?
 
 ### Web Vitals (PerformanceObserver)
 
