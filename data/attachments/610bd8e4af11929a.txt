@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/v3/pet
+Query: {}
+Request body: {"id":1792570204819480,"name":"qa-pet-1792570204819480","category":{"id":1,"name":"Dogs"},"photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792570204819480"}],"status":"available"}
+Status: 200 (8 ms)
+Content-Type: application/json
+Body:
+{"id":1792570204819480,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1792570204819480","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792570204819480"}],"status":"available"}

@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"query Page($page: Int, $filter: FilterCharacter) { characters(page: $page, filter: $filter) { info { count pages next prev } results { id name status } } }","variables":{"filter":{"status":"Dead"}}}
-Status: 200 (419 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"data":{"characters":{"info":{"count":287,"pages":15,"next":2,"prev":null},"results":[{"id":"8","name":"Adjudicator Rick","status":"Dead"},{"id":"9","name":"Agency Director","status":"Dead"},{"id":"10","name":"Alan Rails","status":"Dead"},{"id":"11","name":"Albert Einstein","status":"Dead"},{"id":"12","name":"Alexander","status":"Dead"},{"id":"16","name":"Amish Cyborg","status":"Dead"},{"id":"25","name":"Armothy","status":"Dead"},{"id":"31","name":"Baby Wizard","status":"Dead"},{"id":"32","name":"Bearded Lady","status":"Dead"},{"id":"33","name":"Beebo","status":"Dead"},{"id":"40","name":"Beth's Mytholog","status":"Dead"},{"id":"43","name":"Big Morty","status":"Dead"},{"id":"44","name":"Body Guard Morty","status":"Dead"},{"id":"52","name":"Blue Footprint Guy","status":"Dead"},{"id":"55","name":"Boobloosian","status":"Dead"},{"id":"56","name":"Bootleg Portal Chemist Rick","status":"Dead"},{"id":"59","name":"Brad Anderson","status":"Dead"},{"id":"60","name":"Calypso","status":"Dead"},{"id":"61","name":"Campaign Manager Morty","status":"Dead"},{"id":"62","name":"Canklanker Thom","status":"Dead"}]}}}
