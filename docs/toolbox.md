@@ -23,6 +23,9 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | Playwright toHaveScreenshot      | Special test types   | visual regression               |                     |                      |                       |                    |                       |                | ✓              |              |                     |
 | Web Vitals (PerformanceObserver) | Special test types   | front-end performance           |                     |                      |                       |                    |                       |                |                | ✓            |                     |
 | k6                               | Special test types   | load testing                    |                     |                      | ✓                     |                    |                       |                |                |              |                     |
+| Lighthouse CI                    | Special test types   | web performance                 |                     |                      |                       |                    |                       |                | ✓              |              |                     |
+| Prometheus                       | Read the results     | metrics storage                 |                     |                      | ✓                     |                    |                       |                |                |              |                     |
+| Grafana                          | Read the results     | dashboards                      |                     |                      | ✓                     |                    |                       |                |                |              |                     |
 | Schemathesis                     | Special test types   | property-based / fuzzing        |                     | ✓                    |                       |                    |                       |                |                |              |                     |
 | oasdiff                          | Special test types   | contract drift                  |                     | ✓                    |                       |                    |                       |                |                |              |                     |
 | Pact                             | Special test types   | consumer-driven contracts       |                     | ✓                    |                       |                    |                       |                |                |              |                     |
@@ -220,6 +223,17 @@ Grafana's load testing tool. Scenarios in JavaScript, run in the grafana/k6 cont
 - **Repositories:** microservices-testing
 - **Alternatives:** JMeter, Gatling, Locust, Artillery
 - **Interview question:** Why p95 and not the average response time?
+
+### Lighthouse CI
+
+Lighthouse in CI: several runs per page, the median, assertions on LCP, CLS, TBT and resource sizes; a user flow for INP.
+
+- **Why here:** Catches front-end speed regressions on every push. Two limits: the Core Web Vitals target (a warning) and a ceiling from today's value (fails the build).
+- **Where:** `lighthouserc.cjs, scripts/lh-flow.mjs, scripts/perf-summary.mjs`
+- **Command:** `npm run perf:lhci`
+- **Repositories:** ui-e2e-testing
+- **Alternatives:** WebPageTest, sitespeed.io, Calibre, SpeedCurve
+- **Interview question:** How do lab metrics differ from field metrics, and why can't a normal Lighthouse run measure INP?
 
 ### Schemathesis
 
@@ -433,6 +447,28 @@ A virtual display on Linux: the browser believes it has a screen.
 - **Interview question:** Headless vs headed: when does it matter?
 
 ## Read the results
+
+### Prometheus
+
+A time-series database; here it receives k6 metrics through remote write and stores durations as native histograms.
+
+- **Why here:** Exact percentiles over any window through PromQL instead of averaged p95s. Metrics live over time: you see when latency grew.
+- **Where:** `infra/observability/docker-compose.yml`
+- **Command:** `npm run obs:up`
+- **Repositories:** microservices-testing
+- **Alternatives:** InfluxDB, Grafana Cloud k6, Datadog
+- **Interview question:** Why can't p95 values from different intervals be averaged?
+
+### Grafana
+
+Dashboards on top of Prometheus; the k6 dashboard is code (a script generates the JSON) and is provisioned on start.
+
+- **Why here:** Shows load over time: VUs, requests/s, p95 per endpoint against the SLO, errors, dropped iterations. Each run's panels are saved as pictures on Pages.
+- **Where:** `infra/observability/grafana, scripts/build-dashboard.mjs, scripts/grafana-snapshots.mjs`
+- **Command:** `OBSERVE=1 node scripts/run-k6.mjs catalogue-browse load`
+- **Repositories:** microservices-testing
+- **Alternatives:** k6 web dashboard, Kibana, Chronograf
+- **Interview question:** Why can the requests-per-second graph of a closed model mislead about the server's limit?
 
 ### Allure Report
 
