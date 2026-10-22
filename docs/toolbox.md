@@ -29,6 +29,7 @@ Repositories: [api-test-automation](https://github.com/NailKarimov/api-test-auto
 | Schemathesis                     | Special test types   | property-based / fuzzing        |                     | ✓                    |                       |                    |                       |                |                | ✓              |            |              |                     |
 | oasdiff                          | Special test types   | contract drift                  |                     | ✓                    |                       |                    |                       |                |                |                |            |              |                     |
 | Pact                             | Special test types   | consumer-driven contracts       |                     | ✓                    |                       |                    |                       |                |                |                |            |              |                     |
+| Bruno                            | Write tests          | api client                      | ✓                   |                      |                       |                    |                       |                |                |                |            |              |                     |
 | GraphQL (graphql-js)             | Special test types   | GraphQL API testing             | ✓                   |                      |                       |                    |                       |                |                |                |            |              |                     |
 | GraphQL Inspector                | Special test types   | GraphQL schema drift            | ✓                   |                      |                       |                    |                       |                |                |                |            |              |                     |
 | Claude API + evals               | Special test types   | LLM endpoint testing            |                     |                      |                       |                    |                       | ✓              |                |                |            |              |                     |
@@ -128,6 +129,17 @@ Secrets and settings come from a local .env file and from GitHub Secrets in CI, 
 - **Repositories:** api-test-automation, qa-project-template, ui-e2e-testing
 - **Alternatives:** Vault, 1Password CLI, Doppler
 - **Interview question:** How do you store tokens and keys for automated tests?
+
+### Bruno
+
+An API client like Postman: a collection is a folder of plain-text .bru files in git.
+
+- **Why here:** Living Petstore examples for the whole team; bru run in CI keeps the collection from going stale, JUnit goes to Allure.
+- **Where:** `collections/petstore/`
+- **Command:** `npm run test:bruno`
+- **Repositories:** api-test-automation
+- **Alternatives:** Postman + newman, Insomnia
+- **Interview question:** What does a collection in git give you over a cloud workspace?
 
 ### pytest + httpx
 
