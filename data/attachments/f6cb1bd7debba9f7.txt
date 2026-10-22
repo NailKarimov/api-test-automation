@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (107 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":13.6872,"lat":42.3117},"weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03n"}],"base":"stations","main":{"temp":282.34,"feels_like":282.34,"temp_min":282.34,"temp_max":282.34,"pressure":1020,"humidity":70,"sea_level":1020,"grnd_level":873},"visibility":10000,"wind":{"speed":0.22,"deg":68,"gust":1.73},"clouds":{"all":31},"dt":1792692294,"sys":{"country":"IT","sunrise":1792646745,"sunset":1792685607},"timezone":7200,"id":3179457,"name":"Castelvecchio Calvisio","cod":200}

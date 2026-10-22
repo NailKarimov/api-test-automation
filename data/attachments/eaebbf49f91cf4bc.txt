@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"{ __schema { queryType { name } types { name } } }"}
-Status: 200 (303 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"data":{"__schema":{"queryType":{"name":"Query"},"types":[{"name":"Query"},{"name":"ID"},{"name":"Character"},{"name":"String"},{"name":"Location"},{"name":"Episode"},{"name":"Int"},{"name":"FilterCharacter"},{"name":"Characters"},{"name":"Info"},{"name":"FilterLocation"},{"name":"Locations"},{"name":"FilterEpisode"},{"name":"Episodes"},{"name":"__Schema"},{"name":"__Type"},{"name":"__TypeKind"},{"name":"Boolean"},{"name":"__Field"},{"name":"__InputValue"},{"name":"__EnumValue"},{"name":"__Directive"},{"name":"__DirectiveLocation"},{"name":"CacheControlScope"},{"name":"Upload"}]}}}
