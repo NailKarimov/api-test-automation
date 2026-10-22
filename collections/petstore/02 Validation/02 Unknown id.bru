@@ -1,0 +1,15 @@
+meta {
+  name: Unknown id is 404
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/pet/999999999999
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

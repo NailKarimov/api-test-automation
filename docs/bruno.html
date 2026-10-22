@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en" data-default-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bruno API collection</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: a collection browser. Pick a request and read its .bru file block by block; what the server receives
+   with each Content-Type; planted server bugs; Bruno vs Postman vs code; commands. */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --sunken: #e2e6ee; --ink: #141720; --muted: #5a6070; --line: #cfd4df;
+  --accent: #b4480f; --accent-soft: #fbe6d8; --px: #0f6b73; --px-soft: #d5eeee;
+  --ok: #17784b; --ok-soft: #d8f1e3; --bad: #b42318; --bad-soft: #fbe1dd; --warn: #8a6100; --warn-soft: #f7ebc8;
+  --font-display: 'Bricolage Grotesque', 'Public Sans', system-ui, sans-serif;
+  --font-body: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101219; --surface: #181b24; --sunken: #20242f; --ink: #e8eaf1; --muted: #a0a6b5; --line: #2e3341;
+    --accent: #f59a5f; --accent-soft: #3a1d0c; --px: #6fd3db; --px-soft: #0f3134;
+    --ok: #62d49a; --ok-soft: #12321f; --bad: #ff8a7d; --bad-soft: #3d1714; --warn: #f1c35a; --warn-soft: #3a2d0c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101219; --surface: #181b24; --sunken: #20242f; --ink: #e8eaf1; --muted: #a0a6b5; --line: #2e3341;
+  --accent: #f59a5f; --accent-soft: #3a1d0c; --px: #6fd3db; --px-soft: #0f3134;
+  --ok: #62d49a; --ok-soft: #12321f; --bad: #ff8a7d; --bad-soft: #3d1714; --warn: #f1c35a; --warn-soft: #3a2d0c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--font-body); margin: 0; }
+body[data-lang="ru"] [lang="en"], body[data-lang="en"] [lang="ru"] { display: none !important; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.1; margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 50px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(22px, 2.8vw, 30px); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 16px; font-weight: 600; }
+p { margin: 0; max-width: 70ch; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+a { color: var(--accent); }
+button { font-family: var(--font-body); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+header.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 20px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { font: 500 13px var(--font-mono); background: transparent; color: var(--muted); border: 0; padding: 6px 14px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.hero { display: grid; gap: 16px; padding-block: 8px; }
+.hero .lead { font-size: 18px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; color: var(--muted); }
+.facts b { font: 800 24px var(--font-display); color: var(--ink); margin-right: 6px; font-variant-numeric: tabular-nums; }
+section.station { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: 52px 0; }
+section.station > header { display: grid; gap: 8px; }
+.num { font: 700 13px var(--font-mono); color: var(--accent); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chips button { font: 500 13.5px var(--font-body); border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 780px) { .two { grid-template-columns: minmax(0, 1fr); } }
+pre.code { margin: 0; background: var(--sunken); border-radius: 8px; padding: 10px 12px; font: 400 12.5px/1.55 var(--font-mono); overflow-x: auto; white-space: pre; }
+.tag { font: 600 11px var(--font-mono); padding: 2px 7px; border-radius: 4px; display: inline-block; white-space: nowrap; }
+.tag.ok { background: var(--ok-soft); color: var(--ok); } .tag.bad { background: var(--bad-soft); color: var(--bad); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); } .tag.ac { background: var(--accent-soft); color: var(--accent); }
+.tag.px { background: var(--px-soft); color: var(--px); }
+.state { border-radius: 12px; padding: 14px; display: grid; gap: 4px; font-size: 15px; }
+.state.ok { background: var(--ok-soft); } .state.bad { background: var(--bad-soft); } .state.warn { background: var(--warn-soft); }
+.state b { font-family: var(--font-display); font-size: 19px; }
+
+.ctl { display: grid; gap: 12px; }
+.ctl label { display: grid; gap: 4px; font-size: 13.5px; color: var(--muted); }
+.ctl input { font: 500 15px var(--font-mono); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.kv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; font-size: 14.5px; align-items: baseline; }
+.kv b { font: 700 15px var(--font-mono); text-align: right; font-variant-numeric: tabular-nums; }
+.list { display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr); }
+.item { display: grid; grid-template-columns: 130px minmax(0, 1.3fr) minmax(0, 1fr); gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14.5px; }
+@media (max-width: 760px) { .item { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+.item code { overflow-wrap: anywhere; }
+.lanes { display: grid; gap: 8px; }
+.lane { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 13.5px; }
+.lane .track { display: flex; gap: 4px; flex-wrap: wrap; }
+.lane .track span { font: 600 11.5px var(--font-mono); padding: 5px 8px; border-radius: 6px; background: var(--sunken); }
+.lane .track span.w { background: var(--warn-soft); color: var(--warn); }
+.lane .track span.bad { background: var(--bad-soft); color: var(--bad); }
+.lane .track span.ok { background: var(--ok-soft); color: var(--ok); }
+dl.terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+@media (max-width: 760px) { dl.terms { grid-template-columns: minmax(0, 1fr); } }
+dl.terms div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+dt { font: 700 13.5px var(--font-mono); } dd { margin: 4px 0 0; font-size: 14.5px; color: var(--muted); }
+.cmds { display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr); }
+.cmd { display: flex; gap: 8px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 8px 8px 14px; min-width: 0; }
+.cmd code { flex: 1; overflow-x: auto; white-space: nowrap; }
+.cmd button { font: 600 12px var(--font-mono); border: 1px solid var(--line); background: var(--sunken); color: var(--ink); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+footer { padding-top: 48px; font-size: 14px; color: var(--muted); }
+.bk { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.bk button { font: 600 13px var(--font-mono); border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+.fsm { display: flex; gap: 8px; flex-wrap: wrap; }
+.fsm span { font: 700 13px var(--font-mono); padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--line); color: var(--muted); }
+.fsm span.on.closed { background: var(--ok-soft); color: var(--ok); border-style: solid; border-color: var(--ok); }
+.fsm span.on.open { background: var(--bad-soft); color: var(--bad); border-style: solid; border-color: var(--bad); }
+.fsm span.on.half { background: var(--warn-soft); color: var(--warn); border-style: solid; border-color: var(--warn); }
+.log { font: 400 12.5px/1.6 var(--font-mono); background: var(--sunken); border-radius: 8px; padding: 10px 12px; max-height: 190px; overflow-y: auto; margin: 0; white-space: pre-wrap; }
+.switch { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; }
+.tree { display: grid; gap: 2px; font: 500 13px var(--font-mono); }
+.tree .f { color: var(--muted); padding: 6px 4px 2px; }
+.tree button { text-align: left; font: 500 13px var(--font-mono); background: transparent; color: var(--ink); border: 0; border-radius: 6px; padding: 5px 8px; cursor: pointer; }
+.tree button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+.bru { font: 400 12.5px/1.55 var(--font-mono); background: var(--sunken); border-radius: 8px; padding: 10px 12px; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.bru .blk { color: var(--accent); font-weight: 700; }
+.split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); gap: 12px; }
+@media (max-width: 780px) { .split { grid-template-columns: minmax(0, 1fr); } }
+table.cmp { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.cmp th, table.cmp td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp th { font: 600 12px var(--font-mono); color: var(--muted); }
+.tscroll { overflow-x: auto; }
+</style>
+</head>
+<body data-lang="ru">
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">api-test-automation · Bruno · bru run · Petstore</span>
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" id="lang-ru" data-l="ru" aria-pressed="true">RU</button>
+      <button type="button" id="lang-en" data-l="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 lang="ru">Bruno: коллекция запросов, которая живёт в git</h1>
+    <h1 lang="en">Bruno: an API collection that lives in git</h1>
+    <p class="lead" lang="ru">Клиент для API вроде Postman, но коллекция — это папка текстовых файлов .bru: её смотрят в pull request как код, она не требует аккаунта и запускается в CI той же командой. Коллекция бьёт в ту же приватную Petstore в Docker, что и тесты на Playwright.</p>
+    <p class="lead" lang="en">An API client like Postman, but a collection is a folder of plain-text .bru files: reviewed in pull requests like code, no account needed, and run in CI with the same command. It targets the same private Petstore in Docker as the Playwright suite.</p>
+    <div class="facts">
+      <span><b>18</b><span lang="ru">запросов в 3 папках</span><span lang="en">requests in 3 folders</span></span>
+      <span><b>36</b><span lang="ru">проверок (27 assert + 9 tests)</span><span lang="en">checks (27 asserts + 9 tests)</span></span>
+      <span><b>5/5</b><span lang="ru">посаженных багов сервера пойманы</span><span lang="en">planted server bugs caught</span></span>
+    </div>
+  </section>
+
+  <section class="station" aria-labelledby="p1">
+    <header>
+      <span class="num">01</span>
+      <h2 id="p1" lang="ru">Коллекция изнутри</h2><h2 lang="en">Inside the collection</h2>
+      <p class="muted" lang="ru">Выберите запрос — справа его файл .bru и что делает каждый блок. Запросы первой папки связаны переменной petId: созданного питомца читают, ищут, меняют и удаляют следующие запросы.</p>
+      <p class="muted" lang="en">Pick a request to see its .bru file and what each block does. Requests in the first folder are chained by the petId variable: the pet created first is read, searched for, updated and deleted by the next ones.</p>
+    </header>
+    <div class="split">
+      <div class="panel"><div class="tree" id="tree"></div></div>
+      <div class="panel"><pre class="bru" id="bru"></pre><div class="list" id="blocks"></div></div>
+    </div>
+  </section>
+
+  <section class="station" aria-labelledby="p2">
+    <header>
+      <span class="num">02</span>
+      <h2 id="p2" lang="ru">Ловушка: Bruno не хотел отправлять битый JSON</h2><h2 lang="en">A trap: Bruno would not send broken JSON</h2>
+      <p class="muted" lang="ru">Негативный тест «битый JSON → 400» сначала падал. Сервер получал не битый, а вполне валидный JSON — строку. Библиотека axios под Bruno перекодирует строку, которая не парсится, в JSON-строку, если в Content-Type есть application/json. Переключите заголовок.</p>
+      <p class="muted" lang="en">The negative test "broken JSON → 400" failed at first. The server got valid JSON, a string, not the broken body. The axios library under Bruno re-encodes a string that does not parse into a JSON string whenever the Content-Type contains application/json. Switch the header.</p>
+    </header>
+    <div class="chips" id="ct-chips" role="group" aria-label="Content-Type"></div>
+    <div class="two">
+      <div class="panel"><span class="eyebrow" lang="ru">в файле .bru</span><span class="eyebrow" lang="en">in the .bru file</span><pre class="code">{ "id": 1, "name":</pre></div>
+      <div class="panel" id="wire" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="station" aria-labelledby="p3">
+    <header>
+      <span class="num">03</span>
+      <h2 id="p3" lang="ru">Ловит ли коллекция настоящие баги?</h2><h2 lang="en">Does the collection catch real bugs?</h2>
+      <p class="muted" lang="ru">Локальная заглушка Petstore запускалась с одним багом за раз. Первый раунд один баг пережил — и это самый полезный результат.</p>
+      <p class="muted" lang="en">A local Petstore stand-in ran with one bug at a time. One bug survived the first round, and that is the most useful result.</p>
+    </header>
+    <div class="list" id="mut"></div>
+  </section>
+
+  <section class="station" aria-labelledby="p4">
+    <header>
+      <span class="num">04</span>
+      <h2 id="p4" lang="ru">Bruno, Postman или код?</h2><h2 lang="en">Bruno, Postman or code?</h2>
+    </header>
+    <div class="panel tscroll"><table class="cmp" id="cmp"></table></div>
+    <div class="cmds" id="cmds"></div>
+  </section>
+
+  <footer>
+    <span lang="ru">Код: <a href="https://github.com/NailKarimov/api-test-automation/tree/main/collections/petstore">collections/petstore</a> · текстом: <code>docs/bruno.md</code> · <a href="bruno/">HTML-отчёт Bruno</a>.</span>
+    <span lang="en">Code: <a href="https://github.com/NailKarimov/api-test-automation/tree/main/collections/petstore">collections/petstore</a> · as text: <code>docs/bruno.md</code> · <a href="bruno/">Bruno HTML report</a>.</span>
+  </footer>
+</div>
+
+<script>
+const S = { lang: 'ru', req: 'create', ct: 'json' };
+const L = (ru, en) => (S.lang === 'ru' ? ru : en);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const $ = (id) => document.getElementById(id);
+function chips(id, items, cur, key) {
+  $(id).innerHTML = items.map(([v, ru, en]) => `<button type="button" data-v="${v}" aria-pressed="${String(v) === String(cur)}">${L(ru, en)}</button>`).join('');
+  $(id).onclick = (e) => { const b = e.target.closest('button'); if (!b) return; S[key] = b.dataset.v; renderAll(); };
+}
+
+/* 01 */
+const TREE = [
+  ['01 Pet lifecycle', [['create', '01 Create pet'], ['control', '02 Create a sold pet'], ['get', '03 Get pet'], ['find', '04 Find by status'], ['form', '05 Update with form'], ['getu', '06 Get updated pet'], ['del', '07 Delete pet'], ['gone', '08 Deleted pet is gone'], ['delc', '09 Delete the control pet']]],
+  ['02 Validation', [['abc', '01 Non-numeric id'], ['unk', '02 Unknown id'], ['st', '03 Unknown status'], ['mst', '04 Missing status'], ['bad', '05 Malformed JSON'], ['txt', '06 Wrong media type'], ['dabc', '07 Delete non-numeric id']]],
+  ['03 Store', [['inv', '01 Inventory'], ['ord', '02 Place order']]],
+];
+const B = (b, ru, en) => [b, ru, en];
+const REQ = {
+  create: { file: `post {\n  url: {{baseUrl}}/pet\n  body: json\n}\n\nbody:json {\n  { "id": {{petId}}, "name": "bruno-{{petId}}",\n    "category": { "id": 1, "name": "Dogs" }, "tags": [...],\n    "status": "available" }\n}\n\nscript:pre-request {\n  bru.setVar("petId", 900000000 + random)\n}\n\nassert {\n  res.status: eq 200\n  res.body.name: eq bruno-{{petId}}\n}\n\ntests {\n  test("echoes every field it was given", ...)\n  test("answers within a second", ...)\n}`,
+    blocks: [B('script:pre-request', 'Новый id на каждый прогон — прогоны не мешают друг другу.', 'A fresh id per run, so runs never collide.'), B('assert', 'Декларативные проверки: одна строка — одно правило.', 'Declarative checks: one line, one rule.'), B('tests', 'JavaScript и Chai для всего, что не скажешь одной строкой: глубокое сравнение, время ответа.', 'JavaScript and Chai for what one line cannot say: deep equality, response time.')] },
+  control: { file: `body:json {\n  { "id": {{controlId}}, "status": "sold", ... }\n}\n\nscript:pre-request {\n  bru.setVar("controlId", bru.getVar("petId") + 1)\n}`,
+    blocks: [B('docs', 'Контрольный питомец, которого фильтр по статусу обязан исключить. Без него сломанный фильтр проходил тест (раздел 03).', 'A control pet the status filter must leave out. Without it a broken filter passed (section 03).')] },
+  get: { file: `get {\n  url: {{baseUrl}}/pet/{{petId}}\n}\n\nassert {\n  res.status: eq 200\n  res.body.id: eq {{petId}}\n}\n\ntests {\n  test("matches the pet schema", ...)\n}`, blocks: [B('{{petId}}', 'Переменная из первого запроса: цепочка внутри папки.', 'The variable from the first request: a chain inside the folder.')] },
+  find: { file: `get {\n  url: {{baseUrl}}/pet/findByStatus?status=available\n}\n\ntests {\n  test("every pet has the requested status", ...)\n  test("the new pet is listed, the sold control pet is not", ...)\n}`, blocks: [B('tests', 'Две стороны фильтра: нужное есть, лишнего нет.', 'Both sides of a filter: what should be there is, what should not is not.')] },
+  form: { file: `post {\n  url: {{baseUrl}}/pet/{{petId}}?name=renamed&status=sold\n}\n\nassert {\n  res.status: eq 200\n}`, blocks: [B('params:query', 'Частичное обновление формой: меняются только name и status.', 'A partial update by form: only name and status change.')] },
+  getu: { file: `assert {\n  res.body.name: eq renamed\n  res.body.status: eq sold\n}\n\ntests {\n  test("fields that were not in the form are kept", ...)\n}`, blocks: [B('tests', 'Проверяем и то, что поменялось, и то, что не должно было.', 'Checks what changed and what must not have.')] },
+  del: { file: `delete {\n  url: {{baseUrl}}/pet/{{petId}}\n}\n\nassert {\n  res.status: eq 200\n}`, blocks: [B('delete', 'Удаление нашего питомца.', 'Deleting our pet.')] },
+  gone: { file: `get {\n  url: {{baseUrl}}/pet/{{petId}}\n}\n\nassert {\n  res.status: eq 404\n}`, blocks: [B('assert', '200 на DELETE ещё ничего не доказывает — доказывает 404 после него.', 'A 200 on DELETE proves nothing yet; the 404 after it does.')] },
+  delc: { file: `delete {\n  url: {{baseUrl}}/pet/{{controlId}}\n}`, blocks: [B('delete', 'Убираем за собой контрольного питомца.', 'Cleans up the control pet.')] },
+  abc: { file: `get {\n  url: {{baseUrl}}/pet/abc\n}\n\nassert {\n  res.status: eq 400\n}`, blocks: [B('assert', 'Неверный тип — ошибка клиента, а не 404 и не 500.', 'A wrong type is a client error: not 404, not 500.')] },
+  unk: { file: `get {\n  url: {{baseUrl}}/pet/999999999999\n}\n\nassert {\n  res.status: eq 404\n}`, blocks: [B('assert', 'Корректный, но несуществующий id.', 'A valid but unknown id.')] },
+  st: { file: `get {\n  url: {{baseUrl}}/pet/findByStatus?status=lost\n}\n\nassert {\n  res.status: eq 400\n}`, blocks: [B('assert', 'Значение вне перечисления.', 'A value outside the enum.')] },
+  mst: { file: `get {\n  url: {{baseUrl}}/pet/findByStatus\n}\n\nassert {\n  res.status: eq 400\n}`, blocks: [B('assert', 'Обязательный параметр не передан.', 'The required parameter is missing.')] },
+  bad: { file: `post {\n  url: {{baseUrl}}/pet\n  body: text\n}\n\nheaders {\n  Content-Type: Application/JSON\n}\n\nbody:text {\n  { "id": 1, "name":\n}\n\nassert {\n  res.status: eq 400\n}\n\ntests {\n  test("no stack trace in the error", ...)\n}`, blocks: [B('Application/JSON', 'Регистр не случаен — раздел 02.', 'The case is on purpose: see section 02.')] },
+  txt: { file: `post {\n  url: {{baseUrl}}/pet\n  body: text\n}\n\nbody:text {\n  name=rex\n}\n\nassert {\n  res.status: eq 415\n}`, blocks: [B('assert', 'Неподдерживаемый тип тела.', 'An unsupported body type.')] },
+  dabc: { file: `delete {\n  url: {{baseUrl}}/pet/abc\n}\n\nassert {\n  res.status: eq 400\n}`, blocks: [B('assert', 'Те же правила для DELETE.', 'The same rules for DELETE.')] },
+  inv: { file: `get {\n  url: {{baseUrl}}/store/inventory\n}\n\ntests {\n  test("a whole, non-negative count per status", ...)\n}`, blocks: [B('tests', 'Инвариант, а не точные числа: склад общий и меняется.', 'An invariant, not exact numbers: the store is shared and changes.')] },
+  ord: { file: `post {\n  url: {{baseUrl}}/store/order\n  body: json\n}\n\nassert {\n  res.status: eq 200\n  res.body.id: eq {{orderId}}\n  res.body.status: eq placed\n}`, blocks: [B('assert', 'Заказ возвращается тем же, что отправили.', 'The order comes back as sent.')] },
+};
+function hl(t) { return esc(t).replace(/^([a-z:-]+) \{/gm, '<span class="blk">$1</span> {'); }
+function renderReq() {
+  $('tree').innerHTML = TREE.map(([f, items]) => `<div class="f">${esc(f)}</div>` + items.map(([id, n]) => `<button type="button" data-r="${id}" aria-pressed="${id === S.req}">${esc(n)}</button>`).join('')).join('');
+  const r = REQ[S.req];
+  $('bru').innerHTML = hl(r.file);
+  $('blocks').innerHTML = r.blocks.map((b) => `<div><code>${esc(b[0])}</code> — <span class="muted">${esc(L(b[1], b[2]))}</span></div>`).join('');
+}
+$('tree').addEventListener('click', (e) => { const b = e.target.closest('[data-r]'); if (!b) return; S.req = b.dataset.r; renderReq(); });
+
+/* 02 */
+function renderWire() {
+  chips('ct-chips', [['json', 'Content-Type: application/json', 'Content-Type: application/json'], ['caps', 'Content-Type: Application/JSON', 'Content-Type: Application/JSON']], S.ct, 'ct');
+  const json = S.ct === 'json';
+  $('wire').innerHTML = `<span class="eyebrow">${L('сервер получил', 'the server received')}</span><pre class="code">${esc(json ? '"{ \\"id\\": 1, \\"name\\":"' : '{ "id": 1, "name":')}</pre>` +
+    `<div class="state ${json ? 'bad' : 'ok'}"><b>${json ? L('Валидный JSON — тест бессмысленен', 'Valid JSON: the test means nothing') : L('Битые байты как есть → 400', 'The broken bytes as they are → 400')}</b><span>${json ? L('axios: строка не парсится → JSON.stringify. Сервер видит строку, а не сломанный объект.', 'axios: the string does not parse → JSON.stringify. The server sees a string, not a broken object.') : L('Типы медиа нечувствительны к регистру (RFC 9110), а проверка axios — чувствительна. Сервер считает тело JSON, axios его не трогает.', 'Media types are case-insensitive (RFC 9110); the axios check is not. The server treats the body as JSON; axios leaves it alone.')}</span></div>`;
+}
+
+/* 03 */
+const MUT = [
+  ['filter', ['findByStatus игнорирует фильтр', 'findByStatus ignores the filter'], ['пережил первый раунд: в магазине все питомцы были available. Пойман после контрольного sold-питомца', 'survived round one: every pet in the store was available. Caught once the sold control pet was added'], 'warn'],
+  ['form', ['обновление формой игнорирует status', 'a form update ignores status'], ['Get updated pet', 'Get updated pet'], 'ok'],
+  ['delete', ['DELETE ничего не удаляет', 'DELETE deletes nothing'], ['Deleted pet is gone', 'Deleted pet is gone'], 'ok'],
+  ['echo', ['POST /pet теряет tags', 'POST /pet drops tags'], ['Create pet, Get pet', 'Create pet, Get pet'], 'ok'],
+  ['500', ['нечисловой id → 500 со стеком Java', 'a non-numeric id → 500 with a Java trace'], ['Non-numeric id is 400', 'Non-numeric id is 400'], 'ok'],
+];
+function renderMut() { $('mut').innerHTML = MUT.map((m) => `<div class="item"><span class="tag ${m[3]}">${m[3] === 'warn' ? L('2-й раунд', 'round 2') : L('пойман', 'caught')}</span><span>${esc(L(...m[1]))}</span><span class="muted">${esc(L(...m[2]))}</span></div>`).join('') + `<p class="muted">${L('Вывод: «все элементы подходят под фильтр» ничего не доказывает, если в данных нет элементов, которые подходить не должны.', 'The lesson: "every item matches the filter" proves nothing unless the data holds items that must not match.')}</p>`; }
+
+/* 04 */
+function renderCmp() {
+  const rows = [
+    [L('Хранение', 'Storage'), L('файлы .bru в git', '.bru files in git'), L('облачный workspace, экспорт JSON', 'cloud workspace, JSON export'), L('код в git', 'code in git')],
+    [L('Ревью', 'Review'), L('diff в pull request', 'diff in a pull request'), L('экспорт, потом diff', 'export, then diff'), L('diff в pull request', 'diff in a pull request')],
+    ['CI', 'bru run', 'newman / Postman CLI', L('тест-раннер', 'the test runner')],
+    [L('Лучше всего для', 'Best for'), L('изучение API, живые примеры, быстрые smoke-проверки всей командой', 'exploring an API, living examples, quick smoke checks for the whole team'), L('то же, если команда уже в Postman', 'the same, if the team already lives in Postman'), L('логика, генерация данных, фикстуры, большие наборы', 'logic, data generation, fixtures, large suites')],
+  ];
+  $('cmp').innerHTML = `<thead><tr><th></th><th>Bruno</th><th>Postman</th><th>Playwright / pytest</th></tr></thead><tbody>` + rows.map((r) => `<tr>${r.map((c, i) => (i ? `<td>${esc(c)}</td>` : `<th scope="row">${esc(c)}</th>`)).join('')}</tr>`).join('') + '</tbody>';
+}
+const CMDS = ['npm run petstore:up', 'npm run test:bruno', 'npx @usebruno/cli@4.2.1 run -r --env local --reporter-html report.html'];
+function renderCmds() { $('cmds').innerHTML = CMDS.map((c, i) => `<div class="cmd"><code id="cmd-${i}">${esc(c)}</code><button type="button" data-c="${i}">${L('Копировать', 'Copy')}</button></div>`).join(''); }
+$('cmds').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-c]'); if (!b) return;
+  const done = () => { b.textContent = L('Скопировано', 'Copied'); setTimeout(() => (b.textContent = L('Копировать', 'Copy')), 1500); };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents($('cmd-' + b.dataset.c)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText(CMDS[+b.dataset.c]).then(done, fallback); } catch (err) { fallback(); }
+});
+
+function renderAll() { renderReq(); renderWire(); renderMut(); renderCmp(); renderCmds(); }
+function setLang(l) {
+  S.lang = l; document.body.dataset.lang = l; document.documentElement.lang = l;
+  $('lang-ru').setAttribute('aria-pressed', l === 'ru');
+  $('lang-en').setAttribute('aria-pressed', l === 'en');
+  try { localStorage.setItem('bruno-lang', l); } catch (e) {}
+  renderAll();
+}
+document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.l)));
+let start = document.documentElement.dataset.defaultLang || 'ru';
+try { start = localStorage.getItem('bruno-lang') || start; } catch (e) {}
+setLang(start);
+</script>
+</body>
+</html>

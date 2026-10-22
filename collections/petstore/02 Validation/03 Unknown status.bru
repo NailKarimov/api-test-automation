@@ -1,0 +1,19 @@
+meta {
+  name: Unknown status is 400
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/pet/findByStatus?status=lost
+  body: none
+  auth: none
+}
+
+params:query {
+  status: lost
+}
+
+assert {
+  res.status: eq 400
+}

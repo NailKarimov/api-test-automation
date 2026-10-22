@@ -61,6 +61,16 @@ server are marked with `test.fail()` and a `DEF-n` id. They stay green while the
 turn red the moment the server is fixed, so the marker can be removed. See
 [`docs/test-report.md`](docs/test-report.md).
 
+### Bruno collection (`collections/petstore/`)
+
+The same private Petstore as a [Bruno](https://www.usebruno.com/) collection: 18 requests in plain-text `.bru`
+files (pet lifecycle chained by runtime variables, validation, store), 27 assertions and 9 tests, run headless in CI
+with `bru run`; results go to Allure (JUnit XML) and to Bruno's own HTML report. Two lessons from building it:
+axios under Bruno silently turns a malformed JSON body into a valid JSON string (fixed with `Application/JSON`), and a
+status-filter bug survived until the data held a pet the filter had to leave out. 5/5 planted server bugs caught.
+Read more: [`docs/bruno.md`](docs/bruno.md) · visual guide
+[`docs/bruno.html`](https://nailkarimov.github.io/api-test-automation/bruno.html). Run: `npm run test:bruno`.
+
 ### GraphQL (`tests/graphql/`)
 
 34 tests against the public [Rick and Morty API](https://rickandmortyapi.com/documentation): field selection,

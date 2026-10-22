@@ -54,6 +54,16 @@ jobs:
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
         run: npm test
 
+      - name: Bruno collection (Petstore)
+        id: bruno
+        if: always()
+        continue-on-error: true
+        working-directory: collections/petstore
+        run: |
+          mkdir -p ../../bruno-results
+          npx --yes @usebruno/cli@4.2.1 run -r --env local \
+            --reporter-junit ../../bruno-results/junit.xml --reporter-html ../../bruno-results/index.html
+
       - name: Restore Allure history
         if: always()
         run: |
@@ -66,12 +76,16 @@ jobs:
 
       - name: Generate Allure report
         if: always()
-        run: npm run allure:generate
+        run: |
+          # Allure reads JUnit XML too, so the Bruno requests show up next to the Playwright tests.
+          if [ -f bruno-results/junit.xml ]; then cp bruno-results/junit.xml allure-results/bruno-junit.xml; fi
+          npm run allure:generate
 
       - name: Keep other reports and add the visual guides to GitHub Pages
         if: always()
         run: |
-          cp docs/graphql.html docs/test-environments.html docs/toolbox.html allure-report/
+          cp docs/graphql.html docs/test-environments.html docs/toolbox.html docs/bruno.html allure-report/
+          if [ -d bruno-results ]; then mkdir -p allure-report/bruno && cp bruno-results/index.html allure-report/bruno/; fi
           true
 
       - name: Publish Allure report to GitHub Pages
@@ -95,5 +109,5 @@ jobs:
         run: npm run petstore:down
 
       - name: Fail the job if tests failed
-        if: steps.tests.outcome == 'failure'
+        if: steps.tests.outcome == 'failure' || steps.bruno.outcome == 'failure'
         run: exit 1

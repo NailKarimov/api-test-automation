@@ -1,0 +1,51 @@
+meta {
+  name: Create pet
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/pet
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": {{petId}},
+    "name": "bruno-{{petId}}",
+    "category": { "id": 1, "name": "Dogs" },
+    "photoUrls": ["https://example.test/rex.png"],
+    "tags": [{ "id": 7, "name": "bruno" }],
+    "status": "available"
+  }
+}
+
+script:pre-request {
+  // A fresh id per run, so runs never collide on a shared database.
+  bru.setVar("petId", 900000000 + Math.floor(Math.random() * 99999999));
+}
+
+assert {
+  res.status: eq 200
+  res.body.name: eq bruno-{{petId}}
+  res.body.status: eq available
+}
+
+tests {
+  test("echoes every field it was given", function () {
+    const body = res.getBody();
+    expect(body.id).to.equal(bru.getVar("petId"));
+    expect(body.category).to.deep.equal({ id: 1, name: "Dogs" });
+    expect(body.photoUrls).to.deep.equal(["https://example.test/rex.png"]);
+    expect(body.tags).to.deep.equal([{ id: 7, name: "bruno" }]);
+  });
+
+  test("answers JSON", function () {
+    expect(res.getHeader("content-type")).to.contain("application/json");
+  });
+
+  test("answers within a second", function () {
+    expect(res.getResponseTime()).to.be.below(1000);
+  });
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Malformed JSON is 400
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/pet
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: Application/JSON
+}
+
+body:text {
+  { "id": 1, "name":
+}
+
+docs {
+  The HTTP client under Bruno (axios) re-encodes a string body that is not valid JSON as a JSON *string*
+  whenever the content type contains `application/json`, so the server would get valid JSON and answer 200.
+  Media types are case-insensitive (RFC 9110), and axios's check is not: `Application/JSON` reaches the
+  server as the same type, with the broken bytes intact.
+}
+
+assert {
+  res.status: eq 400
+}
+
+tests {
+  test("the error body says what went wrong, not a stack trace", function () {
+    const text = JSON.stringify(res.getBody());
+    expect(text).to.not.match(/Exception|\tat |\.java:/);
+  });
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Inventory
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/store/inventory
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("a whole, non-negative count per status", function () {
+    const counts = res.getBody();
+    expect(Object.keys(counts)).to.not.be.empty;
+    for (const [status, n] of Object.entries(counts)) {
+      expect(Number.isInteger(n), status).to.equal(true);
+      expect(n, status).to.be.at.least(0);
+    }
+  });
+}

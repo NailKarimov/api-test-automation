@@ -1,0 +1,23 @@
+meta {
+  name: Get updated pet
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/pet/{{petId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.name: eq renamed
+  res.body.status: eq sold
+}
+
+tests {
+  test("fields that were not in the form are kept", function () {
+    expect(res.getBody().category).to.deep.equal({ id: 1, name: "Dogs" });
+  });
+}

@@ -1,0 +1,33 @@
+meta {
+  name: Create a sold pet (control)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/pet
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": {{controlId}},
+    "name": "bruno-control-{{controlId}}",
+    "photoUrls": [],
+    "status": "sold"
+  }
+}
+
+script:pre-request {
+  bru.setVar("controlId", bru.getVar("petId") + 1);
+}
+
+docs {
+  A pet the status filter must leave out. Without it, a filter that returns everything would still pass
+  "every pet is available" whenever the store happens to hold only available pets.
+}
+
+assert {
+  res.status: eq 200
+}

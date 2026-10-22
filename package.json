@@ -9,6 +9,7 @@
     "test:smoke": "playwright test --grep @smoke",
     "test:openweather": "playwright test --project=openweather",
     "test:petstore": "playwright test --project=petstore",
+    "test:bruno": "cd collections/petstore && npx --yes @usebruno/cli@4.2.1 run -r --env local",
     "test:security": "playwright test --project=security",
     "test:graphql": "playwright test --project=graphql",
     "lint": "eslint .",

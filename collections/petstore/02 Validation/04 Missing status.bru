@@ -1,0 +1,15 @@
+meta {
+  name: Missing status is 400
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/pet/findByStatus
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

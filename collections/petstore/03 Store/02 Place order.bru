@@ -1,0 +1,33 @@
+meta {
+  name: Place order
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/store/order
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": {{orderId}},
+    "petId": 10,
+    "quantity": 2,
+    "shipDate": "2026-10-22T10:00:00.000+00:00",
+    "status": "placed",
+    "complete": false
+  }
+}
+
+script:pre-request {
+  bru.setVar("orderId", 900000 + Math.floor(Math.random() * 99999));
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq {{orderId}}
+  res.body.quantity: eq 2
+  res.body.status: eq placed
+}

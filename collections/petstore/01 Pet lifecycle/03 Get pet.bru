@@ -1,0 +1,27 @@
+meta {
+  name: Get pet
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/pet/{{petId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq {{petId}}
+  res.body.name: eq bruno-{{petId}}
+}
+
+tests {
+  test("matches the pet schema", function () {
+    const pet = res.getBody();
+    expect(pet).to.have.all.keys("id", "name", "category", "photoUrls", "tags", "status");
+    expect(pet.id).to.be.a("number");
+    expect(pet.photoUrls).to.be.an("array");
+    expect(["available", "pending", "sold"]).to.include(pet.status);
+  });
+}

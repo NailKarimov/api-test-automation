@@ -1,0 +1,15 @@
+meta {
+  name: DELETE with a non-numeric id is 400
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/pet/abc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

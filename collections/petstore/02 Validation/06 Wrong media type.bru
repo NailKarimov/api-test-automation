@@ -1,0 +1,19 @@
+meta {
+  name: Text body is 415
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/pet
+  body: text
+  auth: none
+}
+
+body:text {
+  name=rex
+}
+
+assert {
+  res.status: eq 415
+}

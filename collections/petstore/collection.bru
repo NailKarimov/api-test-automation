@@ -1,0 +1,9 @@
+docs {
+  # Petstore — Bruno collection
+
+  The same private Petstore (Docker, port 8090) the Playwright suite uses. The collection is plain text
+  (`.bru` files), lives in git next to the code and runs headless in CI with `bru run`.
+
+  Requests in "01 Pet lifecycle" depend on each other through runtime variables (`petId`), so run the
+  folder in order. "02 Validation" and "03 Store" are independent.
+}

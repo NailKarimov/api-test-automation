@@ -1,0 +1,20 @@
+meta {
+  name: Update with form
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/pet/{{petId}}?name=renamed&status=sold
+  body: none
+  auth: none
+}
+
+params:query {
+  name: renamed
+  status: sold
+}
+
+assert {
+  res.status: eq 200
+}
