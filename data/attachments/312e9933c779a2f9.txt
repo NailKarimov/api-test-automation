@@ -1,0 +1,6 @@
+GET https://rickandmortyapi.com/graphql?query=query%28%24id%3A+ID%21%29+%7B+character%28id%3A+%24id%29+%7B+name+%7D+%7D&variables=%7B%22id%22%3A1%7D
+Query: {"query":"query($id: ID!) { character(id: $id) { name } }","variables":"{\"id\":1}"}
+Status: 200 (290 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"data":{"character":{"name":"Rick Sanchez"}}}
