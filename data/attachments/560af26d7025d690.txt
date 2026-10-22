@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/pet/1792656645641415
-Query: {}
-Status: 200 (3 ms)
-Content-Type: application/json
-Body:
-{"id":1792656645641415,"name":"qa-pet-1792656645641415-v2","photoUrls":[],"tags":[],"status":"sold"}
