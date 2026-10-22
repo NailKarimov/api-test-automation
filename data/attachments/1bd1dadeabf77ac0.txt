@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/1
+Query: {}
+Status: 200 (26 ms)
+Content-Type: application/json
+Body:
+{"id":1,"name":"Dogs","photoUrls":["magna dolore tempor pariatur"],"tags":[{"id":-81765846,"name":"ut"}],"status":"pending"}
