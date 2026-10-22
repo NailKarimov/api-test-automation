@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en" data-default-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QA portfolio testing map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: a map. Rows are types of testing, columns are repositories; filters by group and by language; a
+   detail panel for the chosen row with the standard, tools and report links. */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --sunken: #e2e6ee; --ink: #141720; --muted: #5a6070; --line: #cfd4df;
+  --accent: #24548f; --accent-soft: #dde8f6; --px: #0f6b73; --px-soft: #d5eeee;
+  --ok: #17784b; --ok-soft: #d8f1e3; --bad: #b42318; --bad-soft: #fbe1dd; --warn: #8a6100; --warn-soft: #f7ebc8;
+  --font-display: 'Bricolage Grotesque', 'Public Sans', system-ui, sans-serif;
+  --font-body: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101219; --surface: #181b24; --sunken: #20242f; --ink: #e8eaf1; --muted: #a0a6b5; --line: #2e3341;
+    --accent: #8fb6ec; --accent-soft: #14253d; --px: #6fd3db; --px-soft: #0f3134;
+    --ok: #62d49a; --ok-soft: #12321f; --bad: #ff8a7d; --bad-soft: #3d1714; --warn: #f1c35a; --warn-soft: #3a2d0c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101219; --surface: #181b24; --sunken: #20242f; --ink: #e8eaf1; --muted: #a0a6b5; --line: #2e3341;
+  --accent: #8fb6ec; --accent-soft: #14253d; --px: #6fd3db; --px-soft: #0f3134;
+  --ok: #62d49a; --ok-soft: #12321f; --bad: #ff8a7d; --bad-soft: #3d1714; --warn: #f1c35a; --warn-soft: #3a2d0c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--font-body); margin: 0; }
+body[data-lang="ru"] [lang="en"], body[data-lang="en"] [lang="ru"] { display: none !important; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.1; margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 50px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(22px, 2.8vw, 30px); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 16px; font-weight: 600; }
+p { margin: 0; max-width: 70ch; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+a { color: var(--accent); }
+button { font-family: var(--font-body); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+header.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 20px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { font: 500 13px var(--font-mono); background: transparent; color: var(--muted); border: 0; padding: 6px 14px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.hero { display: grid; gap: 16px; padding-block: 8px; }
+.hero .lead { font-size: 18px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; color: var(--muted); }
+.facts b { font: 800 24px var(--font-display); color: var(--ink); margin-right: 6px; font-variant-numeric: tabular-nums; }
+section.station { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: 52px 0; }
+section.station > header { display: grid; gap: 8px; }
+.num { font: 700 13px var(--font-mono); color: var(--accent); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chips button { font: 500 13.5px var(--font-body); border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 780px) { .two { grid-template-columns: minmax(0, 1fr); } }
+pre.code { margin: 0; background: var(--sunken); border-radius: 8px; padding: 10px 12px; font: 400 12.5px/1.55 var(--font-mono); overflow-x: auto; white-space: pre; }
+.tag { font: 600 11px var(--font-mono); padding: 2px 7px; border-radius: 4px; display: inline-block; white-space: nowrap; }
+.tag.ok { background: var(--ok-soft); color: var(--ok); } .tag.bad { background: var(--bad-soft); color: var(--bad); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); } .tag.ac { background: var(--accent-soft); color: var(--accent); }
+.tag.px { background: var(--px-soft); color: var(--px); }
+.state { border-radius: 12px; padding: 14px; display: grid; gap: 4px; font-size: 15px; }
+.state.ok { background: var(--ok-soft); } .state.bad { background: var(--bad-soft); } .state.warn { background: var(--warn-soft); }
+.state b { font-family: var(--font-display); font-size: 19px; }
+
+.ctl { display: grid; gap: 12px; }
+.ctl label { display: grid; gap: 4px; font-size: 13.5px; color: var(--muted); }
+.ctl input { font: 500 15px var(--font-mono); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.kv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; font-size: 14.5px; align-items: baseline; }
+.kv b { font: 700 15px var(--font-mono); text-align: right; font-variant-numeric: tabular-nums; }
+.list { display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr); }
+.item { display: grid; grid-template-columns: 130px minmax(0, 1.3fr) minmax(0, 1fr); gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14.5px; }
+@media (max-width: 760px) { .item { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+.item code { overflow-wrap: anywhere; }
+.lanes { display: grid; gap: 8px; }
+.lane { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 13.5px; }
+.lane .track { display: flex; gap: 4px; flex-wrap: wrap; }
+.lane .track span { font: 600 11.5px var(--font-mono); padding: 5px 8px; border-radius: 6px; background: var(--sunken); }
+.lane .track span.w { background: var(--warn-soft); color: var(--warn); }
+.lane .track span.bad { background: var(--bad-soft); color: var(--bad); }
+.lane .track span.ok { background: var(--ok-soft); color: var(--ok); }
+dl.terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+@media (max-width: 760px) { dl.terms { grid-template-columns: minmax(0, 1fr); } }
+dl.terms div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+dt { font: 700 13.5px var(--font-mono); } dd { margin: 4px 0 0; font-size: 14.5px; color: var(--muted); }
+.cmds { display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr); }
+.cmd { display: flex; gap: 8px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 8px 8px 14px; min-width: 0; }
+.cmd code { flex: 1; overflow-x: auto; white-space: nowrap; }
+.cmd button { font: 600 12px var(--font-mono); border: 1px solid var(--line); background: var(--sunken); color: var(--ink); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+footer { padding-top: 48px; font-size: 14px; color: var(--muted); }
+.bk { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.bk button { font: 600 13px var(--font-mono); border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+.fsm { display: flex; gap: 8px; flex-wrap: wrap; }
+.fsm span { font: 700 13px var(--font-mono); padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--line); color: var(--muted); }
+.fsm span.on.closed { background: var(--ok-soft); color: var(--ok); border-style: solid; border-color: var(--ok); }
+.fsm span.on.open { background: var(--bad-soft); color: var(--bad); border-style: solid; border-color: var(--bad); }
+.fsm span.on.half { background: var(--warn-soft); color: var(--warn); border-style: solid; border-color: var(--warn); }
+.log { font: 400 12.5px/1.6 var(--font-mono); background: var(--sunken); border-radius: 8px; padding: 10px 12px; max-height: 190px; overflow-y: auto; margin: 0; white-space: pre-wrap; }
+.switch { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; }
+.grid-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table.map { border-collapse: collapse; font-size: 13px; min-width: 860px; width: 100%; }
+table.map th, table.map td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: center; }
+table.map thead th { font: 600 11px var(--font-mono); color: var(--muted); writing-mode: vertical-rl; transform: rotate(180deg); height: 150px; vertical-align: bottom; text-align: left; }
+table.map tbody th { text-align: left; font-weight: 500; position: sticky; left: 0; background: var(--surface); min-width: 200px; }
+table.map tbody th button { all: unset; cursor: pointer; }
+table.map tbody th button:focus-visible { outline: 2px solid var(--accent); }
+table.map tr.on th { color: var(--accent); font-weight: 700; }
+.dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); }
+.dot.lang { background: var(--px); }
+.detail dl { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 6px 12px; margin: 0; font-size: 14.5px; }
+@media (max-width: 600px) { .detail dl { grid-template-columns: minmax(0, 1fr); } }
+.detail dt { font: 600 12px var(--font-mono); color: var(--muted); }
+.detail dd { margin: 0; }
+</style>
+</head>
+<body data-lang="ru">
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">github.com/NailKarimov · 13 repositories with tests</span>
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" id="lang-ru" data-l="ru" aria-pressed="true">RU</button>
+      <button type="button" id="lang-en" data-l="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 lang="ru">Карта портфолио: вид тестирования → репозиторий</h1>
+    <h1 lang="en">Portfolio map: type of testing → repository</h1>
+    <p class="lead" lang="ru">Какие виды тестирования закрывает портфолио, по какому стандарту, где код и где опубликован отчёт. Нажмите на вид тестирования — ниже появятся подробности со ссылками.</p>
+    <p class="lead" lang="en">Which kinds of testing the portfolio covers, against which standard, where the code is and where the report is. Click a type of testing for details with links below.</p>
+    <div class="facts">
+      <span><b id="f-types"></b><span lang="ru">видов тестирования</span><span lang="en">types of testing</span></span>
+      <span><b>6</b><span lang="ru">языков</span><span lang="en">languages</span></span>
+      <span><b>13</b><span lang="ru">репозиториев с тестами в CI</span><span lang="en">repositories with tests in CI</span></span>
+    </div>
+  </section>
+
+  <section class="station" aria-labelledby="p1">
+    <header>
+      <span class="num">01</span>
+      <h2 id="p1" lang="ru">Матрица</h2><h2 lang="en">The matrix</h2>
+    </header>
+    <div class="chips" id="grp" role="group" aria-label="Group"></div>
+    <div class="chips" id="lng" role="group" aria-label="Language filter"></div>
+    <div class="grid-wrap"><table class="map" id="map"></table></div>
+    <div class="panel detail" id="detail" aria-live="polite"></div>
+  </section>
+
+  <footer>
+    <span lang="ru">Текстом: <a href="https://github.com/NailKarimov/NailKarimov/blob/main/testing-map.md">testing-map.md</a> · все инструменты: <a href="https://nailkarimov.github.io/api-test-automation/toolbox.html">toolbox</a>.</span>
+    <span lang="en">As text: <a href="https://github.com/NailKarimov/NailKarimov/blob/main/testing-map.md">testing-map.md</a> · all tools: <a href="https://nailkarimov.github.io/api-test-automation/toolbox.html">toolbox</a>.</span>
+  </footer>
+</div>
+
+<script>
+const S = { lang: 'ru', grp: 'all', lng: 'all', row: 'api' };
+const L = (ru, en) => (S.lang === 'ru' ? ru : en);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const $ = (id) => document.getElementById(id);
+function chips(id, items, cur, key) {
+  $(id).innerHTML = items.map(([v, ru, en]) => `<button type="button" data-v="${v}" aria-pressed="${String(v) === String(cur)}">${L(ru, en)}</button>`).join('');
+  $(id).onclick = (e) => { const b = e.target.closest('button'); if (!b) return; S[key] = b.dataset.v; render(); };
+}
+const REPOS = [
+  ['api-test-automation', 'ts'], ['contract-testing-lab', 'ts'], ['microservices-testing', 'ts'], ['ledger-api-testing', 'ts'],
+  ['api-protocols-testing', 'ts'], ['ai-api-testing', 'ts'], ['ui-e2e-testing', 'ts'], ['3sMoneyTests', 'ts'],
+  ['python-testing', 'py'], ['java-testing', 'java'], ['dotnet-testing', 'cs'], ['go-testing', 'go'], ['android-testing', 'kt'],
+];
+const R = (name) => REPOS.findIndex((r) => r[0] === name);
+const T = [
+  ['api', 'func', ['Функциональное тестирование API', 'Functional API testing'], 'ISO/IEC/IEEE 29119-4: BVA, EP, decision tables', ['api-test-automation', 'python-testing', 'java-testing', 'dotnet-testing', 'go-testing'], 'Playwright, pytest + httpx, REST Assured, NUnit + WebApplicationFactory, httptest', 'Allure, JaCoCo, coverage'],
+  ['bruno', 'func', ['Коллекции запросов', 'API collections'], '—', ['api-test-automation'], 'Bruno (bru run)', 'Allure + Bruno HTML'],
+  ['contract', 'func', ['Контрактное тестирование', 'Contract testing'], 'OpenAPI 3, Pact v3', ['contract-testing-lab', 'java-testing'], 'Schemathesis, oasdiff, Pact JS, Pact JVM', 'pact files, oasdiff reports'],
+  ['pbt', 'func', ['Property-based и фаззинг', 'Property-based and fuzzing'], 'OpenAPI-driven generation', ['contract-testing-lab', 'python-testing', 'go-testing'], 'Schemathesis, Hypothesis, go test -fuzz', 'Schemathesis report'],
+  ['gql', 'func', ['GraphQL', 'GraphQL'], 'GraphQL specification', ['api-test-automation'], 'Playwright, GraphQL Inspector', 'Allure'],
+  ['grpc', 'func', ['gRPC, WebSocket, SSE', 'gRPC, WebSocket, SSE'], 'gRPC status codes, RFC 6455, HTML SSE', ['api-protocols-testing'], 'grpc-js, buf, ws', 'Allure'],
+  ['ai', 'func', ['ИИ-интерфейсы (MCP, LLM)', 'AI interfaces (MCP, LLM)'], 'Model Context Protocol, OWASP Top 10 for LLM', ['ai-api-testing'], 'MCP Inspector, evals', 'Allure, evals'],
+  ['db', 'func', ['База данных и интеграция', 'Database and integration'], 'ACID', ['ledger-api-testing', 'python-testing'], 'Testcontainers + PostgreSQL, SQLite', 'Allure'],
+  ['mock', 'func', ['Моки и виртуализация сервисов', 'Mocking and service virtualisation'], '—', ['java-testing'], 'WireMock', 'Allure'],
+  ['bdd', 'func', ['BDD', 'BDD'], 'Gherkin', ['java-testing', 'dotnet-testing'], 'Cucumber, Reqnroll', 'Allure, Cucumber HTML'],
+  ['ui', 'ui', ['UI end-to-end', 'UI end-to-end'], '—', ['ui-e2e-testing', 'dotnet-testing'], 'Playwright (TS, .NET), Page Object', 'Allure with traces'],
+  ['mobile', 'ui', ['Мобильное (Android)', 'Mobile (Android)'], 'W3C WebDriver (Appium)', ['android-testing'], 'JUnit, Espresso, Appium UiAutomator2', 'Allure, Espresso, Appium'],
+  ['a11y', 'nf', ['Доступность', 'Accessibility'], 'WCAG 2.2 AA, EN 301 549', ['ui-e2e-testing', '3sMoneyTests'], 'axe-core, Pa11y, keyboard flows', 'Allure, Pa11y'],
+  ['visual', 'nf', ['Визуальная регрессия', 'Visual regression'], '—', ['ui-e2e-testing'], 'toHaveScreenshot', 'Allure diffs'],
+  ['webperf', 'nf', ['Производительность страниц', 'Web performance'], 'Core Web Vitals (LCP, CLS, INP)', ['ui-e2e-testing'], 'Lighthouse CI, user flows', 'Lighthouse'],
+  ['load', 'nf', ['Нагрузка и ёмкость', 'Load and capacity'], 'ISO/IEC 25010 performance efficiency', ['microservices-testing', 'python-testing'], 'k6 → Prometheus → Grafana, Locust', 'Grafana snapshots'],
+  ['sec', 'nf', ['Безопасность', 'Security'], 'OWASP API Top 10 (2023), OAuth 2.0 + PKCE, JWT', ['ledger-api-testing', 'microservices-testing', 'api-test-automation', 'ui-e2e-testing'], 'own auth server, BOLA, headers', 'Allure'],
+  ['privacy', 'nf', ['Приватность и согласия', 'Privacy and consent'], 'GDPR', ['3sMoneyTests'], 'Playwright', 'Allure'],
+  ['chaos', 'rel', ['Chaos и устойчивость', 'Chaos and resilience'], 'Principles of Chaos Engineering', ['microservices-testing', 'go-testing'], 'container faults, fault-injecting proxy, circuit breaker', 'Allure, coverage'],
+  ['conc', 'rel', ['Конкурентность и гонки', 'Concurrency and races'], '—', ['python-testing', 'java-testing', 'dotnet-testing', 'go-testing', 'ledger-api-testing'], 'parallel requests, -race', 'CI'],
+  ['mut', 'rel', ['Мутационная проверка тестов', 'Mutation checks of the tests'], '—', REPOS.map((r) => r[0]).filter((n) => n !== '3sMoneyTests'), 'planted-bug scripts', 'mutants/result.md'],
+];
+const GROUPS = [['all', 'Все', 'All'], ['func', 'Функциональное', 'Functional'], ['ui', 'UI и мобильное', 'UI and mobile'], ['nf', 'Нефункциональное', 'Non-functional'], ['rel', 'Надёжность', 'Reliability']];
+const LANGS = [['all', 'Все языки', 'All languages'], ['ts', 'TypeScript', 'TypeScript'], ['py', 'Python', 'Python'], ['java', 'Java', 'Java'], ['cs', 'C#', 'C#'], ['go', 'Go', 'Go'], ['kt', 'Kotlin', 'Kotlin']];
+const PAGES = { '3sMoneyTests': 'https://nailkarimov.github.io/3sMoneyTests/' };
+const pages = (n) => PAGES[n] || `https://nailkarimov.github.io/${n}/`;
+
+function render() {
+  chips('grp', GROUPS, S.grp, 'grp');
+  chips('lng', LANGS, S.lng, 'lng');
+  $('f-types').textContent = T.length;
+  const cols = REPOS.map((r, i) => [r, i]).filter(([r]) => S.lng === 'all' || r[1] === S.lng);
+  const rows = T.filter((t) => (S.grp === 'all' || t[1] === S.grp) && t[4].some((n) => cols.some(([r]) => r[0] === n)));
+  $('map').innerHTML = `<thead><tr><th style="writing-mode:horizontal-tb;transform:none;height:auto"></th>${cols.map(([r]) => `<th scope="col">${esc(r[0])}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map((t) => `<tr class="${t[0] === S.row ? 'on' : ''}"><th scope="row"><button type="button" data-row="${t[0]}">${esc(L(...t[2]))}</button></th>${cols.map(([r]) => `<td>${t[4].includes(r[0]) ? `<span class="dot ${r[1] !== 'ts' ? 'lang' : ''}" role="img" aria-label="${esc(r[0])}"></span>` : ''}</td>`).join('')}</tr>`).join('') + '</tbody>';
+  const t = T.find((x) => x[0] === S.row) || rows[0];
+  if (!t) { $('detail').innerHTML = ''; return; }
+  $('detail').innerHTML = `<h3>${esc(L(...t[2]))}</h3><dl>
+    <dt>${L('Стандарт', 'Standard')}</dt><dd>${esc(t[3])}</dd>
+    <dt>${L('Инструменты', 'Tools')}</dt><dd>${esc(t[5])}</dd>
+    <dt>${L('Отчёт', 'Report')}</dt><dd>${esc(t[6])}</dd>
+    <dt>${L('Репозитории', 'Repositories')}</dt><dd>${t[4].map((n) => `<a href="https://github.com/NailKarimov/${n}">${esc(n)}</a> (<a href="${pages(n)}">${L('отчёт', 'report')}</a>)`).join(' · ')}</dd></dl>`;
+}
+$('map').addEventListener('click', (e) => { const b = e.target.closest('[data-row]'); if (!b) return; S.row = b.dataset.row; render(); });
+
+function setLang(l) {
+  S.lang = l; document.body.dataset.lang = l; document.documentElement.lang = l;
+  $('lang-ru').setAttribute('aria-pressed', l === 'ru');
+  $('lang-en').setAttribute('aria-pressed', l === 'en');
+  try { localStorage.setItem('map-lang', l); } catch (e) {}
+  render();
+}
+document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.l)));
+let start = document.documentElement.dataset.defaultLang || 'ru';
+try { start = localStorage.getItem('map-lang') || start; } catch (e) {}
+setLang(start);
+</script>
+</body>
+</html>
