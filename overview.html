@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Tests Visualized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one animated stage (test → API → database), then a result grid, six mini diagrams and the daily pipeline. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --ink: #14211f;
+  --muted: #566866;
+  --line: #d6dfdd;
+  --accent: #0a6f68;
+  --accent-soft: #d9f0ed;
+  --ok: #1d7a45;
+  --ok-soft: #dff2e6;
+  --warn: #a45a05;
+  --warn-soft: #fbecd5;
+  --bad: #b3261e;
+  --bad-soft: #fae3e0;
+  --sky-clear: #bfe6ff; --sky-warm: #ffdca6; --sky-rain: #9db3c6; --sky-snow: #e3edf6; --sky-cloudy: #c9d7e3;
+  --cloud: #ffffff; --sun: #ffb703; --drop: #3a78b8; --cold: #4aa3ff; --hot: #ff7a45;
+  --font-display: 'Bricolage Grotesque', 'Instrument Sans', system-ui, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1816; --surface: #162624; --ink: #e6f0ee; --muted: #9bb2ae; --line: #2a403c;
+    --accent: #4fd4c8; --accent-soft: #123a37;
+    --sky-clear: #1e4f7d; --sky-warm: #6e4b1a; --sky-rain: #2a3a4a; --sky-snow: #38495c; --sky-cloudy: #33465a;
+    --cloud: #d7e2ec; --sun: #ffc233; --drop: #7db9ff;
+    --ok: #62d28b; --ok-soft: #14382a; --warn: #f2b266; --warn-soft: #3c2a10; --bad: #ff8b82; --bad-soft: #43201d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1816; --surface: #162624; --ink: #e6f0ee; --muted: #9bb2ae; --line: #2a403c;
+  --accent: #4fd4c8; --accent-soft: #123a37;
+  --sky-clear: #1e4f7d; --sky-warm: #6e4b1a; --sky-rain: #2a3a4a; --sky-snow: #38495c; --sky-cloudy: #33465a;
+  --cloud: #d7e2ec; --sun: #ffc233; --drop: #7db9ff;
+  --ok: #62d28b; --ok-soft: #14382a; --warn: #f2b266; --warn-soft: #3c2a10; --bad: #ff8b82; --bad-soft: #43201d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; padding-inline: 16px; padding-block: 0 56px; }
+.wrap { max-width: 980px; margin-inline: auto; }
+h1, h2 { font-family: var(--font-display); text-wrap: balance; line-height: 1.1; margin: 0; }
+h1 { font-weight: 700; font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -0.02em; }
+h2 { font-weight: 700; font-size: clamp(1.3rem, 3.6vw, 1.75rem); letter-spacing: -0.01em; }
+p { margin: 0; }
+header { padding-block: 48px 8px; }
+header p { color: var(--muted); margin-top: 10px; font-size: 1.05rem; }
+section { padding-top: 48px; }
+.label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- stage ---------- */
+.stage { margin-top: 20px; padding: 22px 18px 18px; }
+.rail { display: grid; grid-template-columns: auto minmax(40px, 1fr) auto minmax(40px, 1fr) auto; align-items: center; gap: 0; }
+.node { display: grid; justify-items: center; gap: 8px; text-align: center; min-width: 0; }
+.node .box { width: 88px; height: 88px; border-radius: 18px; border: 2px solid var(--line); background: var(--bg); display: grid; place-items: center; transition: border-color .25s, background .25s, transform .25s; }
+.node.on .box { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.06); }
+.node svg { width: 44px; height: 44px; stroke: var(--ink); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.node b { font-family: var(--font-display); font-size: 1rem; }
+.node small { color: var(--muted); font-size: .8rem; margin-top: -6px; }
+.lane { position: relative; height: 40px; }
+.lane::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px dashed var(--line); }
+.pkt { position: absolute; top: 50%; left: 0; translate: 0 -50%; height: 28px; padding-inline: 10px; border-radius: 14px; background: var(--accent); color: var(--bg); font-family: var(--font-mono); font-size: .72rem; display: none; align-items: center; white-space: nowrap; z-index: 2; }
+.pkt.show { display: inline-flex; }
+.pkt.ok { background: var(--ok); }
+.pkt.bad { background: var(--bad); }
+.pkt.query { background: var(--ink); color: var(--bg); padding-inline: 0; width: 14px; height: 14px; border-radius: 50%; }
+
+/* database mini table */
+.db { width: 132px; min-height: 88px; border-radius: 14px; border: 2px solid var(--line); background: var(--bg); padding: 8px; display: grid; align-content: start; gap: 6px; transition: border-color .25s, background .25s; }
+.node.on .db { border-color: var(--accent); background: var(--accent-soft); }
+.db .head { font-family: var(--font-mono); font-size: .62rem; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; display: flex; justify-content: space-between; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; font-size: .78rem; text-align: left; animation: rowin .5s ease; }
+.row i { font-style: normal; font-family: var(--font-mono); font-size: .62rem; padding: 1px 6px; border-radius: 6px; background: var(--ok-soft); color: var(--ok); }
+.row i.sold { background: var(--warn-soft); color: var(--warn); }
+.row.flash { animation: flash .9s ease; }
+.row.out { animation: rowout .45s ease forwards; }
+.empty { color: var(--muted); font-size: .78rem; text-align: center; padding-block: 8px; }
+@keyframes rowin { from { opacity: 0; transform: translateY(-8px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes rowout { to { opacity: 0; transform: translateX(14px) scale(.9); } }
+@keyframes flash { 0%, 100% { box-shadow: 0 0 0 0 transparent; } 35% { box-shadow: 0 0 0 4px var(--accent-soft), 0 0 0 5px var(--accent); } }
+
+/* console under stage */
+.panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+.panel { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-height: 118px; background: var(--bg); min-width: 0; }
+.panel .label { display: block; margin-bottom: 8px; }
+.code { font-family: var(--font-mono); font-size: .76rem; line-height: 1.5; overflow-wrap: anywhere; }
+.method { display: inline-block; padding: 1px 8px; border-radius: 6px; background: var(--accent); color: var(--bg); margin-right: 6px; }
+.status { display: inline-block; padding: 1px 8px; border-radius: 6px; margin-right: 6px; font-weight: 500; }
+.status.ok { background: var(--ok); color: var(--bg); }
+.status.bad { background: var(--bad); color: var(--bg); }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.checks li { display: flex; gap: 8px; align-items: center; font-size: .86rem; opacity: .35; transition: opacity .3s; }
+.checks li.done { opacity: 1; }
+.checks li::before { content: ""; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); flex: none; }
+.checks li.done::before { background: var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.6 2.6L12 5.6' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat; border-color: var(--ok); }
+
+/* step chips */
+.steps { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; align-items: center; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; font-size: .88rem; font-weight: 500; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.chip .m { font-family: var(--font-mono); font-size: .68rem; opacity: .75; margin-right: 6px; }
+.play { margin-left: auto; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 16px; font-weight: 600; font-size: .88rem; }
+
+/* ---------- weather stage ---------- */
+.gate { position: absolute; top: -8px; right: -8px; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); border: 2px solid var(--line); display: grid; place-items: center; transition: border-color .25s, background .25s; }
+.node .gate svg { width: 16px; height: 16px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; grid-area: 1 / 1; transition: opacity .2s; }
+.gate .open, .gate.is-open .shut { opacity: 0; }
+.gate.is-open .open { opacity: 1; }
+.gate.is-open { border-color: var(--ok); background: var(--ok-soft); }
+.gate.is-open svg { stroke: var(--ok); }
+.gate.denied { border-color: var(--bad); background: var(--bad-soft); animation: shake .45s ease; }
+.gate.denied svg { stroke: var(--bad); }
+@keyframes shake { 20%, 60% { translate: -4px 0; } 40%, 80% { translate: 4px 0; } }
+.box.rel { position: relative; }
+.sky { width: clamp(150px, 46vw, 500px); aspect-ratio: 148 / 112; height: auto; border-radius: 16px; border: 2px solid var(--line); background: var(--bg); position: relative; overflow: hidden; transition: background .5s, border-color .25s; }
+.node.on .sky { border-color: var(--accent); }
+.sky.clear { background: var(--sky-clear); }
+.sky.hot { background: var(--sky-warm); }
+.sky.rain { background: var(--sky-rain); }
+.sky.snow { background: var(--sky-snow); }
+.sky.cloudy { background: var(--sky-cloudy); }
+.sky svg { position: absolute; inset: 0; width: 100%; height: 100%; stroke: none; }
+.sky .place { position: absolute; left: 18px; top: 14px; font-family: var(--font-mono); font-size: clamp(.62rem, 1.6vw, 1.1rem); letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
+.sky .deg { position: absolute; left: 18px; bottom: 14px; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.7rem, 7.5vw, 5.2rem); line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sky .therm { position: absolute; right: 20px; bottom: 16px; width: clamp(10px, 1.6vw, 18px); height: clamp(50px, 18vw, 200px); border-radius: 4px; background: rgb(0 0 0 / .14); overflow: hidden; }
+.sky .therm i { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 4px; transition: height .8s ease, background .8s; }
+.sky .none { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .78rem; }
+.rays { transform-box: fill-box; transform-origin: center; animation: spin calc(14s * var(--spd, 1)) linear infinite; }
+.drop { animation: fall calc(.9s * var(--spd, 1)) linear infinite; }
+.flake { animation: fall calc(3.2s * var(--spd, 1)) linear infinite; }
+@keyframes spin { to { rotate: 360deg; } }
+@keyframes fall { from { translate: 0 0; opacity: 1; } to { translate: -4px 34px; opacity: 0; } }
+
+/* ---------- speed bar ---------- */
+.speedbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; margin-top: 18px; display: flex; align-items: center; gap: 14px; padding: 6px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; box-shadow: 0 4px 14px rgb(0 0 0 / .08); }
+.speedbar label { font-weight: 600; font-size: .9rem; white-space: nowrap; }
+.speedbar input { flex: 1; min-width: 0; accent-color: var(--accent); height: 24px; }
+.speedbar output { font-family: var(--font-mono); font-size: .85rem; min-width: 3.2em; text-align: right; font-variant-numeric: tabular-nums; }
+.speedbar button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 12px; font-size: .8rem; font-weight: 600; }
+.speedbar input:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+/* ---------- weather extras: details + forecast chart ---------- */
+.extras { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 20px; align-items: start; }
+.extras .sub { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.extras .sub b { font-family: var(--font-display); font-size: 1.1rem; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.fact { position: relative; overflow: hidden; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-height: 140px; min-width: 0; display: grid; align-content: start; gap: 6px; transition: opacity .4s; }
+.fact > :not(.bg) { position: relative; z-index: 1; }
+.fact .bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.fact.off { opacity: .35; }
+.fact .k { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.fact .v { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.fact .v small { font-family: var(--font-body); font-weight: 500; font-size: .75rem; color: var(--muted); margin-left: 3px; }
+.fact .v svg { width: 100%; height: auto; max-height: 64px; stroke: none; }
+.meter { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width .8s ease; }
+.fact.wide { grid-column: span 2; min-height: 120px; }
+.fact .hint { font-size: .8rem; color: var(--muted); }
+
+/* tile backgrounds */
+.hum { position: absolute; left: 0; right: 0; bottom: 0; height: 0; transition: height 1.2s ease; }
+.hum i { position: absolute; inset: 0; background: var(--drop); opacity: .3; }
+.hum svg { position: absolute; top: -9px; left: 0; width: 200%; height: 10px; fill: var(--drop); opacity: .3; stroke: none; animation: wave calc(5s * var(--spd, 1)) linear infinite; }
+@keyframes wave { to { translate: -50% 0; } }
+.gauge { position: absolute; left: 6%; right: 6%; bottom: -8px; width: 88%; height: auto; opacity: .55; stroke: none; }
+.gauge .arc { fill: none; stroke: var(--line); stroke-width: 9; stroke-linecap: round; }
+.gauge .needle { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; transform-origin: 100px 100px; transform: rotate(-90deg); transition: transform 1.4s cubic-bezier(.2, .8, .2, 1); }
+.gauge circle { fill: var(--accent); }
+.gauge text { font: 9px var(--font-mono); fill: var(--muted); }
+.fogband { position: absolute; left: -30%; width: 160%; height: 32%; background: linear-gradient(90deg, transparent, var(--muted) 30%, var(--muted) 70%, transparent); border-radius: 50%; filter: blur(10px); animation: drift calc(9s * var(--spd, 1)) ease-in-out infinite alternate; }
+@keyframes drift { from { translate: -12% 0; } to { translate: 12% 0; } }
+.windbox { position: absolute; left: -50%; top: -50%; width: 200%; height: 200%; }
+.windbox i { position: absolute; left: 0; width: 26%; height: 3px; border-radius: 2px; background: var(--accent); opacity: .3; animation: streak linear infinite; }
+@keyframes streak { from { translate: -110% 0; } to { translate: 420% 0; } }
+.cl { position: absolute; left: 0; color: var(--muted); opacity: .28; animation: cloudrun linear infinite; }
+.cl svg { width: 100%; height: auto; fill: currentColor; stroke: none; display: block; }
+@keyframes cloudrun { from { translate: -110% 0; } to { translate: 380% 0; } }
+
+.aqi { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.aqi i { height: 8px; border-radius: 4px; background: var(--line); transition: background .4s; }
+.aqi i.on1 { background: var(--ok); } .aqi i.on2 { background: #8fbf3a; } .aqi i.on3 { background: var(--sun); } .aqi i.on4 { background: var(--hot); } .aqi i.on5 { background: var(--bad); }
+.chart { width: 100%; height: auto; display: block; touch-action: pan-y; }
+.chart text { font-family: var(--font-mono); font-size: 11px; fill: var(--muted); }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .zero { stroke: var(--cold); stroke-width: 1.2; stroke-dasharray: 4 3; }
+.chart .night { fill: var(--ink); opacity: .05; }
+.chart .line { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.chart .bar { fill: var(--drop); opacity: .8; }
+.chart .cursor { stroke: var(--ink); stroke-width: 1; opacity: .5; }
+.chart .pt { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.chart .tip rect { fill: var(--ink); }
+.chart .tip text { fill: var(--bg); font-size: 12px; }
+.chart-empty { display: grid; place-items: center; min-height: 220px; color: var(--muted); }
+.note { margin-top: 12px; font-size: .95rem; color: var(--muted); }
+.facts-note { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.facts-note span { font-size: .82rem; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); }
+
+/* ---------- result grid ---------- */
+.results { margin-top: 20px; padding: 20px; display: grid; gap: 18px; }
+.group .label { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; }
+.group .label b { font-family: var(--font-display); font-size: 1.25rem; color: var(--ink); letter-spacing: 0; text-transform: none; }
+.cells { display: flex; flex-wrap: wrap; gap: 5px; }
+.cell { width: 18px; height: 18px; border-radius: 5px; background: var(--ok); opacity: 0; animation: pop .35s ease forwards; }
+.cell.defect { background: repeating-linear-gradient(135deg, var(--warn) 0 3px, var(--warn-soft) 3px 6px); border: 1px solid var(--warn); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: .88rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend .cell { opacity: 1; animation: none; width: 14px; height: 14px; }
+@keyframes pop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+
+/* ---------- mini diagrams ---------- */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; margin-top: 20px; }
+.tile { padding: 16px 18px 18px; min-width: 0; }
+.tile h3 { font-family: var(--font-display); font-size: 1.1rem; margin: 0 0 12px; }
+.viz { min-height: 110px; display: grid; align-content: center; gap: 6px; font-family: var(--font-mono); font-size: .8rem; }
+.kv { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
+.kv.good { border-color: var(--ok); }
+.kv.badr { border-color: var(--bad); background: var(--bad-soft); }
+.yes { color: var(--ok); font-weight: 700; }
+.no { color: var(--bad); font-weight: 700; }
+.eqrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+.pill { padding: 8px 12px; border-radius: 10px; background: var(--accent-soft); color: var(--ink); font-weight: 500; font-size: 1rem; }
+.eqrow .op { color: var(--muted); font-size: 1.2rem; }
+.line { width: 100%; height: auto; }
+.line text { font-family: var(--font-mono); font-size: 11px; fill: var(--muted); }
+.line .ax { stroke: var(--line); stroke-width: 3; }
+.line .good { stroke: var(--ok); stroke-width: 6; stroke-linecap: round; }
+.line .dot-ok { fill: var(--ok); }
+.line .dot-bad { fill: var(--bad); }
+.pair { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.pair .kv { justify-content: center; }
+.doc-vs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.doc-vs div { padding: 8px 10px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); }
+.doc-vs .t { font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+.doc-vs .mismatch { grid-column: 1 / -1; text-align: center; background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+
+/* ---------- pipeline ---------- */
+.pipe { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 20px; counter-reset: p; }
+.stp { position: relative; padding: 16px 12px; text-align: center; display: grid; justify-items: center; gap: 8px; min-width: 0; }
+.stp svg { width: 34px; height: 34px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.stp b { font-size: .92rem; line-height: 1.2; }
+.stp small { color: var(--muted); font-size: .76rem; }
+.stp:not(:last-child)::after { content: "›"; position: absolute; right: -10px; top: 50%; translate: 0 -50%; color: var(--accent); font-size: 1.6rem; line-height: 1; z-index: 1; }
+footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; gap: 20px; flex-wrap: wrap; font-size: .92rem; }
+a { color: var(--accent); font-weight: 600; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+@media (max-width: 700px) {
+  .panels { grid-template-columns: 1fr; }
+  .panel { min-height: 0; }
+  .node .box { width: 60px; height: 60px; border-radius: 14px; }
+  .node svg { width: 32px; height: 32px; }
+  .db { width: 104px; padding: 6px; }
+  .sky { width: 150px; }
+  .sky .place { left: 9px; top: 7px; }
+  .sky .deg { left: 9px; bottom: 6px; }
+  .sky .therm { right: 10px; bottom: 8px; }
+  .speedbar { gap: 8px; padding-inline: 12px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .speedbar label span { display: none; }
+  .sky .deg { font-size: 1.25rem; }
+  .sky .therm { height: 38px; }
+  .pkt:not(.query) { font-size: 0; width: 18px; height: 18px; padding: 0; border-radius: 50%; }
+  .pipe { grid-template-columns: 1fr; }
+  .stp { grid-template-columns: 34px 1fr; justify-items: start; text-align: left; align-items: center; column-gap: 12px; }
+  .stp small { grid-column: 2; margin-top: -6px; }
+  .stp:not(:last-child)::after { content: "⌄"; right: auto; left: 28px; top: auto; bottom: -18px; translate: 0; }
+  .play { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row, .row.flash, .cell { animation: none; opacity: 1; }
+  .rays, .drop, .flake, .gate.denied, .hum svg, .fogband, .windbox i, .cl { animation: none; }
+  .gauge .needle, .hum { transition: none; }
+  .meter i, .fact, .aqi i { transition: none; }
+  .node .box { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-test" viewBox="0 0 48 48"><rect x="10" y="7" width="28" height="35" rx="4"/><path d="M18 7v-2h12v2"/><path d="M17 20l3 3 6-6M17 32h14"/></symbol>
+    <symbol id="i-api" viewBox="0 0 48 48"><rect x="8" y="9" width="32" height="12" rx="3"/><rect x="8" y="27" width="32" height="12" rx="3"/><path d="M14 15h.01M14 33h.01M22 15h12M22 33h12"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></symbol>
+    <symbol id="i-push" viewBox="0 0 48 48"><circle cx="24" cy="24" r="14"/><path d="M24 15v10l7 4"/></symbol>
+    <symbol id="i-gh" viewBox="0 0 48 48"><path d="M14 14l-6 10 6 10M34 14l6 10-6 10M27 11l-6 26"/></symbol>
+    <symbol id="i-run" viewBox="0 0 48 48"><path d="M13 12v24l22-12z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 48 48"><path d="M8 40h32M13 34V22M22 34V12M31 34V26M40 34V18"/></symbol>
+    <symbol id="i-web" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M8 24h32M24 8c-7 8-7 24 0 32M24 8c7 8 7 24 0 32"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+<header>
+  <div class="label">API test automation</div>
+  <h1>Ask. Answer. Check.</h1>
+  <p>Every test sends a request to a real service, reads the answer and checks it.</p>
+</header>
+
+<div class="speedbar">
+  <label for="speed">Speed <span>of the animation</span></label>
+  <input id="speed" type="range" min="0.1" max="1" step="0.05" value="1" aria-describedby="speed-out">
+  <output id="speed-out" for="speed">1×</output>
+  <button type="button" id="speed-reset">Reset</button>
+</div>
+<script>
+(function () {
+  window.demoSpeed = 1;
+  var input = document.getElementById('speed'), out = document.getElementById('speed-out'), reset = document.getElementById('speed-reset');
+  function apply() {
+    var v = parseFloat(input.value) || 1;
+    window.demoSpeed = v;
+    document.documentElement.style.setProperty('--spd', String(1 / v));
+    out.textContent = (v % 1 === 0 ? v : v.toFixed(2).replace(/0$/, '')) + '×';
+  }
+  input.addEventListener('input', apply);
+  reset.addEventListener('click', function () { input.value = '1'; apply(); });
+  apply();
+})();
+</script>
+
+<section aria-labelledby="h-stage">
+  <h2 id="h-stage">Pet shop, live</h2>
+  <div class="card stage">
+    <div class="rail" aria-hidden="true">
+      <div class="node" id="n-test"><div class="box"><svg><use href="#i-test"/></svg></div><b>Test</b></div>
+      <div class="lane"><span class="pkt" id="p-req"></span></div>
+      <div class="node" id="n-api"><div class="box"><svg><use href="#i-api"/></svg></div><b>API</b></div>
+      <div class="lane"><span class="pkt query" id="p-q"></span></div>
+      <div class="node" id="n-db"><div class="db" id="db"></div><b>Data</b></div>
+    </div>
+    <div class="panels">
+      <div class="panel"><span class="label">Request</span><div class="code" id="req"></div></div>
+      <div class="panel"><span class="label">Response</span><div class="code" id="res"></div></div>
+      <div class="panel"><span class="label">Checks</span><ul class="checks" id="checks"></ul></div>
+    </div>
+    <div class="steps" id="steps" role="group" aria-label="Choose a step"></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-wx">
+  <h2 id="h-wx">Weather, live</h2>
+  <div class="card stage">
+    <div class="rail" aria-hidden="true">
+      <div class="node" id="w-test"><div class="box"><svg><use href="#i-test"/></svg></div><b>Test</b></div>
+      <div class="lane"><span class="pkt" id="w-req"></span></div>
+      <div class="node" id="w-api"><div class="box rel"><svg><use href="#i-api"/></svg><span class="gate" id="w-gate"><svg class="shut"><use href="#i-lock"/></svg><svg class="open"><use href="#i-unlock"/></svg></span></div><b>API</b></div>
+      <div class="lane"><span class="pkt query" id="w-q"></span></div>
+      <div class="node" id="w-sky-node"><div class="sky" id="w-sky"></div><b>Sky</b></div>
+    </div>
+    <div class="panels">
+      <div class="panel"><span class="label">Request</span><div class="code" id="w-reqtxt"></div></div>
+      <div class="panel"><span class="label">Response</span><div class="code" id="w-restxt"></div></div>
+      <div class="panel"><span class="label">Checks</span><ul class="checks" id="w-checks"></ul></div>
+    </div>
+    <div class="steps cities" id="w-steps" role="group" aria-label="Choose a city"></div>
+    <p class="note">Sample values for illustration.</p>
+  </div>
+  <div class="extras">
+    <div class="card" style="padding:16px 18px">
+      <div class="sub"><b>More from the same response</b><span class="label" id="x-city"></span></div>
+      <div class="facts" id="facts"></div>
+    </div>
+    <div class="card" style="padding:16px 18px">
+      <div class="sub"><b>5-day forecast</b><span class="label" id="c-city"></span></div>
+      <div id="chart"></div>
+      <div class="facts-note"><span>40 steps</span><span>exactly 3 h apart</span><span>first step is not in the past</span></div>
+      <p class="note">Sample values for illustration. Hover the chart.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-res">
+  <h2 id="h-res">73 checks, every day</h2>
+  <div class="card results" id="results"></div>
+  <div class="legend" style="margin-top:12px">
+    <span><i class="cell"></i>Passed</span>
+    <span><i class="cell defect"></i>Known defect in the service, tracked on purpose</span>
+  </div>
+</section>
+
+<section aria-labelledby="h-what">
+  <h2 id="h-what">What gets checked</h2>
+  <div class="tiles">
+    <div class="card tile">
+      <h3>Right shape, sane values</h3>
+      <div class="viz">
+        <div class="kv good"><span>temp</span><span>18.2 <span class="yes">✓</span></span></div>
+        <div class="kv good"><span>humidity</span><span>64 <span class="yes">✓</span></span></div>
+        <div class="kv badr"><span>humidity</span><span>140 <span class="no">✗</span></span></div>
+      </div>
+    </div>
+    <div class="card tile">
+      <h3>Edges of the range</h3>
+      <div class="viz">
+        <svg class="line" viewBox="0 0 300 80" role="img" aria-label="Latitude 90 is accepted, 90.01 is rejected">
+          <line class="ax" x1="20" y1="40" x2="280" y2="40"/>
+          <line class="good" x1="20" y1="40" x2="200" y2="40"/>
+          <circle class="dot-ok" cx="200" cy="40" r="8"/>
+          <circle class="dot-bad" cx="232" cy="40" r="8"/>
+          <text x="200" y="22" text-anchor="middle">90</text>
+          <text x="236" y="66" text-anchor="middle">90.01</text>
+          <text x="20" y="66">−90</text>
+        </svg>
+      </div>
+    </div>
+    <div class="card tile">
+      <h3>Same value, every unit</h3>
+      <div class="viz"><div class="eqrow"><span class="pill">20 °C</span><span class="op">=</span><span class="pill">68 °F</span><span class="op">=</span><span class="pill">293.15 K</span></div></div>
+    </div>
+    <div class="card tile">
+      <h3>Wrong key, no data</h3>
+      <div class="viz">
+        <div class="pair"><div class="kv">appid=???</div><span class="no">→</span><div class="kv badr">401</div></div>
+        <div class="pair"><div class="kv">no key</div><span class="no">→</span><div class="kv badr">401</div></div>
+      </div>
+    </div>
+    <div class="card tile">
+      <h3>Nonsense in, clean error out</h3>
+      <div class="viz">
+        <div class="pair"><div class="kv">/pet/abc</div><span class="no">→</span><div class="kv good">400 <span class="yes">✓</span></div></div>
+        <div class="pair"><div class="kv">{ bad json</div><span class="no">→</span><div class="kv good">400 <span class="yes">✓</span></div></div>
+        <div class="pair"><div class="kv">/pet/0</div><span class="no">→</span><div class="kv good">404 <span class="yes">✓</span></div></div>
+      </div>
+    </div>
+    <div class="card tile">
+      <h3>Docs vs reality</h3>
+      <div class="viz">
+        <div class="doc-vs">
+          <div><span class="t">Docs say</span>name required</div>
+          <div><span class="t">Server does</span>accepts none</div>
+          <div class="mismatch">Mismatch found: 6 times</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-pipe">
+  <h2 id="h-pipe">Runs by itself</h2>
+  <div class="pipe">
+    <div class="card stp"><svg><use href="#i-push"/></svg><b>Push or 03:00 UTC</b><small>trigger</small></div>
+    <div class="card stp"><svg><use href="#i-gh"/></svg><b>GitHub Actions</b><small>lint, types</small></div>
+    <div class="card stp"><svg><use href="#i-run"/></svg><b>73 tests</b><small>2 APIs</small></div>
+    <div class="card stp"><svg><use href="#i-chart"/></svg><b>Allure report</b><small>every step</small></div>
+    <div class="card stp"><svg><use href="#i-web"/></svg><b>GitHub Pages</b><small>public link</small></div>
+  </div>
+</section>
+
+<footer>
+  <a href="https://nailkarimov.github.io/api-test-automation/">Live Allure report</a>
+  <a href="https://github.com/NailKarimov/api-test-automation">Source on GitHub</a>
+</footer>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- scenario ---------- */
+  var STEPS = [
+    { label: 'Create', method: 'POST', path: '/pet', body: '{ "name": "Rex", "status": "available" }', db: 'add', code: 200, text: 'OK',
+      res: '{ "id": 7701, "name": "Rex", "status": "available" }', checks: ['Status is 200', 'Body matches the contract', 'Every field echoed back'] },
+    { label: 'Read', method: 'GET', path: '/pet/7701', body: '', db: 'read', code: 200, text: 'OK',
+      res: '{ "id": 7701, "name": "Rex", "status": "available" }', checks: ['Status is 200', 'Same data as stored'] },
+    { label: 'Update', method: 'PUT', path: '/pet', body: '{ "id": 7701, "name": "Rex", "status": "sold" }', db: 'update', code: 200, text: 'OK',
+      res: '{ "id": 7701, "name": "Rex", "status": "sold" }', checks: ['Status is 200', 'Status changed to sold'] },
+    { label: 'Delete', method: 'DELETE', path: '/pet/7701', body: '', db: 'delete', code: 200, text: 'OK',
+      res: 'Pet deleted', checks: ['Status is 200'] },
+    { label: 'Gone?', method: 'GET', path: '/pet/7701', body: '', db: 'read', code: 404, text: 'Not Found',
+      res: 'Pet not found', checks: ['Status is 404, as expected', 'Nothing left behind'] },
+    { label: 'Bad input', method: 'GET', path: '/pet/abc', body: '', db: 'none', code: 400, text: 'Bad Request',
+      res: '{ "code": 400, "message": "Input error" }', checks: ['Status is 400, as expected', 'Error has code and message'] }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var el = { db: $('db'), req: $('req'), res: $('res'), checks: $('checks'), steps: $('steps'),
+    pReq: $('p-req'), pQ: $('p-q'), nTest: $('n-test'), nApi: $('n-api'), nDb: $('n-db') };
+
+  /* ---------- database view ---------- */
+  var rows = [];
+  function renderDb(flashId, outId) {
+    var h = '<div class="head"><span>pets</span><span>' + rows.length + '</span></div>';
+    if (!rows.length) h += '<div class="empty">empty</div>';
+    rows.forEach(function (r) {
+      var cls = 'row' + (r.id === flashId ? ' flash' : '') + (r.id === outId ? ' out' : '');
+      h += '<div class="' + cls + '"><span>' + r.name + '</span><i class="' + (r.status === 'sold' ? 'sold' : '') + '">' + r.status + '</i></div>';
+    });
+    el.db.innerHTML = h;
+  }
+  function applyDb(op) {
+    if (op === 'add') rows = [{ id: 7701, name: 'Rex', status: 'available' }];
+    if (op === 'update' && rows[0]) rows[0].status = 'sold';
+    if (op === 'delete') rows = [];
+  }
+  function dbBefore(i) { rows = []; for (var k = 0; k < i; k++) applyDb(STEPS[k].db); renderDb(); }
+
+  /* ---------- panels ---------- */
+  function showReq(s) {
+    el.req.innerHTML = '<span class="method">' + s.method + '</span>' + s.path + (s.body ? '<br>' + s.body : '');
+  }
+  function showRes(s) {
+    var k = s.code < 300 ? 'ok' : 'bad';
+    el.res.innerHTML = '<span class="status ' + k + '">' + s.code + ' ' + s.text + '</span><br>' + s.res;
+  }
+  function resetPanels(s) {
+    el.res.innerHTML = '<span style="color:var(--muted)">waiting…</span>';
+    el.checks.innerHTML = s.checks.map(function (c) { return '<li>' + c + '</li>'; }).join('');
+  }
+  function tickAll() { [].forEach.call(el.checks.children, function (li) { li.classList.add('done'); }); }
+
+  /* ---------- animation helpers ---------- */
+  var run = 0;
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, reduce ? 0 : ms / (window.demoSpeed || 1)); }); };
+  function glow(node, on) { node.classList[on ? 'add' : 'remove']('on'); }
+  function slide(pkt, from, to, ms, label, cls) {
+    pkt.className = 'pkt show ' + (cls || '');
+    pkt.textContent = label || '';
+    if (reduce || !pkt.animate) return wait(0);
+    var lane = pkt.parentElement, max = lane.clientWidth - pkt.offsetWidth;
+    var a = pkt.animate([{ left: (from * max) + 'px' }, { left: (to * max) + 'px' }], { duration: ms / (window.demoSpeed || 1), easing: 'ease-in-out', fill: 'forwards' });
+    return a.finished.catch(function () {});
+  }
+  function hide(pkt) { pkt.className = 'pkt'; }
+
+  async function play(i) {
+    var me = ++run, s = STEPS[i];
+    var live = function () { return me === run; };
+    markChip(i);
+    dbBefore(i);
+    showReq(s); resetPanels(s);
+
+    glow(el.nTest, true);
+    await slide(el.pReq, 0, 1, 700, s.method);
+    if (!live()) return false;
+    hide(el.pReq); glow(el.nTest, false); glow(el.nApi, true);
+    await wait(250); if (!live()) return false;
+
+    if (s.db !== 'none') {
+      glow(el.nApi, false); glow(el.nDb, true);
+      await slide(el.pQ, 0, 1, 450, '', 'query'); if (!live()) return false;
+      var before = rows.slice();
+      applyDb(s.db);
+      if (s.db === 'delete') { rows = before; renderDb(null, 7701); await wait(450); rows = []; renderDb(); }
+      else renderDb(s.db === 'read' && !rows.length ? null : 7701);
+      await wait(350); if (!live()) return false;
+      await slide(el.pQ, 1, 0, 450, '', 'query'); if (!live()) return false;
+      hide(el.pQ); glow(el.nDb, false); glow(el.nApi, true);
+    }
+
+    await wait(150); if (!live()) return false;
+    showRes(s);
+    glow(el.nApi, false); glow(el.nTest, true);
+    await slide(el.pReq, 1, 0, 700, String(s.code), s.code < 300 ? 'ok' : 'bad');
+    if (!live()) return false;
+    hide(el.pReq);
+
+    var items = [].slice.call(el.checks.children);
+    for (var k = 0; k < items.length; k++) {
+      await wait(320); if (!live()) return false;
+      items[k].classList.add('done');
+    }
+    await wait(1100);
+    glow(el.nTest, false);
+    return live();
+  }
+
+  /* ---------- static state (reduced motion, or before the first run) ---------- */
+  function showFinal(i) {
+    var s = STEPS[i];
+    markChip(i); dbBefore(i); applyDb(s.db); renderDb();
+    showReq(s); showRes(s); resetPanels(s); tickAll();
+  }
+
+  /* ---------- controls ---------- */
+  var auto = !reduce, current = 0, chips = [];
+  var playBtn = document.createElement('button');
+  playBtn.className = 'play';
+  function syncPlay() { playBtn.textContent = auto ? 'Pause' : 'Play all'; playBtn.setAttribute('aria-pressed', String(auto)); }
+  STEPS.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.className = 'chip'; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<span class="m">' + s.method + '</span>' + s.label;
+    b.addEventListener('click', function () { auto = false; syncPlay(); current = i; if (reduce) showFinal(i); else play(i); });
+    el.steps.appendChild(b); chips.push(b);
+  });
+  el.steps.appendChild(playBtn);
+  function markChip(i) { chips.forEach(function (c, k) { c.setAttribute('aria-pressed', String(k === i)); }); }
+  playBtn.addEventListener('click', function () {
+    auto = !auto; syncPlay();
+    if (auto) loop();
+    else { run++; hide(el.pReq); hide(el.pQ); glow(el.nTest, false); glow(el.nApi, false); glow(el.nDb, false); }
+  });
+  syncPlay();
+
+  async function loop() {
+    while (auto) {
+      var ok = await play(current);
+      if (!auto || !ok) break;
+      current = (current + 1) % STEPS.length;
+    }
+  }
+
+  showFinal(0);
+  if (auto) setTimeout(function () { if (auto) { current = 0; loop(); } }, 1600);
+
+  /* ---------- result grid ---------- */
+  var groups = [
+    { name: 'Weather API', n: 38, defects: 0 },
+    { name: 'Petstore API', n: 33, defects: 6 },
+    { name: 'Helpers', n: 2, defects: 0 }
+  ];
+  var out = $('results'), delay = 0;
+  groups.forEach(function (g) {
+    var wrap = document.createElement('div'); wrap.className = 'group';
+    wrap.innerHTML = '<div class="label"><b>' + g.n + '</b><span>' + g.name + '</span></div>';
+    var cells = document.createElement('div'); cells.className = 'cells';
+    for (var i = 0; i < g.n; i++) {
+      var c = document.createElement('i');
+      c.className = 'cell' + (i >= g.n - g.defects ? ' defect' : '');
+      c.style.animationDelay = (reduce ? 0 : delay++ * 14) + 'ms';
+      cells.appendChild(c);
+    }
+    wrap.appendChild(cells); out.appendChild(wrap);
+  });
+})();
+</script>
+
+<script>
+/* ---------- weather stage ---------- */
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var KEY = 'appid=••••••••';
+
+  var STEPS = [
+    { label: 'Wrong key', key: false, code: 401, text: 'Unauthorized', lat: 56.95, lon: 24.11,
+      res: '{ "cod": 401, "message": "Invalid API key" }',
+      checks: ['Status is 401, as expected', 'Error says "Invalid API key"', 'No weather data leaks out'] },
+    { label: 'Dubai', key: true, code: 200, text: 'OK', lat: 25.2, lon: 55.27, kind: 'clear', temp: 38, hum: 41, name: 'Dubai', cond: 'Clear',
+      checks: ['Status is 200', 'Humidity is within 0–100 %', 'Temperature is realistic', 'Icon matches the weather'] },
+    { label: 'Riga', key: true, code: 200, text: 'OK', lat: 56.95, lon: 24.11, kind: 'rain', temp: 9, hum: 87, name: 'Riga', cond: 'Rain',
+      checks: ['Status is 200', 'Humidity is within 0–100 %', 'Temperature is realistic', 'Icon matches the weather'] },
+    { label: 'Reykjavik', key: true, code: 200, text: 'OK', lat: 64.15, lon: -21.94, kind: 'snow', temp: -4, hum: 78, name: 'Reykjavik', cond: 'Snow',
+      checks: ['Status is 200', 'Humidity is within 0–100 %', 'Temperature is realistic', 'Icon matches the weather'] },
+    { label: 'Sydney', key: true, code: 200, text: 'OK', lat: -33.87, lon: 151.21, kind: 'cloudy', temp: 22, hum: 60, name: 'Sydney', cond: 'Clouds',
+      checks: ['Status is 200', 'Humidity is within 0–100 %', 'Temperature is realistic', 'Icon matches the weather'] }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var el = { sky: $('w-sky'), req: $('w-reqtxt'), res: $('w-restxt'), checks: $('w-checks'), steps: $('w-steps'), gate: $('w-gate'),
+    pReq: $('w-req'), pQ: $('w-q'), nTest: $('w-test'), nApi: $('w-api'), nSky: $('w-sky-node') };
+
+  /* ---------- the sky ---------- */
+  function cloud(x, y, s) {
+    return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')" fill="var(--cloud)"><ellipse cx="0" cy="0" rx="19" ry="9"/><circle cx="-8" cy="-6" r="9"/><circle cx="6" cy="-9" r="11"/></g>';
+  }
+  function sun(x, y, r) {
+    var rays = '';
+    for (var a = 0; a < 8; a++) rays += '<line x1="0" y1="' + (-r - 5) + '" x2="0" y2="' + (-r - 11) + '" transform="rotate(' + (a * 45) + ')"/>';
+    return '<g transform="translate(' + x + ' ' + y + ')"><g class="rays" stroke="var(--sun)" stroke-width="3" stroke-linecap="round">' + rays + '</g><circle r="' + r + '" fill="var(--sun)"/></g>';
+  }
+  function drops() {
+    var h = '';
+    [0, 1, 2, 3, 4, 5].forEach(function (i) {
+      h += '<line class="drop" x1="' + (42 + i * 12) + '" y1="50" x2="' + (39 + i * 12) + '" y2="58" stroke="var(--drop)" stroke-width="2.2" stroke-linecap="round" style="animation-delay:' + (i * 0.15) + 's"/>';
+    });
+    return h;
+  }
+  function flakes() {
+    var h = '';
+    [0, 1, 2, 3, 4, 5, 6].forEach(function (i) {
+      h += '<circle class="flake" cx="' + (38 + i * 11) + '" cy="' + (46 + (i % 3) * 5) + '" r="2.2" fill="var(--cloud)" style="animation-delay:' + (i * 0.4) + 's"/>';
+    });
+    return h;
+  }
+  var SCENES = {
+    clear: function () { return sun(84, 36, 14); },
+    rain: function () { return cloud(84, 30, 1.15) + drops(); },
+    snow: function () { return cloud(84, 30, 1.15) + flakes(); },
+    cloudy: function () { return sun(98, 22, 9) + cloud(80, 38, 1.15); }
+  };
+  function tint(t) { return t >= 30 ? 'hot' : null; }
+  function renderSky(s) {
+    if (!s || !s.kind) {
+      el.sky.className = 'sky';
+      el.sky.innerHTML = '<div class="none">no data</div>';
+      return;
+    }
+    var cls = tint(s.temp) || s.kind;
+    var pct = Math.max(6, Math.min(100, ((s.temp + 10) / 55) * 100));
+    var col = s.temp >= 28 ? 'var(--hot)' : s.temp <= 5 ? 'var(--cold)' : 'var(--accent)';
+    el.sky.className = 'sky ' + cls;
+    el.sky.innerHTML = '<svg viewBox="0 0 148 112" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + SCENES[s.kind]() + '</svg>' +
+      '<span class="place">' + s.name + '</span><span class="deg">' + s.temp + '°C</span>' +
+      '<span class="therm"><i style="height:' + pct + '%;background:' + col + '"></i></span>';
+  }
+
+  /* ---------- extra data: facts and forecast chart (sample values) ---------- */
+  var EXTRA = {
+    Dubai:     { feels: 41, tmin: 31, tmax: 40, mm: 0,   press: 1004, wind: 4.1, deg: 300, vis: 10, clouds: 0,   rise: '06:12', set: '17:48', aqi: 3, mean: 33, amp: 5,   phase: 0.4, pop: 0,    seed: 11, precip: 'rain' },
+    Riga:      { feels: 6,  tmin: 7,  tmax: 11, mm: 1.2, press: 1009, wind: 6.2, deg: 230, vis: 6,  clouds: 90,  rise: '07:48', set: '17:52', aqi: 1, mean: 8,  amp: 2.6, phase: 1.1, pop: 0.6,  seed: 23, precip: 'rain' },
+    Reykjavik: { feels: -9, tmin: -6, tmax: -1, mm: 0.8, press: 996,  wind: 9.8, deg: 20,  vis: 3,  clouds: 100, rise: '09:40', set: '15:55', aqi: 1, mean: -3, amp: 2.2, phase: 2.0, pop: 0.45, seed: 37, precip: 'snow' },
+    Sydney:    { feels: 21, tmin: 18, tmax: 25, mm: 0,   press: 1016, wind: 5.1, deg: 120, vis: 10, clouds: 40,  rise: '06:05', set: '18:10', aqi: 2, mean: 20, amp: 5,   phase: 0.2, pop: 0.12, seed: 51, precip: 'rain' }
+  };
+  var AQI_LABEL = ['Good', 'Fair', 'Moderate', 'Poor', 'Very poor'];
+  var DASH = '—';
+
+  function windArrow(deg) {
+    return '<svg viewBox="0 0 26 26" style="width:26px;height:26px;stroke:none" aria-hidden="true"><circle cx="13" cy="13" r="11.5" fill="none" style="stroke:var(--line)" stroke-width="2"/><g transform="rotate(' + ((deg + 180) % 360) + ' 13 13)"><path d="M13 4 L18 17 L13 14 L8 17 Z" fill="var(--accent)"/></g></svg>';
+  }
+  function sunArc(rise, set) {
+    var t = 0.42, x = (1 - t) * (1 - t) * 10 + 2 * (1 - t) * t * 100 + t * t * 190, y = (1 - t) * (1 - t) * 34 + 2 * (1 - t) * t * -22 + t * t * 34;
+    return '<svg viewBox="0 0 200 58" aria-hidden="true"><path d="M10 34 Q100 -22 190 34" fill="none" style="stroke:var(--muted)" stroke-width="2" stroke-dasharray="4 4"/><line x1="4" y1="34" x2="196" y2="34" style="stroke:var(--line)" stroke-width="2"/>' +
+      '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="6" fill="var(--sun)"/>' +
+      '<text x="10" y="52" text-anchor="start" style="font:10px var(--font-mono);fill:var(--muted)">' + rise + '</text>' +
+      '<text x="190" y="52" text-anchor="end" style="font:10px var(--font-mono);fill:var(--muted)">' + set + '</text></svg>';
+  }
+  function fact(k, v, extra, cls, on, bg) {
+    return '<div class="fact' + (on ? '' : ' off') + (cls ? ' ' + cls : '') + '">' + (on && bg ? '<div class="bg" aria-hidden="true">' + bg + '</div>' : '') +
+      '<span class="k">' + k + '</span><span class="v">' + v + '</span>' + (extra || '') + '</div>';
+  }
+  /* backgrounds: each one shows the value it belongs to */
+  function bgHumidity(h) {
+    return '<div class="hum" data-h="' + h + '"><i></i><svg viewBox="0 0 200 10" preserveAspectRatio="none"><path d="M0 5 Q25 0 50 5 T100 5 T150 5 T200 5 V10 H0Z"/></svg></div>';
+  }
+  function bgPressure(p) {
+    var a = -90 + Math.max(0, Math.min(1, (p - 960) / 100)) * 180;
+    return '<svg class="gauge" viewBox="0 0 200 112" aria-hidden="true"><path class="arc" d="M20 100 A80 80 0 0 1 180 100"/>' +
+      '<line class="needle" x1="100" y1="100" x2="100" y2="34" data-a="' + a.toFixed(1) + '"/><circle cx="100" cy="100" r="6"/>' +
+      '<text x="14" y="111">960</text><text x="186" y="111" text-anchor="end">1060</text></svg>';
+  }
+  function bgVisibility(vis) {
+    var o = Math.max(0.06, (10 - vis) / 10 * 0.6 + 0.06).toFixed(2);
+    return '<i class="fogband" style="top:6%;opacity:' + o + '"></i><i class="fogband" style="top:36%;opacity:' + o + ';animation-delay:-3s"></i><i class="fogband" style="top:64%;opacity:' + o + ';animation-delay:-6s"></i>';
+  }
+  function bgWind(speed, deg) {
+    var dur = Math.max(1.1, 11 / speed), h = '';
+    for (var k = 0; k < 8; k++) h += '<i style="top:' + (8 + k * 12) + '%;animation-duration:calc(' + (dur * (0.8 + (k % 3) * 0.25)).toFixed(2) + 's * var(--spd, 1));animation-delay:-' + (k * 0.7).toFixed(1) + 's"></i>';
+    return '<div class="windbox" style="transform:rotate(' + (deg + 90) + 'deg)">' + h + '</div>';
+  }
+  function bgClouds(c) {
+    var n = Math.round(c / 20), h = '', k;
+    for (k = 0; k < n; k++) h += '<span class="cl" style="top:' + (6 + k * 17) + '%;width:' + (46 + (k % 3) * 14) + '%;animation-duration:calc(' + (26 + k * 7) + 's * var(--spd, 1));animation-delay:-' + (k * 5) + 's"><svg viewBox="0 0 60 30"><ellipse cx="30" cy="21" rx="25" ry="8"/><circle cx="20" cy="14" r="9"/><circle cx="35" cy="11" r="11"/></svg></span>';
+    return h;
+  }
+  function renderFacts(s) {
+    var e = s && s.kind ? EXTRA[s.name] : null, on = !!e, h = '';
+    $('x-city').textContent = e ? s.name : 'waiting for data';
+    h += fact('Feels like', e ? e.feels + '<small>°C</small>' : DASH, '', '', on);
+    h += fact('Min · max', e ? e.tmin + ' / ' + e.tmax + '<small>°C</small>' : DASH, '', '', on);
+    h += fact('Humidity', e ? s.hum + '<small>%</small>' : DASH, '', '', on, e && bgHumidity(s.hum));
+    h += fact('Pressure', e ? e.press + '<small>hPa</small>' : DASH, '', '', on, e && bgPressure(e.press));
+    h += fact('Wind', e ? e.wind + '<small>m/s</small>' : DASH, e ? '<span style="display:flex">' + windArrow(e.deg) + '</span>' : '', '', on, e && bgWind(e.wind, e.deg));
+    h += fact('Visibility', e ? e.vis + '<small>km</small>' : DASH, e ? '<span class="hint">' + (e.vis >= 10 ? 'clear view' : e.vis >= 5 ? 'hazy' : 'foggy') + '</span>' : '', '', on, e && bgVisibility(e.vis));
+    h += fact('Clouds', e ? e.clouds + '<small>%</small>' : DASH, '', '', on, e && bgClouds(e.clouds));
+    h += fact(e && e.precip === 'snow' ? 'Snow, last hour' : 'Rain, last hour', e ? e.mm + '<small>mm</small>' : DASH, '', '', on);
+    h += fact('Sunrise · sunset', e ? sunArc(e.rise, e.set) : DASH, '', 'wide', on);
+    var seg = '';
+    for (var k = 1; k <= 5; k++) seg += '<i class="' + (e && k <= e.aqi ? 'on' + k : '') + '"></i>';
+    h += fact('Air quality', e ? e.aqi + '<small>' + AQI_LABEL[e.aqi - 1] + '</small>' : DASH, '<span class="aqi">' + seg + '</span>', 'wide', on);
+    $('facts').innerHTML = h;
+    var settle = function () {
+      [].forEach.call(document.querySelectorAll('#facts .hum'), function (n) { n.style.height = n.getAttribute('data-h') + '%'; });
+      [].forEach.call(document.querySelectorAll('#facts .needle'), function (n) { n.style.transform = 'rotate(' + n.getAttribute('data-a') + 'deg)'; });
+    };
+    if (reduce) settle(); else requestAnimationFrame(function () { requestAnimationFrame(settle); });
+  }
+
+  /* seeded noise keeps the sample forecast identical on every visit */
+  function makeSeries(s, e) {
+    var seed = e.seed, out = [], start = new Date(), i;
+    start.setMinutes(0, 0, 0); start.setHours(Math.ceil(start.getHours() / 3) * 3);
+    function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+    for (i = 0; i < 40; i++) {
+      var d = new Date(start.getTime() + i * 3 * 3600 * 1000), h = d.getHours();
+      var t = e.mean + e.amp * Math.sin((h - 9) / 24 * 2 * Math.PI) + 1.6 * Math.sin(i / 7 + e.phase) + (rnd() - 0.5) * 0.8;
+      var p = e.pop ? Math.max(0, Math.min(1, e.pop + 0.4 * Math.sin(i / 5 + e.phase * 2) + (rnd() - 0.5) * 0.25)) : 0;
+      out.push({ d: d, h: h, t: t, p: p });
+    }
+    var shift = s.temp - out[0].t;
+    out.forEach(function (o, k) { o.t = Math.round((o.t + shift * Math.exp(-k / 10)) * 10) / 10; o.p = Math.round(o.p * 100); });
+    return out;
+  }
+  function renderChart(s, still) {
+    var box = $('chart'), e = s && s.kind ? EXTRA[s.name] : null;
+    $('c-city').textContent = e ? s.name : 'waiting for data';
+    if (!e) { box.innerHTML = '<div class="chart-empty">No key, no forecast.</div>'; return; }
+    var data = makeSeries(s, e), W = Math.max(320, Math.min(980, box.clientWidth || 640)), y1 = W < 520 ? 190 : 230, H = y1 + 100, x0 = 44, x1 = W - 14, y0 = 14, by = y1 + 34, bh = 40;
+    var min = Math.min.apply(null, data.map(function (o) { return o.t; })), max = Math.max.apply(null, data.map(function (o) { return o.t; }));
+    var range = max - min, step = range > 24 ? 10 : range > 10 ? 5 : 2;
+    var lo = Math.floor((min - 0.5) / step) * step, hi = Math.ceil((max + 0.5) / step) * step;
+    var X = function (i) { return x0 + i / 39 * (x1 - x0); };
+    var Y = function (v) { return y1 - (v - lo) / (hi - lo) * (y1 - y0); };
+    var dx = (x1 - x0) / 39, g = '', v, i;
+    for (i = 0; i < 40; i++) if (data[i].h >= 21 || data[i].h < 6) g += '<rect class="night" x="' + (X(i) - dx / 2).toFixed(1) + '" y="' + y0 + '" width="' + dx.toFixed(1) + '" height="' + (by + bh - y0) + '"/>';
+    for (v = lo; v <= hi; v += step) g += '<line class="grid" x1="' + x0 + '" x2="' + x1 + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/><text x="' + (x0 - 8) + '" y="' + (Y(v) + 3).toFixed(1) + '" text-anchor="end">' + v + '°</text>';
+    if (lo < 0 && hi > 0) g += '<line class="zero" x1="' + x0 + '" x2="' + x1 + '" y1="' + Y(0).toFixed(1) + '" y2="' + Y(0).toFixed(1) + '"/>';
+    var pts = data.map(function (o, k) { return [X(k), Y(o.t)]; });
+    var d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
+    for (i = 1; i < pts.length - 1; i++) d += ' Q' + pts[i][0].toFixed(1) + ' ' + pts[i][1].toFixed(1) + ' ' + ((pts[i][0] + pts[i + 1][0]) / 2).toFixed(1) + ' ' + ((pts[i][1] + pts[i + 1][1]) / 2).toFixed(1);
+    d += ' L' + pts[39][0].toFixed(1) + ' ' + pts[39][1].toFixed(1);
+    var area = d + ' L' + x1 + ' ' + y1 + ' L' + x0 + ' ' + y1 + ' Z';
+    var bars = '', days = '', fm = 1;
+    while (fm < 40 && data[fm].h !== 0) fm++;
+    var tight = X(fm) - X(0) < 70; /* "Today" would collide with the first midnight label */
+    for (i = 0; i < 40; i++) {
+      var bhgt = data[i].p / 100 * bh;
+      bars += '<rect class="bar" x="' + (X(i) - dx * 0.35).toFixed(1) + '" y="' + (by + bh - bhgt).toFixed(1) + '" width="' + (dx * 0.7).toFixed(1) + '" height="' + bhgt.toFixed(1) + '" rx="1.5"/>';
+      if ((i === 0 && !tight) || data[i].h === 0) {
+        var label = i === 0 ? 'Today' : data[i].d.toLocaleDateString('en', { weekday: 'short' });
+        days += '<line class="grid" x1="' + X(i).toFixed(1) + '" x2="' + X(i).toFixed(1) + '" y1="' + by + '" y2="' + (by + bh + 4) + '"/><text x="' + (X(i) + 4).toFixed(1) + '" y="' + (by + bh + 16) + '">' + label + '</text>';
+      }
+    }
+    var gid = 'g' + e.seed;
+    box.innerHTML = '<svg class="chart" id="cv" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Five day temperature forecast for ' + s.name + '">' +
+      '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.35"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></linearGradient></defs>' +
+      g + '<path id="carea" d="' + area + '" fill="url(#' + gid + ')"/><path id="cline" class="line" d="' + d + '"/>' +
+      '<text x="' + x0 + '" y="' + (by - 8) + '">chance of ' + e.precip + ', %</text>' + bars + days +
+      '<g id="cur"><line class="cursor" id="cl" y1="' + y0 + '" y2="' + (by + bh) + '"/><circle class="pt" id="cp" r="5"/><g class="tip" id="ct"><rect rx="5" height="22"/><text y="15"></text></g></g></svg>';
+    var svg = $('cv'), cl = $('cl'), cp = $('cp'), ct = $('ct'), ctRect = ct.firstChild, ctText = ct.lastChild;
+    function point(k) {
+      var o = data[k], px = X(k), py = Y(o.t), hh = ('0' + o.h).slice(-2);
+      cl.setAttribute('x1', px); cl.setAttribute('x2', px); cp.setAttribute('cx', px); cp.setAttribute('cy', py);
+      ctText.textContent = (k === 0 ? 'Now' : o.d.toLocaleDateString('en', { weekday: 'short' }) + ' ' + hh + ':00') + ' · ' + o.t + '°C · ' + e.precip + ' ' + o.p + '%';
+      var w = ctText.getComputedTextLength() + 16, tx = Math.min(Math.max(px - w / 2, x0), x1 - w);
+      ctRect.setAttribute('width', w); ctRect.setAttribute('x', tx); ctRect.setAttribute('y', Math.max(py - 36, 0));
+      ctText.setAttribute('x', tx + 8); ctText.setAttribute('y', Math.max(py - 36, 0) + 15);
+    }
+    point(0);
+    function move(ev) {
+      var r = svg.getBoundingClientRect(), vx = (ev.clientX - r.left) / r.width * W;
+      point(Math.max(0, Math.min(39, Math.round((vx - x0) / (x1 - x0) * 39))));
+    }
+    svg.addEventListener('pointermove', move);
+    svg.addEventListener('pointerleave', function () { point(0); });
+    var line = $('cline');
+    if (!still && !reduce && line.animate && line.getTotalLength) {
+      var len = line.getTotalLength(), sp = window.demoSpeed || 1;
+      line.animate([{ strokeDasharray: len, strokeDashoffset: len }, { strokeDasharray: len, strokeDashoffset: 0 }], { duration: 1300 / sp, easing: 'ease-out' });
+      $('carea').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1300 / sp });
+    }
+  }
+  var lastExtra = null, resizeTimer = 0;
+  function renderExtras(s) { lastExtra = s; renderFacts(s); renderChart(s); }
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { if (lastExtra) renderChart(lastExtra, true); }, 160);
+  });
+
+  /* ---------- panels ---------- */
+  function reqText(s) {
+    var key = s.key ? KEY : 'appid=wrong-key';
+    return '<span class="method">GET</span>/data/2.5/weather<br>lat=' + s.lat + '&amp;lon=' + s.lon + '<br>' + key;
+  }
+  function resBody(s) {
+    return s.res || '{ "name": "' + s.name + '", "main": { "temp": ' + s.temp + ', "humidity": ' + s.hum + ' }, "weather": [{ "main": "' + s.cond + '" }] }';
+  }
+  function showReq(s) { el.req.innerHTML = reqText(s); }
+  function showRes(s) {
+    var k = s.code < 300 ? 'ok' : 'bad';
+    el.res.innerHTML = '<span class="status ' + k + '">' + s.code + ' ' + s.text + '</span><br>' + resBody(s);
+  }
+  function resetPanels(s) {
+    el.res.innerHTML = '<span style="color:var(--muted)">waiting…</span>';
+    el.checks.innerHTML = s.checks.map(function (c) { return '<li>' + c + '</li>'; }).join('');
+  }
+  function setGate(state) {
+    el.gate.classList.remove('is-open', 'denied');
+    if (state) el.gate.classList.add(state);
+    if (state === 'denied') { void el.gate.offsetWidth; }
+  }
+
+  /* ---------- animation helpers ---------- */
+  var run = 0;
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, reduce ? 0 : ms / (window.demoSpeed || 1)); }); };
+  function glow(node, on) { node.classList[on ? 'add' : 'remove']('on'); }
+  function slide(pkt, from, to, ms, label, cls) {
+    pkt.className = 'pkt show ' + (cls || '');
+    pkt.textContent = label || '';
+    if (reduce || !pkt.animate) return wait(0);
+    var max = pkt.parentElement.clientWidth - pkt.offsetWidth;
+    var a = pkt.animate([{ left: (from * max) + 'px' }, { left: (to * max) + 'px' }], { duration: ms / (window.demoSpeed || 1), easing: 'ease-in-out', fill: 'forwards' });
+    return a.finished.catch(function () {});
+  }
+  function hide(pkt) { pkt.className = 'pkt'; }
+  function clearStage() {
+    hide(el.pReq); hide(el.pQ); glow(el.nTest, false); glow(el.nApi, false); glow(el.nSky, false);
+  }
+
+  async function play(i) {
+    var me = ++run, s = STEPS[i];
+    var live = function () { return me === run; };
+    markChip(i);
+    clearStage(); setGate(null); renderSky(null); renderExtras(null);
+    showReq(s); resetPanels(s);
+
+    glow(el.nTest, true);
+    await slide(el.pReq, 0, 1, 700, 'GET');
+    if (!live()) return false;
+    hide(el.pReq); glow(el.nTest, false); glow(el.nApi, true);
+    await wait(300); if (!live()) return false;
+
+    setGate(s.key ? 'is-open' : 'denied');
+    await wait(550); if (!live()) return false;
+
+    if (s.key) {
+      glow(el.nApi, false); glow(el.nSky, true);
+      await slide(el.pQ, 0, 1, 450, '', 'query'); if (!live()) return false;
+      renderSky(s);
+      await wait(500); if (!live()) return false;
+      renderExtras(s);
+      await wait(900); if (!live()) return false;
+      await slide(el.pQ, 1, 0, 450, '', 'query'); if (!live()) return false;
+      hide(el.pQ); glow(el.nSky, false); glow(el.nApi, true);
+    }
+
+    showRes(s);
+    glow(el.nApi, false); glow(el.nTest, true);
+    await slide(el.pReq, 1, 0, 700, String(s.code), s.code < 300 ? 'ok' : 'bad');
+    if (!live()) return false;
+    hide(el.pReq);
+
+    var items = [].slice.call(el.checks.children);
+    for (var k = 0; k < items.length; k++) {
+      await wait(320); if (!live()) return false;
+      items[k].classList.add('done');
+    }
+    await wait(1400);
+    glow(el.nTest, false);
+    return live();
+  }
+
+  function showFinal(i) {
+    var s = STEPS[i];
+    markChip(i); clearStage(); setGate(s.key ? 'is-open' : 'denied'); renderSky(s.key ? s : null); renderExtras(s.key ? s : null);
+    showReq(s); showRes(s); resetPanels(s);
+    [].forEach.call(el.checks.children, function (li) { li.classList.add('done'); });
+  }
+
+  /* ---------- controls ---------- */
+  var auto = !reduce, current = 1, chips = [];
+  var playBtn = document.createElement('button');
+  playBtn.className = 'play';
+  function syncPlay() { playBtn.textContent = auto ? 'Pause' : 'Play all'; playBtn.setAttribute('aria-pressed', String(auto)); }
+  STEPS.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.className = 'chip'; b.setAttribute('aria-pressed', 'false');
+    b.textContent = s.label;
+    b.addEventListener('click', function () { auto = false; syncPlay(); current = i; if (reduce) showFinal(i); else play(i); });
+    el.steps.appendChild(b); chips.push(b);
+  });
+  el.steps.appendChild(playBtn);
+  function markChip(i) { chips.forEach(function (c, k) { c.setAttribute('aria-pressed', String(k === i)); }); }
+  playBtn.addEventListener('click', function () {
+    auto = !auto; syncPlay();
+    if (auto) loop();
+    else { run++; clearStage(); }
+  });
+  syncPlay();
+
+  async function loop() {
+    while (auto) {
+      var ok = await play(current);
+      if (!auto || !ok) break;
+      current = (current + 1) % STEPS.length;
+    }
+  }
+
+  showFinal(1);
+  if (auto) setTimeout(function () { if (auto) { current = 0; loop(); } }, 2200);
+})();
+</script>
+
+</body>
+</html>

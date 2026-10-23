@@ -1,0 +1,6 @@
+GET http://localhost:8090/api/v3/pet/1792776548446056
+Query: {}
+Status: 200 (4 ms)
+Content-Type: application/json
+Body:
+{"id":1792776548446056,"category":{"id":1,"name":"Dogs"},"name":"Rīga ☃ \"quotes\" & <tags> 猫","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1792776548446056"}],"status":"available"}
