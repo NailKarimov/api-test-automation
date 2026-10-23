@@ -29,7 +29,9 @@ const TARGETS: Target[] = [
   },
   {
     name: 'Petstore',
-    url: `${env.petstorePublicUrl}pet/1`,
+    // Not pet/1: the public sandbox is shared, and on 23.10.2026 someone had deleted pet 1, so the sanity check
+    // answered 404. A search by status answers 200 whatever the data is.
+    url: `${env.petstorePublicUrl}pet/findByStatus?status=available`,
     optionsUrl: `${env.petstorePublicUrl}pet`,
     errorUrl: `${env.petstorePublicUrl}pet/${'x'.repeat(20)}`,
     defects: {

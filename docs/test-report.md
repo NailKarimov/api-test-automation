@@ -1,10 +1,24 @@
-# Test summary report — OpenWeather API
+# Test summary report: REST and GraphQL APIs (api-test-automation)
 
-Structure follows ISO/IEC/IEEE 29119-3 (test completion report), shortened.
+The structure follows ISO/IEC/IEEE 29119-3 (test completion report), shortened. It has parts for OpenWeather,
+Petstore, and security headers. GraphQL results are in [`graphql.md`](graphql.md), and the Bruno results in
+[`bruno.md`](bruno.md).
 
-- **Date:** 13.10.2026
-- **System under test:** OpenWeather API, free plan (`https://api.openweathermap.org`)
-- **Allure report:** https://nailkarimov.github.io/openweather-api-tests/
+- **Period:** 13.10.2026 – 23.10.2026
+- **Systems under test:** OpenWeather API (free plan), Swagger Petstore v3 (private container and the public
+  sandbox), Rick and Morty GraphQL API
+- **Allure report:** https://nailkarimov.github.io/api-test-automation/
+
+## Latest run (23.10.2026)
+
+| Metric            | Value                                                                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Playwright tests  | 123: 38 OpenWeather, 33 Petstore, 34 GraphQL, 16 security headers, 2 unit                                                                                                      |
+| Bruno             | 18 requests, 27 assertions and 9 tests (36 results in Allure)                                                                                                                  |
+| Result            | 158 of 159 passed                                                                                                                                                              |
+| Environment issue | the public Petstore sandbox had lost `pet/1` (shared data), so the security sanity check answered 404. The check now uses `findByStatus`, which does not depend on shared data |
+
+The original passes follow.
 
 ## 1. Summary
 

@@ -84,7 +84,7 @@ jobs:
       - name: Keep other reports and add the visual guides to GitHub Pages
         if: always()
         run: |
-          cp docs/graphql.html docs/test-environments.html docs/toolbox.html docs/bruno.html docs/testing-map.html allure-report/
+          cp docs/graphql.html docs/test-environments.html docs/toolbox.html docs/bruno.html docs/testing-map.html docs/overview.html allure-report/
           if [ -d bruno-results ]; then mkdir -p allure-report/bruno && cp bruno-results/index.html allure-report/bruno/; fi
           true
 

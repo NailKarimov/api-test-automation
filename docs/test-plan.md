@@ -1,6 +1,7 @@
-# Test plan — OpenWeather API
+# Test plan: REST and GraphQL APIs (api-test-automation)
 
-Structure follows ISO/IEC/IEEE 29119-3 (test plan), shortened for a single project.
+The structure follows ISO/IEC/IEEE 29119-3 (test plan), shortened. The first part covers OpenWeather; Petstore and
+security headers follow. GraphQL and Bruno are planned in [`graphql.md`](graphql.md) and [`bruno.md`](bruno.md).
 
 ## 1. Context
 
