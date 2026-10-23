@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (102 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":9.87,"lat":46.1697},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"stations","main":{"temp":282.45,"feels_like":282.45,"temp_min":282.4,"temp_max":283.63,"pressure":1017,"humidity":97,"sea_level":1017,"grnd_level":854},"visibility":2513,"wind":{"speed":0.45,"deg":192,"gust":0.45},"clouds":{"all":100},"dt":1792775767,"sys":{"type":2,"id":2011435,"country":"IT","sunrise":1792734484,"sunset":1792772483},"timezone":7200,"id":3166397,"name":"Sondrio","cod":200}

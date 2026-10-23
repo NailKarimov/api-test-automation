@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: [{"query":"{ character(id: 1) { name } }"},{"query":"{ character(id: 2) { name } }"}]
-Status: 400 (227 ms)
-Content-Type: application/json
-Body:
-{"errors":[{"message":"The request did not contain a valid GraphQL request.  Batch queries and APQ request are not currently supported for this API. Please ensure that your request contains a valid query and try again.","extensions":{"stellate":{"code":"INVALID_QUERY","details":{}}}}]}

@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/pet/1792742959460472
-Query: {}
-Status: 200 (14 ms)
-Content-Type: application/json
-Body:
-{"id":1792742959460472,"name":"renamed","photoUrls":[],"tags":[],"status":"pending"}
