@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (105 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":14.3319,"lat":41.0736},"weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],"base":"stations","main":{"temp":290.66,"feels_like":290.5,"temp_min":290.14,"temp_max":292.37,"pressure":1022,"humidity":78,"sea_level":1022,"grnd_level":1014},"visibility":10000,"wind":{"speed":0.86,"deg":40,"gust":3.33},"clouds":{"all":42},"dt":1792742459,"sys":{"type":5,"id":50003361,"country":"IT","sunrise":1792732959,"sunset":1792771866},"timezone":7200,"id":3179866,"name":"Caserta","cod":200}
