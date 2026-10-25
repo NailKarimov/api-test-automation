@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=0&lon=0&appid=***
+Query: {"lat":"0","lon":"0","appid":"***"}
+Status: 200 (102 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":0,"lat":0},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],"base":"stations","main":{"temp":299.19,"feels_like":299.19,"temp_min":299.19,"temp_max":299.19,"pressure":1013,"humidity":85,"sea_level":1013,"grnd_level":1013},"visibility":10000,"wind":{"speed":2.66,"deg":191,"gust":2.32},"clouds":{"all":64},"dt":1792914726,"sys":{"sunrise":1792906834,"sunset":1792950441},"timezone":0,"id":6295630,"name":"Globe","cod":200}
