@@ -1,7 +1,0 @@
-POST http://localhost:8090/api/v3/pet
-Query: {}
-Request body: {"id":1793026433388561}
-Status: 200 (5 ms)
-Content-Type: application/json
-Body:
-{"id":1793026433388561,"photoUrls":[],"tags":[]}
