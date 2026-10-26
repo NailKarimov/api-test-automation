@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"\n      fragment Card on Character { id name species }\n      query Two { a: character(id: 1) { ...Card } b: character(id: 2) { ...Card } }"}
-Status: 200 (220 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"data":{"a":{"id":"1","name":"Rick Sanchez","species":"Human"},"b":{"id":"2","name":"Morty Smith","species":"Human"}}}

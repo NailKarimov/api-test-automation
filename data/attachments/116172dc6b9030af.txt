@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/v3/store/order
+Query: {}
+Request body: {"id":1793028249789833,"petId":1,"quantity":1,"shipDate":"2026-10-26T15:24:09.789Z","status":"placed","complete":false}
+Status: 200 (16 ms)
+Content-Type: application/json
+Body:
+{"id":1793028249789833,"petId":1,"quantity":1,"shipDate":"2026-10-26T15:24:09.789+00:00","status":"placed","complete":false}
