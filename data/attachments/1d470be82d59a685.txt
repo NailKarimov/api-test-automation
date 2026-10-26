@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=0&lon=180&appid=***
+Query: {"lat":"0","lon":"180","appid":"***"}
+Status: 200 (37 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":180,"lat":0},"weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03n"}],"base":"stations","main":{"temp":301.45,"feels_like":305.34,"temp_min":301.45,"temp_max":301.45,"pressure":1011,"humidity":76,"sea_level":1011,"grnd_level":1011},"visibility":10000,"wind":{"speed":2.75,"deg":355,"gust":2.53},"clouds":{"all":50},"dt":1793027641,"sys":{"sunrise":1793036424,"sunset":1793080033},"timezone":43200,"id":0,"name":"","cod":200}
