@@ -3,6 +3,7 @@
 [![Tests](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml/badge.svg)](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml)
 [![Allure report](https://img.shields.io/badge/report-Allure-orange)](https://nailkarimov.github.io/api-test-automation/)
 [![Release](https://img.shields.io/github/v/release/NailKarimov/api-test-automation)](https://github.com/NailKarimov/api-test-automation/releases)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/NailKarimov/api-test-automation?quickstart=1)
 
 ### ▶ Open online
 
@@ -59,6 +60,8 @@ Each defect is also a bug report in [Issues](https://github.com/NailKarimov/api-
 | —                   | Bruno          | axios under Bruno silently turned a malformed JSON body into a valid JSON string; fixed with `Application/JSON`               |
 
 ## Running it
+
+No local setup: the **Open in GitHub Codespaces** badge starts a browser VS Code with this repository, its tools and Docker; the container runs `npm ci` on creation, then `npm run petstore:up && npm run test:petstore` works in the terminal.
 
 Requirements: Node.js 22+, Docker for the private Petstore, Java 17+ for a local Allure report. The OpenWeather
 tests also need a free API key in `.env`.
