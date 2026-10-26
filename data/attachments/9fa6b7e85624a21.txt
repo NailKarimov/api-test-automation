@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"query Page($page: Int, $filter: FilterCharacter) { characters(page: $page, filter: $filter) { info { count pages next prev } results { id name status } } }","variables":{"page":42}}
-Status: 200 (210 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"data":{"characters":{"info":{"count":826,"pages":42,"next":null,"prev":41},"results":[{"id":"821","name":"Gotron","status":"unknown"},{"id":"822","name":"Young Jerry","status":"unknown"},{"id":"823","name":"Young Beth","status":"unknown"},{"id":"824","name":"Young Beth","status":"unknown"},{"id":"825","name":"Young Jerry","status":"unknown"},{"id":"826","name":"Butter Robot","status":"Alive"}]}}}
