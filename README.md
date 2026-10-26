@@ -2,6 +2,7 @@
 
 [![Tests](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml/badge.svg)](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml)
 [![Allure report](https://img.shields.io/badge/report-Allure-orange)](https://nailkarimov.github.io/api-test-automation/)
+[![Release](https://img.shields.io/github/v/release/NailKarimov/api-test-automation)](https://github.com/NailKarimov/api-test-automation/releases)
 
 ### ▶ Open online
 
@@ -110,6 +111,8 @@ docs/                      test plan, test report, guides, toolbox, testing map
 3. It runs the Playwright tests (with the `OPENWEATHER_API_KEY` secret) and the Bruno collection.
 4. It publishes Allure with history, categories and the Bruno HTML report to GitHub Pages, together with the
    guides, the toolbox and the testing map.
+
+Releases: committing `.github/releases/<tag>.md` runs the Release workflow, which creates the tag and the GitHub release with that file as its notes.
 
 ## Documentation
 
