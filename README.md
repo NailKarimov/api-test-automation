@@ -3,6 +3,21 @@
 [![Tests](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml/badge.svg)](https://github.com/NailKarimov/api-test-automation/actions/workflows/tests.yml)
 [![Allure report](https://img.shields.io/badge/report-Allure-orange)](https://nailkarimov.github.io/api-test-automation/)
 
+### ▶ Open online
+
+| Page                                                                                            | What it is        |
+| ----------------------------------------------------------------------------------------------- | ----------------- |
+| **[Allure test report](https://nailkarimov.github.io/api-test-automation/)**                    | latest CI run     |
+| [Bruno run report](https://nailkarimov.github.io/api-test-automation/bruno/)                    | latest CI run     |
+| [API tests visualized](https://nailkarimov.github.io/api-test-automation/overview.html)         | overview          |
+| [GraphQL](https://nailkarimov.github.io/api-test-automation/graphql.html)                       | interactive guide |
+| [Bruno collection](https://nailkarimov.github.io/api-test-automation/bruno.html)                | interactive guide |
+| [Sandbox or own copy](https://nailkarimov.github.io/api-test-automation/test-environments.html) | interactive guide |
+| [Portfolio testing map](https://nailkarimov.github.io/api-test-automation/testing-map.html)     | all 13 projects   |
+| [Portfolio toolbox](https://nailkarimov.github.io/api-test-automation/toolbox.html)             | all tools         |
+
+Click these links: opening an `.html` file in the file list shows its source code, GitHub does not run it.
+
 API test automation for REST and GraphQL with **Playwright** and **TypeScript**. One framework covers three
 systems under test, and a Bruno collection runs alongside it. This repository also hosts the portfolio's
 [toolbox](https://nailkarimov.github.io/api-test-automation/toolbox.html) and
