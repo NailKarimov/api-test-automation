@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
-Query: {"appid":"***"}
-Status: 200 (102 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"coord":{"lon":9.085,"lat":45.8081},"weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],"base":"stations","main":{"temp":282.81,"feels_like":282.81,"temp_min":281.33,"temp_max":283.39,"pressure":1018,"humidity":87,"sea_level":1018,"grnd_level":965},"visibility":10000,"wind":{"speed":1.02,"deg":2,"gust":2.99},"clouds":{"all":27},"dt":1792914815,"sys":{"type":2,"id":2000304,"country":"IT","sunrise":1792907605,"sunset":1792945310},"timezone":3600,"id":3178229,"name":"Como","cod":200}

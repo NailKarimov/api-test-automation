@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?lat=-90.01&lon=0&appid=***
-Query: {"lat":"-90.01","lon":"0","appid":"***"}
-Status: 400 (123 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"cod":"400","message":"wrong latitude"}

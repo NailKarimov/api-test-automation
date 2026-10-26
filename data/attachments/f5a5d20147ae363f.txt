@@ -1,0 +1,6 @@
+GET http://localhost:8090/api/v3/pet/1793002842398597
+Query: {}
+Status: 500 (27 ms)
+Content-Type: application/json
+Body:
+{"code":500,"message":"There was an error processing your request. It has been logged (ID: eb3db18fc508a80d)"}
