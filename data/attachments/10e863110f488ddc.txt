@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/v3/pet
+Query: {}
+Request body: {"id":1793026433090297,"name":"Rīga ☃ \"quotes\" & <tags> 猫","category":{"id":1,"name":"Dogs"},"photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1793026433090297"}],"status":"available"}
+Status: 200 (9 ms)
+Content-Type: application/json
+Body:
+{"id":1793026433090297,"category":{"id":1,"name":"Dogs"},"name":"Rīga ☃ \"quotes\" & <tags> 猫","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1793026433090297"}],"status":"available"}

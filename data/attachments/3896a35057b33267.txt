@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/store/inventory
-Query: {}
-Status: 200 (11 ms)
-Content-Type: application/json
-Body:
-{"approved":50,"placed":100,"delivered":50}
