@@ -45,6 +45,8 @@ systems under test, and a Bruno collection runs alongside it. This repository al
 
 ## Findings
 
+Each defect is also a bug report in [Issues](https://github.com/NailKarimov/api-test-automation/issues?q=is%3Aissue+label%3Abug); DEF-3…5 are closed as environment issues.
+
 | ID                  | System         | Summary                                                                                                                       |
 | ------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | DEF-1, DEF-2        | Petstore       | required fields and the `status` enum are not enforced on `POST /pet`                                                         |
