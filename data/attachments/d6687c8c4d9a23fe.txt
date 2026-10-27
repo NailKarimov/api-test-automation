@@ -1,0 +1,6 @@
+GET http://localhost:8090/api/v3/pet/-5
+Query: {}
+Status: 404 (9 ms)
+Content-Type: application/json
+Body:
+Pet not found

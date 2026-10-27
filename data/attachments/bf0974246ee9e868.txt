@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=abc&lon=%27%22%3C%3E&appid=***
+Query: {"appid":"***"}
+Status: 200 (31 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":10.9924,"lat":45.4384},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01d"}],"base":"stations","main":{"temp":283.17,"feels_like":282.66,"temp_min":283.17,"temp_max":283.17,"pressure":1023,"humidity":93,"sea_level":1023,"grnd_level":1014},"visibility":10000,"wind":{"speed":1.03,"deg":260},"clouds":{"all":0},"dt":1793089441,"sys":{"type":1,"id":6776,"country":"IT","sunrise":1793080075,"sunset":1793117501},"timezone":3600,"id":3164527,"name":"Verona","cod":200}
