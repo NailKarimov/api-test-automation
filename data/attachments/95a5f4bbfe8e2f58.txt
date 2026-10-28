@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/pet/1793089940444950
-Query: {}
-Status: 200 (8 ms)
-Content-Type: application/json
-Body:
-{"id":1793089940444950,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1793089940444950","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1793089940444950"}],"status":"available"}

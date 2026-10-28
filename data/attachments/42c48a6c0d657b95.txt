@@ -1,0 +1,6 @@
+GET http://localhost:8090/api/v3/user/login?username=qa-user&password=qa-password
+Query: {"username":"qa-user","password":"qa-password"}
+Status: 200 (10 ms)
+Content-Type: application/json
+Body:
+Logged in user session: 7212640253883905024
