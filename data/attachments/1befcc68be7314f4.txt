@@ -1,7 +1,0 @@
-PUT http://localhost:8090/api/v3/pet
-Query: {}
-Request body: {"id":1793275280745467,"name":"qa-pet-1793275280745467-v2","photoUrls":[],"status":"sold"}
-Status: 200 (10 ms)
-Content-Type: application/json
-Body:
-{"id":1793275280745467,"name":"qa-pet-1793275280745467-v2","photoUrls":[],"tags":[],"status":"sold"}

@@ -1,0 +1,7 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=56.9496&lon=24.1052&mode=xml&appid=***
+Query: {"lat":"56.9496","lon":"24.1052","mode":"xml","appid":"***"}
+Status: 200 (72 ms)
+Content-Type: application/xml; charset=utf-8
+Body:
+<?xml version="1.0" encoding="UTF-8"?>
+<current><city id="6615326" name="Vecrīga"><coord lon="24.1052" lat="56.9496"></coord><country>LV</country><timezone>7200</timezone><sun rise="2026-10-29T05:26:26" set="2026-10-29T14:48:00"></sun></city><temperature value="280.11" min="280.11" max="280.11" unit="kelvin"></temperature><feels_like value="279.28" unit="kelvin"></feels_like><humidity value="100" unit="%"></humidity><pressure value="1025" unit="hPa"></pressure><wind><speed value="1.54" unit="m/s" name="Calm"></speed><gusts></gusts><direction value="200" code="SSW" name="South-southwest"></direction></wind><clouds value="75" name="broken clouds"></clouds><visibility value="7000"></visibility><precipitation mode="no"></precipitation><weather number="803" value="broken clouds" icon="04n"></weather><lastupdate value="2026-10-29T19:34:22"></lastupdate></current>

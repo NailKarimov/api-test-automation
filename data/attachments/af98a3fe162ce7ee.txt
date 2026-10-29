@@ -1,0 +1,7 @@
+POST https://rickandmortyapi.com/graphql
+Query: {}
+Request body: {"query":"query($p: Int) { characters(page: $p) { info { count } } }","variables":{"p":"two"}}
+Status: 400 (396 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"errors":[{"message":"Variable \"$p\" got invalid value \"two\"; Expected type Int. Int cannot represent non-integer value: \"two\"","locations":[{"line":1,"column":8}],"extensions":{"code":"INTERNAL_SERVER_ERROR"}}]}
