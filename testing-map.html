@@ -175,7 +175,7 @@ function chips(id, items, cur, key) {
 }
 const REPOS = [
   ['api-test-automation', 'ts'], ['contract-testing-lab', 'ts'], ['microservices-testing', 'ts'], ['ledger-api-testing', 'ts'],
-  ['api-protocols-testing', 'ts'], ['ai-api-testing', 'ts'], ['ui-e2e-testing', 'ts'], ['3sMoneyTests', 'ts'],
+  ['api-protocols-testing', 'ts'], ['ai-api-testing', 'ts'], ['ui-e2e-testing', 'ts'], ['web-quality-audit', 'ts'],
   ['python-testing', 'py'], ['java-testing', 'java'], ['dotnet-testing', 'cs'], ['go-testing', 'go'], ['android-testing', 'kt'],
 ];
 const R = (name) => REPOS.findIndex((r) => r[0] === name);
@@ -192,19 +192,19 @@ const T = [
   ['bdd', 'func', ['BDD', 'BDD'], 'Gherkin', ['java-testing', 'dotnet-testing'], 'Cucumber, Reqnroll', 'Allure, Cucumber HTML'],
   ['ui', 'ui', ['UI end-to-end', 'UI end-to-end'], '—', ['ui-e2e-testing', 'dotnet-testing'], 'Playwright (TS, .NET), Page Object', 'Allure with traces'],
   ['mobile', 'ui', ['Мобильное (Android)', 'Mobile (Android)'], 'W3C WebDriver (Appium)', ['android-testing'], 'JUnit, Espresso, Appium UiAutomator2', 'Allure, Espresso, Appium'],
-  ['a11y', 'nf', ['Доступность', 'Accessibility'], 'WCAG 2.2 AA, EN 301 549', ['ui-e2e-testing', '3sMoneyTests'], 'axe-core, Pa11y, keyboard flows', 'Allure, Pa11y'],
+  ['a11y', 'nf', ['Доступность', 'Accessibility'], 'WCAG 2.2 AA, EN 301 549', ['ui-e2e-testing', 'web-quality-audit'], 'axe-core, Pa11y, keyboard flows', 'Allure, Pa11y'],
   ['visual', 'nf', ['Визуальная регрессия', 'Visual regression'], '—', ['ui-e2e-testing'], 'toHaveScreenshot', 'Allure diffs'],
   ['webperf', 'nf', ['Производительность страниц', 'Web performance'], 'Core Web Vitals (LCP, CLS, INP)', ['ui-e2e-testing'], 'Lighthouse CI, user flows', 'Lighthouse'],
   ['load', 'nf', ['Нагрузка и ёмкость', 'Load and capacity'], 'ISO/IEC 25010 performance efficiency', ['microservices-testing', 'python-testing'], 'k6 → Prometheus → Grafana, Locust', 'Grafana snapshots'],
   ['sec', 'nf', ['Безопасность', 'Security'], 'OWASP API Top 10 (2023), OAuth 2.0 + PKCE, JWT', ['ledger-api-testing', 'microservices-testing', 'api-test-automation', 'ui-e2e-testing'], 'own auth server, BOLA, headers', 'Allure'],
-  ['privacy', 'nf', ['Приватность и согласия', 'Privacy and consent'], 'GDPR', ['3sMoneyTests'], 'Playwright', 'Allure'],
+  ['webaudit', 'nf', ['Веб-аудит: контент, SEO, ссылки', 'Web audit: content, SEO, links'], '—', ['web-quality-audit'], 'Playwright, a reference build', 'Allure'],
   ['chaos', 'rel', ['Chaos и устойчивость', 'Chaos and resilience'], 'Principles of Chaos Engineering', ['microservices-testing', 'go-testing'], 'container faults, fault-injecting proxy, circuit breaker', 'Allure, coverage'],
   ['conc', 'rel', ['Конкурентность и гонки', 'Concurrency and races'], '—', ['python-testing', 'java-testing', 'dotnet-testing', 'go-testing', 'ledger-api-testing'], 'parallel requests, -race', 'CI'],
-  ['mut', 'rel', ['Мутационная проверка тестов', 'Mutation checks of the tests'], '—', REPOS.map((r) => r[0]).filter((n) => n !== '3sMoneyTests'), 'planted-bug scripts', 'mutants/result.md'],
+  ['mut', 'rel', ['Мутационная проверка тестов', 'Mutation checks of the tests'], '—', REPOS.map((r) => r[0]).filter((n) => n !== 'web-quality-audit'), 'planted-bug scripts', 'mutants/result.md'],
 ];
 const GROUPS = [['all', 'Все', 'All'], ['func', 'Функциональное', 'Functional'], ['ui', 'UI и мобильное', 'UI and mobile'], ['nf', 'Нефункциональное', 'Non-functional'], ['rel', 'Надёжность', 'Reliability']];
 const LANGS = [['all', 'Все языки', 'All languages'], ['ts', 'TypeScript', 'TypeScript'], ['py', 'Python', 'Python'], ['java', 'Java', 'Java'], ['cs', 'C#', 'C#'], ['go', 'Go', 'Go'], ['kt', 'Kotlin', 'Kotlin']];
-const PAGES = { '3sMoneyTests': 'https://nailkarimov.github.io/3sMoneyTests/' };
+const PAGES = { 'web-quality-audit': 'https://nailkarimov.github.io/web-quality-audit/' };
 const pages = (n) => PAGES[n] || `https://nailkarimov.github.io/${n}/`;
 
 function render() {
