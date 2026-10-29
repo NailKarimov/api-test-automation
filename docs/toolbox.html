@@ -187,8 +187,8 @@ footer { padding-top: 40px; color: var(--muted); font-size: 13px; display: flex;
 
   <footer>
     <a href="https://github.com/NailKarimov/api-test-automation/blob/main/docs/toolbox.md">docs/toolbox.md</a>
-    <a href="https://nailkarimov.github.io/api-test-automation/schemathesis.html" lang="ru">Гид по Schemathesis</a>
-    <a href="https://nailkarimov.github.io/api-test-automation/schemathesis.html" lang="en">Schemathesis guide</a>
+    <a href="https://nailkarimov.github.io/contract-testing-lab/schemathesis.html" lang="ru">Гид по Schemathesis</a>
+    <a href="https://nailkarimov.github.io/contract-testing-lab/schemathesis.html" lang="en">Schemathesis guide</a>
     <span>17.10.2026</span>
   </footer>
 </div>
@@ -255,7 +255,7 @@ const STEPS = [
   { tools: ['eslint', 'prettier', 'ts'], ru: ['Качество кода', 'ESLint, Prettier и проверка типов'], en: ['Code quality', 'ESLint, Prettier and the type check'],
     log: '<span class="c">$ npm run lint && npm run format:check && npm run typecheck</span>\n<span class="g">✔ 0 errors · All matched files use Prettier code style</span>' },
   { tools: ['playwright', 'zod', 'dotenv', 'amqp', 'pact', 'graphql', 'inspector', 'testcontainers', 'postgres', 'ledger'], ru: ['Тесты', '11 проектов Playwright: OpenWeather, Petstore, Sock Shop, chaos, события, security, unit, Pact, GraphQL, Ledger API на PostgreSQL от Testcontainers'], en: ['Tests', '11 Playwright projects: OpenWeather, Petstore, Sock Shop, chaos, events, security, unit, Pact, GraphQL, Ledger API on Testcontainers PostgreSQL'],
-    log: '<span class="c">$ npm test</span>\napi-test-automation    123 tests  (openweather 38, petstore 33, graphql 34, security 16, unit 2)\ncontract-testing-lab     9 tests  (pact consumer 5, provider 2, unit 2)\nmicroservices-testing   94 tests  (sockshop 77, chaos 3, events 4, security 8, unit 2)\nledger-api-testing     119 tests  (ledger 50, auth 66, unit 3)\napi-protocols-testing   79 tests  (grpc 37, proto contract 10, realtime 32)\nai-api-testing         120 tests  (mcp 100, llm plumbing 20) + 13 evals on Claude\nui-e2e-testing         217 tests  (35 × 5 browsers, a11y 21 × 2) + 12 screenshots\n<span class="g">all green</span> (1.0m)' },
+    log: '<span class="c">$ npm test</span>\napi-test-automation    123 tests  (openweather 38, petstore 33, graphql 34, security 16, unit 2)\ncontract-testing-lab     9 tests  (pact consumer 5, provider 2, unit 2)\nmicroservices-testing   94 tests  (sockshop 77, chaos 3, events 4, security 8, unit 2)\nledger-api-testing     119 tests  (ledger 48, auth 66, unit 5)\napi-protocols-testing   79 tests  (grpc 37, proto contract 10, realtime 32)\nai-api-testing         126 tests  (mcp 100, llm plumbing 20, unit 6) + 13 evals on Claude\nui-e2e-testing         217 tests  (35 × 5 browsers, a11y 21 × 2) + 12 screenshots\n<span class="g">all green</span> (1.0m)' },
   { tools: ['allure', 'pwreport'], ru: ['Отчёт', 'Allure с историей прошлых прогонов и категориями ошибок'], en: ['Report', 'Allure with history of past runs and failure categories'],
     log: '<span class="c">$ npm run allure:generate</span>\nhistory restored from gh-pages\nReport successfully generated to allure-report' },
   { tools: ['pages'], ru: ['Публикация', 'peaceiris/actions-gh-pages выкладывает отчёт на GitHub Pages'], en: ['Publish', 'peaceiris/actions-gh-pages deploys the report to GitHub Pages'],

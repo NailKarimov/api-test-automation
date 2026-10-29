@@ -18,7 +18,9 @@ Petstore, and security headers. GraphQL results are in [`graphql.md`](graphql.md
 | Result            | 158 of 159 passed                                                                                                                                                              |
 | Environment issue | the public Petstore sandbox had lost `pet/1` (shared data), so the security sanity check answered 404. The check now uses `findByStatus`, which does not depend on shared data |
 
-The original passes follow.
+The sections below are the original reports, one per system.
+
+# Test summary report — OpenWeather
 
 ## 1. Summary
 
