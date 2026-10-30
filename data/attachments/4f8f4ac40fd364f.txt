@@ -1,0 +1,6 @@
+POST http://localhost:8090/api/v3/pet/1793352143009555?name=renamed&status=pending
+Query: {"name":"renamed","status":"pending"}
+Status: 200 (11 ms)
+Content-Type: application/json
+Body:
+{"id":1793352143009555,"name":"renamed","photoUrls":[],"tags":[],"status":"pending"}
