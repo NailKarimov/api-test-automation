@@ -1,7 +1,0 @@
-POST http://localhost:8090/api/v3/user
-Query: {}
-Request body: {"id":1793352143673958,"username":"qa_user_1793352143673958","email":"qa@example.com"}
-Status: 200 (7 ms)
-Content-Type: application/json
-Body:
-{"id":1793352143673958,"username":"qa_user_1793352143673958","email":"qa@example.com","userStatus":0}
