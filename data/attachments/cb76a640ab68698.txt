@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=available
+Query: {}
+Status: 200 (303 ms)
+Content-Type: application/json
+Body:
+[{"id":99902,"name":"Max","photoUrls":["https://example.com/max.jpg"],"tags":[],"status":"available"},{"id":102,"category":{"id":1,"name":"Lions"},"photoUrls":["https://example.com/max.jpg"],"tags":[{"id":0,"name":"tag1"},{"id":1,"name":"tag4"}],"status":"available"},{"id":99,"category":{"id":101,"name":"dogz"},"name":"fido","photoUrls":["http://fido.jpg"],"tags":[{"id":102,"name":"friendly"}],"status":"available"},{"id":15,"category":{"id":1,"name":"Dogs"},"name":"fodi","photoUrls":["http://fido.jpg","/tmp/inflector18219671235390722796.tmp"],"tags":[{"id":0,"name":"string"}],"status":"available"},{"id":101,"category":{"id":1,"name":"Dogs"},"name":"Tommy","photoUrls":["https://example.com/tommy.jpg"],"tags":[{"id":1,"name":"Friendly"}],"status":"available"},{"id":1002,"category":{"id":2,"name":"pigs"},"name":"piggy","photoUrls":[],"tags":[{"id":2,"name":"friendly"}],"status":"available"},{"id":1001,"category":{"id":1,"name":"Dogs"},"name":"Dogy","photoUrls":[],"tags":[{"id":1,"name":"friendly"}],"status":"available"},{"id":1003,"category":{"id":1,"name":"Cats"},"name":"kitty","photoUrls":[],"tags":[{"id":1,"name":"fluffy"}],"status":"available"}]
