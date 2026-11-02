@@ -1,0 +1,6 @@
+DELETE http://localhost:8090/api/v3/pet/1793615001934076
+Query: {}
+Status: 500 (12 ms)
+Content-Type: application/json
+Body:
+{"code":500,"message":"There was an error processing your request. It has been logged (ID: 4a1963c558940459)"}

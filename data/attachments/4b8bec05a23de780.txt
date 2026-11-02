@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/weather?lat=90&lon=0&appid=***
-Query: {"lat":"90","lon":"0","appid":"***"}
-Status: 200 (83 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"coord":{"lon":0,"lat":90},"weather":[{"id":600,"main":"Snow","description":"light snow","icon":"13n"}],"base":"stations","main":{"temp":267.01,"feels_like":263.2,"temp_min":267.01,"temp_max":267.01,"pressure":986,"humidity":98,"sea_level":986,"grnd_level":986},"visibility":307,"wind":{"speed":2.24,"deg":262,"gust":3.7},"snow":{"1h":0.13},"clouds":{"all":100},"dt":1793527023,"sys":{"sunrise":0,"sunset":0},"timezone":0,"id":0,"name":"","cod":200}
