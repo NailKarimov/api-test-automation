@@ -1,7 +1,0 @@
-POST http://localhost:8090/api/v3/pet
-Query: {}
-Request body: {"id":1793614999959013,"name":"qa-pet-1793614999959013","category":{"id":1,"name":"Dogs"},"photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1793614999959013"}],"status":"available"}
-Status: 500 (19 ms)
-Content-Type: application/json
-Body:
-{"code":500,"message":"There was an error processing your request. It has been logged (ID: 5243ad4357d446c0)"}

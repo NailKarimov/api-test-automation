@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/air_pollution?lat=56.9496&lon=24.1052&appid=***
-Query: {"lat":"56.9496","lon":"24.1052","appid":"***"}
-Status: 200 (283 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"coord":{"lon":24.1052,"lat":56.9496},"list":[{"main":{"aqi":1},"components":{"co":187.21,"no":0.64,"no2":3.23,"o3":59.63,"so2":0.54,"pm2_5":3.16,"pm10":4.51,"nh3":0.61},"dt":1793614992}]}

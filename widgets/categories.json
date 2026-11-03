@@ -1,1 +1,1 @@
-{"total":3,"items":[{"uid":"57c95e08c6189a3e37613527e249622e","name":"Product defects (assertion failures)","statistic":{"failed":31,"broken":0,"skipped":0,"passed":0,"unknown":0,"total":31}},{"uid":"4742f0fb108b888d28bb2ca4ff534549","name":"Contract violations (schema)","statistic":{"failed":2,"broken":0,"skipped":0,"passed":0,"unknown":0,"total":2}},{"uid":"c125badd1841297a9701a15a8082ec24","name":"Skipped tests","statistic":{"failed":0,"broken":0,"skipped":2,"passed":0,"unknown":0,"total":2}}]}
+{"total":0,"items":[]}

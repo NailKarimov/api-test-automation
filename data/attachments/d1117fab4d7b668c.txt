@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/pet/findByStatus?status=available
-Query: {"status":"available"}
-Status: 500 (9 ms)
-Content-Type: application/json
-Body:
-{"code":500,"message":"There was an error processing your request. It has been logged (ID: c07f129e19e9f5f9)"}
