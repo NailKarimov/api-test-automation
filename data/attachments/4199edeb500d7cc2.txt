@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/forecast?lat=56.9496&lon=24.1052&cnt=1&lang=de&appid=***
+Query: {"lat":"56.9496","lon":"24.1052","cnt":"1","lang":"de","appid":"***"}
+Status: 200 (59 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"cod":"200","message":0,"cnt":1,"list":[{"dt":1793793600,"main":{"temp":280.42,"feels_like":278.65,"temp_min":280.42,"temp_max":281.05,"pressure":1031,"sea_level":1031,"grnd_level":1030,"humidity":74,"temp_kf":-0.63,"dew_point":276.1},"weather":[{"id":802,"main":"Clouds","description":"Mäßig bewölkt","icon":"03d"}],"clouds":{"all":28},"wind":{"speed":2.62,"deg":293,"gust":5.51},"visibility":10000,"pop":0,"sys":{"pod":"d"},"dt_txt":"2026-11-04 12:00:00"}],"city":{"id":6615326,"name":"Riga","coord":{"lat":56.9496,"lon":24.1052},"country":"LV","population":2000,"timezone":7200,"sunrise":1793770789,"sunset":1793802864}}
