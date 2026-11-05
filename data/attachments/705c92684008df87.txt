@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"{ characters(filter: { status: \"Dead\" }) { info { count } } }"}
-Status: 200 (177 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"data":{"characters":{"info":{"count":287}}}}
