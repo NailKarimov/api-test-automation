@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/v3/pet
+Query: {}
+Request body: {"id":1793960021622598,"name":"qa-pet-1793960021622598","photoUrls":[]}
+Status: 200 (30 ms)
+Content-Type: application/json
+Body:
+{"id":1793960021622598,"name":"qa-pet-1793960021622598","photoUrls":[],"tags":[]}

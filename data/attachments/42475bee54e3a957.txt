@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/pet/findByStatus?status=bogus
-Query: {"status":"bogus"}
-Status: 400 (18 ms)
-Content-Type: application/json
-Body:
-{"code":400,"message":"Input error: query parameter `status value `bogus` is not in the allowable values `[available, pending, sold]`"}
