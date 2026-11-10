@@ -1,6 +1,0 @@
-GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=available
-Query: {}
-Status: 200 (288 ms)
-Content-Type: application/json
-Body:
-[{"id":99,"category":{"id":101,"name":"dogz"},"name":"fido","photoUrls":["http://fido.jpg"],"tags":[{"id":102,"name":"friendly"}],"status":"available"},{"id":15,"category":{"id":1,"name":"Dogs"},"name":"fodi","photoUrls":["http://fido.jpg","/tmp/inflector1791324647729518398.tmp"],"tags":[{"id":0,"name":"string"}],"status":"available"},{"id":987654323,"category":{"id":1,"name":"Dogs"},"name":"MyPet","photoUrls":[],"tags":[],"status":"available"},{"id":5454,"name":"Bolinhas","photoUrls":[],"tags":[],"status":"available"},{"id":987654322,"category":{"id":1,"name":"Dogs"},"name":"NotMySkillUpPet","photoUrls":[],"tags":[],"status":"available"}]
