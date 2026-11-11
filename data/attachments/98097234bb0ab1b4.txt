@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=0&lon=0&appid=***
+Query: {"lat":"0","lon":"0","appid":"***"}
+Status: 200 (44 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":0,"lat":0},"weather":[{"id":503,"main":"Rain","description":"very heavy rain","icon":"10n"}],"base":"stations","main":{"temp":296.79,"feels_like":297.74,"temp_min":296.79,"temp_max":296.79,"pressure":1014,"humidity":97,"sea_level":1014,"grnd_level":1014},"visibility":2023,"wind":{"speed":3.08,"deg":1,"gust":3.21},"rain":{"1h":25.81},"clouds":{"all":100},"dt":1794365730,"sys":{"sunrise":1794375635,"sunset":1794419253},"timezone":0,"id":6295630,"name":"Globe","cod":200}
