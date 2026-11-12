@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=-90&lon=0&appid=***
+Query: {"lat":"-90","lon":"0","appid":"***"}
+Status: 200 (77 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":0,"lat":-90},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":234.44,"feels_like":227.44,"temp_min":234.44,"temp_max":234.44,"pressure":1010,"humidity":79,"sea_level":1010,"grnd_level":685},"visibility":10000,"wind":{"speed":3.81,"deg":57,"gust":4.1},"clouds":{"all":1},"dt":1794452769,"sys":{"sunrise":0,"sunset":0},"timezone":46800,"id":0,"name":"","cod":200}
