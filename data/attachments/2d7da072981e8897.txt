@@ -1,0 +1,6 @@
+OPTIONS https://api.openweathermap.org/data/2.5/weather?q=Riga&appid=***
+Query: {"appid":"***"}
+Status: 405 (132 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"cod":"405","message":"Internal error"}
