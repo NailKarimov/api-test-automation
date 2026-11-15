@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=available
+Query: {}
+Status: 200 (197 ms)
+Content-Type: application/json
+Body:
+[{"id":7712,"name":"X","photoUrls":["a"],"tags":[],"status":"available"},{"id":880679,"name":"DevX Verify Pup","photoUrls":["https://connect.madebydevx.com/og.png"],"tags":[],"status":"available"},{"id":1794687492999,"name":"Top","photoUrls":[],"tags":[],"status":"available"},{"id":123,"category":{"id":1,"name":"wolf"},"name":"susie","photoUrls":["https://dog.jpg"],"tags":[{"id":2,"name":"dog"}],"status":"available"},{"id":8,"category":{"id":5,"name":"Ewa"},"name":"Donny","photoUrls":["www.terry-hessel.org"],"tags":[{"id":9,"name":"Carrol"}],"status":"available"},{"id":99,"category":{"id":101,"name":"dogz"},"name":"fido","photoUrls":["http://fido.jpg"],"tags":[{"id":102,"name":"friendly"}],"status":"available"},{"id":15,"category":{"id":1,"name":"Dogs"},"name":"fodi","photoUrls":["http://fido.jpg","/tmp/inflector11208605460118454607.tmp"],"tags":[{"id":0,"name":"string"}],"status":"available"},{"id":999,"name":"test","photoUrls":[],"tags":[],"status":"available"}]

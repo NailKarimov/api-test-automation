@@ -1,0 +1,6 @@
+GET https://api.openweathermap.org/data/2.5/weather?lat=56.9496&lon=24.1052&appid=***
+Query: {"lat":"56.9496","lon":"24.1052","appid":"***"}
+Status: 200 (134 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"coord":{"lon":24.1052,"lat":56.9496},"weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03n"}],"base":"stations","main":{"temp":276.11,"feels_like":272.43,"temp_min":276.11,"temp_max":276.11,"pressure":1014,"humidity":93,"sea_level":1014,"grnd_level":1014},"visibility":10000,"wind":{"speed":4.12,"deg":200},"clouds":{"all":40},"dt":1794711974,"sys":{"type":1,"id":1876,"country":"LV","sunrise":1794722650,"sunset":1794751939},"timezone":7200,"id":6615326,"name":"Vecrīga","cod":200}
