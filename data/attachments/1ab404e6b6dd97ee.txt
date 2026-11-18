@@ -1,6 +1,0 @@
-GET https://api.openweathermap.org/data/2.5/forecast?lat=56.9496&lon=24.1052&cnt=2&units=metric&appid=***
-Query: {"lat":"56.9496","lon":"24.1052","cnt":"2","units":"metric","appid":"***"}
-Status: 200 (72 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"cod":"200","message":0,"cnt":2,"list":[{"dt":1794895200,"main":{"temp":5.11,"feels_like":1.89,"temp_min":5.11,"temp_max":5.42,"pressure":995,"sea_level":995,"grnd_level":993,"humidity":94,"temp_kf":-0.31,"dew_point":4.23},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"clouds":{"all":100},"wind":{"speed":4.18,"deg":171,"gust":8.05},"visibility":10000,"pop":0,"sys":{"pod":"n"},"dt_txt":"2026-11-17 06:00:00"},{"dt":1794906000,"main":{"temp":5.47,"feels_like":2.76,"temp_min":5.47,"temp_max":5.72,"pressure":994,"sea_level":994,"grnd_level":992,"humidity":96,"temp_kf":-0.25,"dew_point":4.88},"weather":[{"id":500,"main":"Rain","description":"light rain","icon":"10d"}],"clouds":{"all":100},"wind":{"speed":3.46,"deg":161,"gust":6.53},"visibility":6934,"pop":1,"rain":{"3h":0.32},"sys":{"pod":"d"},"dt_txt":"2026-11-17 09:00:00"}],"city":{"id":6615326,"name":"Vecrīga","coord":{"lat":56.9496,"lon":24.1052},"country":"LV","population":2000,"timezone":7200,"sunrise":1794895709,"sunset":1794924527}}

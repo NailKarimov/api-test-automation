@@ -1,0 +1,7 @@
+POST https://rickandmortyapi.com/graphql
+Query: {}
+Request body: {"query":"{ rick: character(id: 1) { name } morty: character(id: 2) { name } }"}
+Status: 200 (264 ms)
+Content-Type: application/json; charset=utf-8
+Body:
+{"data":{"rick":{"name":"Rick Sanchez"},"morty":{"name":"Morty Smith"}}}
