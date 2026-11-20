@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/pet/findByStatus
-Query: {}
-Status: 400 (9 ms)
-Content-Type: application/json
-Body:
-No status provided. Try again?
