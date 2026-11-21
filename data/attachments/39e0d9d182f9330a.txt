@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/v3/pet
+Query: {}
+Request body: hello
+Status: 415 (5 ms)
+Content-Type: application/json
+Body:
+{"code":415,"message":"HTTP 415 Unsupported Media Type"}
