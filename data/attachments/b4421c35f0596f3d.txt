@@ -1,0 +1,6 @@
+GET http://localhost:8090/api/v3/pet/findByTags?tags=no-such-tag-1795316763514445
+Query: {"tags":"no-such-tag-1795316763514445"}
+Status: 200 (7 ms)
+Content-Type: application/json
+Body:
+[]

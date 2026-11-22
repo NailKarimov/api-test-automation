@@ -1,7 +1,0 @@
-POST https://rickandmortyapi.com/graphql
-Query: {}
-Request body: {"query":"{ episodes { info { count } } }"}
-Status: 200 (169 ms)
-Content-Type: application/json; charset=utf-8
-Body:
-{"data":{"episodes":{"info":{"count":51}}}}
