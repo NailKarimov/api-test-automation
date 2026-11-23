@@ -1,0 +1,6 @@
+GET https://petstore3.swagger.io/api/v3/pet/findByStatus?status=available
+Query: {}
+Status: 500 (298 ms)
+Content-Type: application/json
+Body:
+{"code":500,"message":"There was an error processing your request. It has been logged (ID: aac437a5e10167f9)"}
