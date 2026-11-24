@@ -1,0 +1,6 @@
+GET http://localhost:8090/api/v3/pet/findByTags?tags=qa-tag-1795489570798402
+Query: {"tags":"qa-tag-1795489570798402"}
+Status: 200 (2 ms)
+Content-Type: application/json
+Body:
+[{"id":1795489570798402,"category":{"id":1,"name":"Dogs"},"name":"qa-pet-1795489570798402","photoUrls":["https://example.com/photo.png"],"tags":[{"id":1,"name":"qa-tag-1795489570798402"}],"status":"available"}]
