@@ -128,7 +128,7 @@ table.map tr.on th { color: var(--accent); font-weight: 700; }
 <body data-lang="ru">
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">github.com/NailKarimov · 13 repositories with tests</span>
+    <span class="eyebrow">github.com/NailKarimov · 16 repositories with tests</span>
     <div class="seg" role="group" aria-label="Language">
       <button type="button" id="lang-ru" data-l="ru" aria-pressed="true">RU</button>
       <button type="button" id="lang-en" data-l="en" aria-pressed="false">EN</button>
@@ -143,7 +143,7 @@ table.map tr.on th { color: var(--accent); font-weight: 700; }
     <div class="facts">
       <span><b id="f-types"></b><span lang="ru">видов тестирования</span><span lang="en">types of testing</span></span>
       <span><b>6</b><span lang="ru">языков</span><span lang="en">languages</span></span>
-      <span><b>13</b><span lang="ru">репозиториев с тестами в CI</span><span lang="en">repositories with tests in CI</span></span>
+      <span><b>16</b><span lang="ru">репозиториев с тестами в CI</span><span lang="en">repositories with tests in CI</span></span>
     </div>
   </section>
 
@@ -177,13 +177,14 @@ const REPOS = [
   ['api-test-automation', 'ts'], ['contract-testing-lab', 'ts'], ['microservices-testing', 'ts'], ['ledger-api-testing', 'ts'],
   ['api-protocols-testing', 'ts'], ['ai-api-testing', 'ts'], ['ui-e2e-testing', 'ts'], ['web-quality-audit', 'ts'],
   ['python-testing', 'py'], ['java-testing', 'java'], ['dotnet-testing', 'cs'], ['go-testing', 'go'], ['android-testing', 'kt'],
+  ['solar-inverter-testing', 'py'], ['ev-charging-testing', 'py'], ['solar-surplus-charging', 'py'],
 ];
 const R = (name) => REPOS.findIndex((r) => r[0] === name);
 const T = [
   ['api', 'func', ['Функциональное тестирование API', 'Functional API testing'], 'ISO/IEC/IEEE 29119-4: BVA, EP, decision tables', ['api-test-automation', 'python-testing', 'java-testing', 'dotnet-testing', 'go-testing'], 'Playwright, pytest + httpx, REST Assured, NUnit + WebApplicationFactory, httptest', 'Allure, JaCoCo, coverage'],
   ['bruno', 'func', ['Коллекции запросов', 'API collections'], '—', ['api-test-automation'], 'Bruno (bru run)', 'Allure + Bruno HTML'],
   ['contract', 'func', ['Контрактное тестирование', 'Contract testing'], 'OpenAPI 3, Pact v3', ['contract-testing-lab', 'java-testing'], 'Schemathesis, oasdiff, Pact JS, Pact JVM', 'pact files, oasdiff reports'],
-  ['pbt', 'func', ['Property-based и фаззинг', 'Property-based and fuzzing'], 'OpenAPI-driven generation', ['contract-testing-lab', 'python-testing', 'go-testing'], 'Schemathesis, Hypothesis, go test -fuzz', 'Schemathesis report'],
+  ['pbt', 'func', ['Property-based и фаззинг', 'Property-based and fuzzing'], 'OpenAPI-driven generation', ['contract-testing-lab', 'python-testing', 'go-testing', 'solar-inverter-testing', 'ev-charging-testing', 'solar-surplus-charging'], 'Schemathesis, Hypothesis, go test -fuzz', 'Schemathesis report'],
   ['gql', 'func', ['GraphQL', 'GraphQL'], 'GraphQL specification', ['api-test-automation'], 'Playwright, GraphQL Inspector', 'Allure'],
   ['grpc', 'func', ['gRPC, WebSocket, SSE', 'gRPC, WebSocket, SSE'], 'gRPC status codes, RFC 6455, HTML SSE', ['api-protocols-testing'], 'grpc-js, buf, ws', 'Allure'],
   ['ai', 'func', ['ИИ-интерфейсы (MCP, LLM)', 'AI interfaces (MCP, LLM)'], 'Model Context Protocol, OWASP Top 10 for LLM', ['ai-api-testing'], 'MCP Inspector, evals', 'Allure, evals'],
@@ -198,6 +199,12 @@ const T = [
   ['load', 'nf', ['Нагрузка и ёмкость', 'Load and capacity'], 'ISO/IEC 25010 performance efficiency', ['microservices-testing', 'python-testing'], 'k6 → Prometheus → Grafana, Locust', 'Grafana snapshots'],
   ['sec', 'nf', ['Безопасность', 'Security'], 'OWASP API Top 10 (2023), OAuth 2.0 + PKCE, JWT', ['ledger-api-testing', 'microservices-testing', 'api-test-automation', 'ui-e2e-testing'], 'own auth server, BOLA, headers', 'Allure'],
   ['webaudit', 'nf', ['Веб-аудит: контент, SEO, ссылки', 'Web audit: content, SEO, links'], '—', ['web-quality-audit'], 'Playwright, a reference build', 'Allure'],
+  ['modbus', 'func', ['Протоколы устройств (Modbus)', 'Device protocols (Modbus)'], 'Modbus Application Protocol V1.1b3, Modbus over Serial Line, Modbus TCP', ['solar-inverter-testing', 'solar-surplus-charging'], 'own frames, pymodbus, pysunspec2, socat', 'Allure, visual page with the frames'],
+  ['ocpp', 'func', ['Протоколы устройств по WebSocket (OCPP)', 'Device protocols over WebSocket (OCPP)'], 'OCPP 1.6 Edition 2 (JSON), OCPP 2.0.1 Edition 3', ['ev-charging-testing', 'solar-surplus-charging'], 'own OCPP-J codec, websockets, the reference ocpp library', 'Allure, visual page with the messages'],
+  ['schemas', 'func', ['Соответствие опубликованным схемам', 'Conformance to published schemas'], 'the JSON schemas shipped with OCPP 1.6 and 2.0.1 (206 files)', ['ev-charging-testing'], 'jsonschema, schemas read out of the ocpp package', 'Allure'],
+  ['pilot', 'func', ['Control Pilot и пределы тока', 'Control pilot and current limits'], 'IEC 61851-1: states A/B/C/E, the 6 A floor', ['ev-charging-testing', 'solar-surplus-charging'], 'simulated clock, boundary values, charging profiles', 'Allure, visual page'],
+  ['control', 'func', ['Законы управления энергией', 'Energy control laws'], 'IEC 61851-1 whole-amp steps; self-consumption in watt-hours over whole days', ['solar-surplus-charging'], 'simulated clock, a modelled house, budgets per day', 'Allure, visual page with the day chart'],
+  ['twin', 'rel', ['Сверка двух реализаций', 'Cross-implementation checking'], '—', ['solar-inverter-testing', 'ev-charging-testing', 'solar-surplus-charging'], 'the page JavaScript replayed against Python, decision by decision', 'CI step summary'],
   ['chaos', 'rel', ['Chaos и устойчивость', 'Chaos and resilience'], 'Principles of Chaos Engineering', ['microservices-testing', 'go-testing'], 'container faults, fault-injecting proxy, circuit breaker', 'Allure, coverage'],
   ['conc', 'rel', ['Конкурентность и гонки', 'Concurrency and races'], '—', ['python-testing', 'java-testing', 'dotnet-testing', 'go-testing', 'ledger-api-testing'], 'parallel requests, -race', 'CI'],
   ['mut', 'rel', ['Мутационная проверка тестов', 'Mutation checks of the tests'], '—', REPOS.map((r) => r[0]).filter((n) => n !== 'web-quality-audit'), 'planted-bug scripts', 'mutants/result.md'],
