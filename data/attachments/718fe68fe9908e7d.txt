@@ -1,6 +1,0 @@
-GET http://localhost:8090/api/v3/user/logout
-Query: {}
-Status: 200 (6 ms)
-Content-Type: application/json
-Body:
-User logged out
